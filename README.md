@@ -1,2 +1,2 @@
-Whydah-SSOLoginService
-======================
+SSOLoginService
+===============

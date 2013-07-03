@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>fc-parent</artifactId>
-    <groupId>no.freecode.emi</groupId>
-    <version>2</version>
+    <artifactId>parent</artifactId>
+    <groupId>no.cantara.emi</groupId>
+    <version>1</version>
     <relativePath>../pom.xml/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -116,9 +116,9 @@
       <url>http://download.java.net/maven/2/</url>
     </repository>
     <repository>
-      <id>nexus</id>
-      <name>FreeCode Public Release Repository</name>
-      <url>http://nexus.freecode.no:8081/nexus/content/repositories/releases/</url>
+      <id>cantara-releases</id>
+      <name>Cantara Release Repository</name>
+      <url>http://mvnrepo.cantara.no/content/repositories/releases/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -131,14 +131,12 @@
   </dependencies>
   <distributionManagement>
     <repository>
-      <id>nexus</id>
-      <name>FreeCode Internal Release Repository</name>
-      <url>dav:http://nexus.freecode.no:8081/nexus/content/repositories/fc-internal-releases/</url>
+      <id>altran-releases</id>
+      <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
     </repository>
     <snapshotRepository>
-      <id>nexus</id>
-      <name>FreeCode Internal Snapshot Repository</name>
-      <url>dav:http://nexus.freecode.no:8081/nexus/content/repositories/fc-internal-snapshots/</url>
+      <id>altran-snapshots</id>
+      <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
     </snapshotRepository>
   </distributionManagement>
   <properties>

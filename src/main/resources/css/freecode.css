@@ -21,7 +21,7 @@ body {
 }
 
 form[name=getusertoken] {
-	display: none;
+	display: block;
 }
 
 hr {display: none;}
@@ -228,7 +228,7 @@ input#user_session_openid_identifier, #login-page #email, #login-page input#user
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1.1em;
     font-weight: bold;
-	display: 
+	/*display: ; */
     width: 100%;
     border: 1px solid #ccc;
 	border-radius: 5px;

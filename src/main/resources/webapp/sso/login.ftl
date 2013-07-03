@@ -12,8 +12,8 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="images/GiftIT.png" alt="Gift-it"/><br>
-            <b>Gift-it</b>
+            <img src="images/site-logo.png" alt="Site name"/><br>
+            <b>Site name</b>
         </div>
         <#if loginError??>
             <div id="errordiv"><p id="error">${loginError!}</p></div>
@@ -45,7 +45,7 @@
 
 
 
-            <div id="openid-login" style="display: none;">
+            <div id="openid-login" >
                 <p>
                     <label for="user_session_openid_identifier">openID URL</label>
                     <a href="#" class="id-note" onclick="$('normal-login').show(); $('openid-login').hide(); $('user_session_login').activate(); $('user_session_openid_identifier').clear();">

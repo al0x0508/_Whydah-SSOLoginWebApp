@@ -124,7 +124,7 @@ public class CookieTest {
         if (domainStore == null) return;
         StringBuffer cookieStringBuffer = new StringBuffer();
 
-        Iterator cookieNames = domainStore.keySet().iterator();
+        Iterator<String> cookieNames = domainStore.keySet().iterator();
         while (cookieNames.hasNext()) {
             String cookieName = (String) cookieNames.next();
             System.out.println("===> Cookie: "+cookieName);
@@ -193,7 +193,7 @@ public class CookieTest {
         if (domainStore == null) return;
         StringBuffer cookieStringBuffer = new StringBuffer();
 
-        Iterator cookieNames = domainStore.keySet().iterator();
+        Iterator<String> cookieNames = domainStore.keySet().iterator();
         while (cookieNames.hasNext()) {
             String cookieName = (String) cookieNames.next();
             Map<String, String> cookie = domainStore.get(cookieName);

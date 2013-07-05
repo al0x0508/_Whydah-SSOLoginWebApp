@@ -1,18 +1,8 @@
 package net.whydah.sso.service.util;
 
-import com.restfb.types.User;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.data.ApplicationCredential;
-import net.whydah.sso.service.data.UserCredential;
-import net.whydah.sso.service.data.WhydahUserTokenId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +14,26 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
+
+import net.whydah.sso.service.config.AppConfig;
+import net.whydah.sso.service.data.ApplicationCredential;
+import net.whydah.sso.service.data.UserCredential;
+import net.whydah.sso.service.data.WhydahUserTokenId;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import com.restfb.types.User;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class SSOHelper {
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken";
+    
+	public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken";
     public static final String USERTICKET = "userticket";
     public static final String USER_TOKEN_ID = "usertokenid";
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
@@ -38,10 +42,12 @@ public class SSOHelper {
     private final URI tokenServiceUri;
     private String myAppTokenXml;
     private String myAppTokenId;
-
+	private final LoginTypes enabledLoginTypes;
+    
     public SSOHelper() {
         try {
             tokenServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("securitytokenservice")).build();
+            this.enabledLoginTypes = new LoginTypes(AppConfig.readProperties());
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getLocalizedMessage(), e);
         }
@@ -54,7 +60,7 @@ public class SSOHelper {
         // cookie.setMaxAge(maxAge);
         cookie.setMaxAge(365 * 24 * 60 * 60);
         cookie.setPath("/");
-        // cookie.setDomain("ssologinservice.yenka.freecode.no");
+        // cookie.setDomain("ssologinservice.whydah.org");
         cookie.setValue(tokenID);
         // cookie.setSecure(true);
         logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge());
@@ -326,7 +332,9 @@ public class SSOHelper {
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
 
-
+	public LoginTypes getEnabledLoginTypes() {
+		return enabledLoginTypes;
+	}
 
 }
 

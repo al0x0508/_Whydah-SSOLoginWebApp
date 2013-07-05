@@ -3,7 +3,8 @@
 <head>
     <meta http-equiv="refresh" content="0;url=${redirect}">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Redirecting back, SSO</title>
+    <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
+    <title>Redirecting back, Whydah SSO</title>
 </head>
 <body>
 Redirecting back to application ${redirect}<br>

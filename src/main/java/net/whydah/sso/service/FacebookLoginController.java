@@ -55,14 +55,14 @@ public class FacebookLoginController {
         String code = request.getParameter("code");
 
         Map.Entry<String, User> pair = FacebookHelper.loginAndCreateFacebookUser(code, fbauthURI);
-        String fbAccessToken = pair.getKey();
-        User fbUser = pair.getValue();
-
         if (pair == null) {
             logger.error("Could not fetch facebok user.");
             //TODO Do we need to add client redirect URI here?
             return "login";
         }
+        String fbAccessToken = pair.getKey();
+        User fbUser = pair.getValue();
+        
         UserCredential userCredential;
         try {
             userCredential = new FacebookUserCredential(fbUser.getId(), fbUser.getUsername());

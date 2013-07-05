@@ -22,10 +22,10 @@ public class SSOLoginController {
     private final SSOHelper ssoHelper = new SSOHelper();
 
     /**
-     * Kalles når påloggingssiden skal vises.
+     * Controlling the sign on page.
      * @param request Http-request
-     * @param model Inneholder data til template
-     * @return template som skal vises.
+     * @param model data to be used in the template
+     * @return template to display
      */
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
@@ -38,10 +38,19 @@ public class SSOLoginController {
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
-
+        
         model.addAttribute("redirectURI", redirectURI);
+        setEnabledLoginTypes(model);
+        
         return "login";
     }
+
+	private void setEnabledLoginTypes(Model model) {
+		model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
+        model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
+        model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
+        model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
+	}
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("redirectURI");
@@ -84,6 +93,7 @@ public class SSOLoginController {
             logger.info("getUserToken failed. Redirecting to login.");
             model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Could not log in.");
+            setEnabledLoginTypes(model);
             return "login";
         }
 

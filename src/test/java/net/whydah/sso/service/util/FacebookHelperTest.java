@@ -5,6 +5,7 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.types.User;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 /**
- * @author <a href="mailto:erik@freecode.no">Erik Drolshammer</a>
+ * @author <a href="mailto:erik.drolshammer@altran.com">Erik Drolshammer</a>
  * @since 10/15/12
  */
 public class FacebookHelperTest {
@@ -54,7 +55,8 @@ public class FacebookHelperTest {
         FacebookClient facebookClient = new DefaultFacebookClient(faceBookAccessToken);
 
         Connection<User> friendsConnection = facebookClient.fetchConnection("me/friends", User.class, Parameter.with("fields", "id, name, birthday"));
-        List<User> users = friendsConnection.getData();
+        @SuppressWarnings("unused")
+		List<User> users = friendsConnection.getData();
     }
 
 }

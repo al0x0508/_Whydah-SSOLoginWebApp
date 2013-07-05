@@ -5,8 +5,14 @@ a, abbr, acronym, address, big, cite, code, del, dfn, em,
 img, ins, kbd, q, samp, small, strike, strong, sub, sup,
 tt, var, dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; vertical-align:
-    baseline; background: transparent; }
+table, caption, tbody, tfoot, thead, tr, th, td { 
+	margin: 0; 
+	padding: 0; 
+	border: 0; 
+	outline: 0; 
+	vertical-align: baseline; 
+	background: transparent; 
+}
 table { border-spacing: 0; border-collapse: collapse; }
 caption, th, td { text-align: left; font-weight: normal; }
 blockquote, q { quotes: none; }
@@ -24,7 +30,7 @@ form[name=getusertoken] {
 	display: block;
 }
 
-hr {display: none;}
+hr {noshade}
 
 #page-content, #page-content-wide {
     padding: 2em;
@@ -36,26 +42,6 @@ hr {display: none;}
 input[type=image] {margin:auto;}
 
 #logo {font-size: 2em; margin-bottom: 1em;}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .clear {
@@ -263,6 +249,13 @@ input#user_session_openid_identifier, #login-page #email, #login-page input#user
 
 #login-page p#what_will_happen {
     text-align: left;
+}
+
+.login-page-menu {
+	cursor: pointer;
+	display: inline-block;
+	font-weight: bold;
+	padding-right: 10px;
 }
 
 /* SPLASH */

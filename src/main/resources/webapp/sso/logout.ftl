@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Logout SSO</title>
+    <title>Whydah Sign off</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
 </head>
 <body>
 logout

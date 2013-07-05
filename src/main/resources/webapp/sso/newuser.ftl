@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>FreeCode Fellespålogging</title>
-    <link rel="stylesheet" href="css/freecode.css" TYPE="text/css"/>
+    <title>Whydah Sign On</title>
+    <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
     <div id="page-content">
         <div id="login-page">
             <div id="logo">
-                <img src="images/logo-small.png" alt="Yenka User Registration"/>
+                <img src="images/logo-small.png" alt="Whydah User Registration"/>
             </div>
         <#if error??>
                 <div id="errordiv"><p id="error">${error!}</p></div>
@@ -20,7 +20,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="images/GiftIT.png" alt="Yenka User Registration"/>
+            <img src="images/whydah.png" alt="Whydah User Registration"/>
 
 
         </div>

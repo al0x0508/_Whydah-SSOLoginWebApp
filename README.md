@@ -2,6 +2,6 @@ SSOLoginService
 ====================
 
 TODO: 
-* Singup
+* Signup
 * Forgot password / reset password 
 * Remember me chekbox

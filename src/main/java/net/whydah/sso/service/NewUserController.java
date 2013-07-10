@@ -20,7 +20,6 @@ public class NewUserController {
     @RequestMapping("/newuser")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
         return "newuser";
-
     }
 
     @RequestMapping("/createnewuser")
@@ -41,18 +40,14 @@ public class NewUserController {
         };
 
 
-
-            String userTokenXml = ssoHelper.createAndLogonUser(null, "", userCredential, "");
-            if (userTokenXml == null) {
-                logger.error("createAndLogonUser failed. Redirecting to login page.");
-                String redirectURI = "";
-                model.addAttribute("redirectURI", redirectURI);
-                model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
-                return "login";
-            }
-
-
-
+        String userTokenXml = ssoHelper.createAndLogonUser(null, "", userCredential, "");
+        if (userTokenXml == null) {
+            logger.error("createAndLogonUser failed. Redirecting to login page.");
+            String redirectURI = "";
+            model.addAttribute("redirectURI", redirectURI);
+            model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
+            return "login";
+        }
         model.addAttribute("redirect", "welcome");
         return "action";
     }

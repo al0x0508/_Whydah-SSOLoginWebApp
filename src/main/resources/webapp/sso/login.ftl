@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Whydah Sign On</title>
+    <title>Whydah Login</title>
     <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=320, initial-scale=1, maximum-scale=1"/>
@@ -102,8 +102,8 @@
 			<div class="login-page-type" data-title="BankID / minID login" id="ssoLoginOmni">
 		        <div style="display: block;">
 		        	<p>
-		            	<a href=" "><img alt="Log in med minID" src="images/MinID.png"/></a>
-		                <a href=" k"><img alt="Sign on with BankID" src="images/BankID.png"/></a>
+		            	<a href=" "><img alt="Log in with minID" src="images/MinID.png"/></a>
+		                <a href=" k"><img alt="Log in with BankID" src="images/BankID.png"/></a>
 		            </p>
 		            
 		        </div>

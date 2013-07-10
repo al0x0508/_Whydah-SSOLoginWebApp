@@ -1,7 +1,7 @@
 package net.whydah.sso.service.data;
 
 /**
- * @author <a href="mailto:erik@freecode.no">Erik Drolshammer</a>
+ * @author <a href="mailto:erik.drolshammer@altran.com">Erik Drolshammer</a>
  * @since 3/10/12
  */
 public class FacebookUserCredential implements UserCredential {

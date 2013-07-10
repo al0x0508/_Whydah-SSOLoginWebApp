@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Whydah Sign On</title>
+    <title>Whydah Login</title>
     <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
@@ -13,7 +13,7 @@
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>
         <div>
-            Password has been changed, you may now try to sign on with the new password.
+            Password has been changed, you may now try to log in with the new password.
         </div>
     </div>
 </div>

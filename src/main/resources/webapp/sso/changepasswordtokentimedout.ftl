@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Whydah Sign On</title>
+	<title>Whydah Login</title>
     <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>

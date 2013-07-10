@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Whydah Sign on</title>
+    <title>Whydah Login</title>
     <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
@@ -10,7 +10,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="images/logo-small.png" alt="Whydah Sign on"/>
+            <img src="images/logo-small.png" alt="Whydah Log In"/>
 
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>

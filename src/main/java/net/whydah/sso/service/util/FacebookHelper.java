@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * http://developers.facebook.com/docs/authentication/server-side/
  *
- * @author <a href="mailto:erik@freecode.no">Erik Drolshammer</a>
+ * @author <a href="mailto:erik.drolshammer@altran.com">Erik Drolshammer</a>
  * @since 10/15/12
  */
 public class FacebookHelper {

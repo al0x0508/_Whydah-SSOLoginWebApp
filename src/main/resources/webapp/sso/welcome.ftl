@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>SSO Login Service</title>
+    <title>Whydah Login</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
 </head>

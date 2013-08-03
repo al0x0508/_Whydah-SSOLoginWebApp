@@ -20,7 +20,7 @@ import java.util.Map;
  * @since 10/15/12
  */
 public class FacebookHelper {
-    // get these from your FB Dev App - Erik's YenkaTest app
+    // get these from your FB Dev App - Erik's WhydahTest app
     static final String FACEBOOK_APP_ID = "418084974919236";
     static final String FACEBOOK_APP_SECRET = "39f2cded9d888ef5d63da69fe3fbb5d5";
     //TODO Remember to remove permissions we don't use.

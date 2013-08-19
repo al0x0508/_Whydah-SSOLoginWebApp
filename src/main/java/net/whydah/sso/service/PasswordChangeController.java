@@ -47,7 +47,7 @@ public class PasswordChangeController {
 
         WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-        if(response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
             model.addAttribute("error", error);
@@ -62,7 +62,7 @@ public class PasswordChangeController {
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         model.addAttribute("user", passwordChangeToken.getUser());
         model.addAttribute("token", passwordChangeToken.getToken());
-        if(!passwordChangeToken.isValid()) {
+        if (!passwordChangeToken.isValid()) {
             return "changepasswordtokentimedout";
         } else {
             return "changepassword";
@@ -74,14 +74,13 @@ public class PasswordChangeController {
         log.trace("doChangePasswordFromLink was called");
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
-        //System.out.println(newpassword);
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/useradmin/users/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
-        System.out.println("kaller " + uibWR.getURI());
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
+
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,"{\"newpassword\":\"" + newpassword + "\"}");
         model.addAttribute("user", passwordChangeToken.getUser());
-        if(response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
-            //System.out.println(response);
             log.error(error);
             model.addAttribute("error", error);
             model.addAttribute("token", passwordChangeToken.getToken());

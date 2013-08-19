@@ -45,7 +45,7 @@ public class PasswordChangeController {
             return "resetpassword";
         }
 
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/useradmin/users/" + user + "/resetpassword");
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         if(response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);

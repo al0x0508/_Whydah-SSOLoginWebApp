@@ -9,7 +9,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="/sso/images/site-logo.png" alt="Whydah Sign on"/>
+            <img src="${logoURL}" alt="Whydah Sign on"/>
         </div>
     <#if error??>
         <div id="errordiv"><p id="error">${error!}</p></div>

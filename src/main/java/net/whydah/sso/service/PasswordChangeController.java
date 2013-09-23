@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Properties;
 
 /**
  * Password management self service.
@@ -45,6 +46,15 @@ public class PasswordChangeController {
             return "resetpassword";
         }
 
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
         WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
@@ -59,6 +69,15 @@ public class PasswordChangeController {
     @RequestMapping("/changepassword/*")
     public String changePasswordFromLink(HttpServletRequest request, Model model) {
         log.trace("changePasswordFromLink was called");
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         model.addAttribute("user", passwordChangeToken.getUser());
         model.addAttribute("token", passwordChangeToken.getToken());
@@ -78,6 +97,15 @@ public class PasswordChangeController {
         log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,"{\"newpassword\":\"" + newpassword + "\"}");
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("user", passwordChangeToken.getUser());
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);

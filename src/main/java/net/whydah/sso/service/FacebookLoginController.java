@@ -44,6 +44,15 @@ public class FacebookLoginController {
     public String facebookLogin(HttpServletRequest request, Model model) throws MalformedURLException {
         String clientRedirectURI = request.getParameter("redirectURI");
         String facebookLoginUrl = FacebookHelper.getFacebookLoginUrl(clientRedirectURI, fbauthURI);
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
 
         model.addAttribute("redirect", facebookLoginUrl);
         logger.info("Redirecting to {}", facebookLoginUrl);
@@ -83,6 +92,15 @@ public class FacebookLoginController {
             // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
             // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
+            String LOGOURL="/sso/images/site-logo.png";
+            try {
+                Properties properties = AppConfig.readProperties();
+                LOGOURL = properties.getProperty("logourl");
+
+            } catch (Exception e){
+
+            }
+            model.addAttribute("logoURL", LOGOURL);
 
             userTokenXml = ssoHelper.createAndLogonUser(fbUser, fbAccessToken, userCredential, ticket);
             if (userTokenXml == null) {
@@ -99,6 +117,15 @@ public class FacebookLoginController {
         // cookie.setDomain("whydah.net");
         response.addCookie(cookie);
 
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
         String clientRedirectURI = request.getParameter("state");
         clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
         logger.info("Redirecting to {}", clientRedirectURI);

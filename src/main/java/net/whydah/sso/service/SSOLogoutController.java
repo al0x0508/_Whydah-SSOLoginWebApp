@@ -1,5 +1,6 @@
 package net.whydah.sso.service;
 
+import net.whydah.sso.service.config.AppConfig;
 import net.whydah.sso.service.util.SSOHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Properties;
 
 @Controller
 public class SSOLogoutController {
@@ -16,6 +18,15 @@ public class SSOLogoutController {
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
         String redirectURI = request.getParameter("redirectURI");
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
         if (redirectURI != null && redirectURI.length() > 3) {
             model.addAttribute("redirect", redirectURI);
         } else {
@@ -47,6 +58,15 @@ public class SSOLogoutController {
         cookie.setMaxAge(100000);
         cookie.setValue("");
         response.addCookie(cookie);
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
 
         model.addAttribute("redirect", redirectURI);
         return "action";

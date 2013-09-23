@@ -1,5 +1,6 @@
 package net.whydah.sso.service;
 
+import net.whydah.sso.service.config.AppConfig;
 import net.whydah.sso.service.data.UserCredential;
 import net.whydah.sso.service.util.SSOHelper;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 
 public class NewUserController {
@@ -39,6 +41,15 @@ public class NewUserController {
             }
         };
 
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
 
         String userTokenXml = ssoHelper.createAndLogonUser(null, "", userCredential, "");
         if (userTokenXml == null) {

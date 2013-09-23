@@ -9,7 +9,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="/sso/images/site-logo.png" alt="Whydah sign on"/>
+            <img src="${logoURL}" alt="Whydah sign on"/>
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>
         <div>URL for password reset no longer valid. Please <a href="../resetpassword">reset password</a> and try again.</div>

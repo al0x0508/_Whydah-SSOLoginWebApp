@@ -17,7 +17,7 @@
 	<div id="page-content">
 	    <div id="login-page">
 	        <div id="logo">
-	            <img src="images/site-logo.png" alt="Site name"/><br>
+	            <img src="/images/site-logo.png" alt="Site name"/><br>
 	            <b>Site name</b>
 	        </div>
 	        <#if loginError??>

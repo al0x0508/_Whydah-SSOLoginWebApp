@@ -10,6 +10,7 @@ Start/Install
 
 * create a user for the service
 * create start_service.sh
+
 ```
 #!/bin/sh
 
@@ -28,6 +29,7 @@ tail -f nohup.out
 ```
 
 * create ssologinservice.TEST.properties
+
 ```
 #
 #

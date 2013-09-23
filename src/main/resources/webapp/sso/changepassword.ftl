@@ -9,7 +9,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="../images/logo-small.png" alt="Whydah Sign on"/>
+            <img src="images/site-logo.png" alt="Whydah Sign on"/>
         </div>
     <#if error??>
         <div id="errordiv"><p id="error">${error!}</p></div>

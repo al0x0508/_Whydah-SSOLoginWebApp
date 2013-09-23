@@ -17,7 +17,7 @@
 	<div id="page-content">
 	    <div id="login-page">
 	        <div id="logo">
-	            <img src="/sso/images/site-logo.png" alt="Whydah SSO login"/><br>
+	            <img src="${logoURL}" alt="Whydah SSO login"/><br>
 	            <b>Site name</b>
 	        </div>
 	        <#if loginError??>

@@ -31,7 +31,8 @@ tail -f nohup.out
 * create ssologinservice.TEST.properties
 
 ```
-#
+#  URL to the site logo
+logourl=http://stocklogos.com/sites/default/files/styles/logo-medium/public/logos/image/dc5f9f951e37c6ebb2ebecb619fe7555.png
 #
 #securitytokenservice=http://myserver.net/tokenservice/
 securitytokenservice=http://localhost:9998/tokenservice/

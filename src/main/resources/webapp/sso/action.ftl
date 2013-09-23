@@ -9,6 +9,6 @@
 <body>
 Redirecting back to application ${redirect}<br>
 <br>
-<img src="images/redirect_ad.jpg">
+<img src="/sso/images/redirect_ad.jpg">
 </body>
 </html>

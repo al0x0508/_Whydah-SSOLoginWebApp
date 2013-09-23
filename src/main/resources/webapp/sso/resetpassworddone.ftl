@@ -10,7 +10,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="/images/site-logo.png" alt="Whydah Log In"/>
+            <img src="/sso/images/site-logo.png" alt="Whydah Log In"/>
 
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>

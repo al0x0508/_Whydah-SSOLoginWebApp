@@ -9,7 +9,7 @@
     <div id="page-content">
         <div id="login-page">
             <div id="logo">
-                <img src="/images/site-logo.png" alt="Whydah User Registration"/>
+                <img src="/sso/images/site-logo.png" alt="Whydah User Registration"/>
             </div>
         <#if error??>
                 <div id="errordiv"><p id="error">${error!}</p></div>
@@ -20,7 +20,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="images/whydah.png" alt="Whydah User Registration"/>
+            <img src="/sso/images/whydah.png" alt="Whydah User Registration"/>
 
 
         </div>

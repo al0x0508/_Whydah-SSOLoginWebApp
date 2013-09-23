@@ -9,7 +9,7 @@
 <div id="page-content">
     <div id="login-page">
         <div id="logo">
-            <img src="/images/site-logo.png" alt="SSO Login"/>
+            <img src="/sso/images/site-logo.png" alt="SSO Login"/>
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>
         <div>

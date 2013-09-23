@@ -32,6 +32,15 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
 
         WhydahUserTokenId usertokenId = ssoHelper.getTokenidFromCookie(request);
         if (usertokenId.isValid()) {
@@ -94,7 +103,6 @@ public class SSOLoginController {
         } catch (Exception e){
 
         }
-
         model.addAttribute("logoURL", LOGOURL);
 
         String redirectURI = getRedirectURI(request);

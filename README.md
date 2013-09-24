@@ -49,6 +49,26 @@ logintype.omni=disabled
 logintype.userpassword=enabled
 ```
 
+Typical apache setup
+====================
+
+```
+<VirtualHost *:80>
+        ServerName myserver.net
+        ServerAlias myserver
+        ProxyRequests Off
+        <Proxy *>
+                Order deny,allow
+                Allow from all
+        </Proxy>
+        ProxyPreserveHost on
+                ProxyPass /sso http://localhost:9997/sso
+                ProxyPass /uib http://localhost:9995/uib
+                ProxyPass /tokenservice http://localhost:9998/tokenservice
+                ProxyPass /useradmin http://localhost:9996/useradmin
+                ProxyPass /test http://localhost:9990/test/
+</VirtualHost>
+```
 
 
 TODO: 

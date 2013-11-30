@@ -23,8 +23,19 @@ public class NetIQHelperTest {
     @Test
     public void testCreateUserFromNetIQRedirect() {
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
         NetIQHelper netIQ = new NetIQHelper();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeaderNames())
+                .thenReturn(netIQ.getExpectedHeaders());
+
+        when(request.getHeader(anyString())).thenAnswer(new Answer() {
+            public String answer(InvocationOnMock invocation) {
+                NetIQHelper netIQ = new NetIQHelper();
+                Object[] args = invocation.getArguments();
+                Object mock = invocation.getMock();
+                return netIQ.getExpectedHeader((String)args[0]);
+            }
+        });
 
 
         assertEquals("Thor Henning", netIQ.getFirstName(request));

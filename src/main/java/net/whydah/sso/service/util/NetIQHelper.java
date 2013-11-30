@@ -17,6 +17,7 @@ public class NetIQHelper {
      NetIQHelper() {
         expectedHeaders.put("HTTP_DEPARTMENT", "SE");
         expectedHeaders.put("HTTP_FNAME", "Thor Henning");
+        expectedHeaders.put("HTTP_LNAME", "Hetland");
         expectedHeaders.put("HTTP_EMAIL", "Thor-Henning.Hetland@altran.com");
         expectedHeaders.put("HTTP_USERNAME", "totto");
         expectedHeaders.put("HTTP_VIA", "cv-c.test.com (Access Gateway-ag-2EBD8AE7CD9A4BDF-30851)");
@@ -38,28 +39,28 @@ public class NetIQHelper {
 
 
     public String getFirstName(HttpServletRequest request) {
-        return "Thor Henning";
+        return request.getHeader("HTTP_FNAME");//"Thor Henning";
 
     }
 
     public String getLastName(HttpServletRequest request) {
-        return "Hetland";
+        return request.getHeader("HTTP_LNAME"); // "Hetland";
 
     }
 
     public String getUserDetartment(HttpServletRequest request) {
-        return "SE";
+        return request.getHeader("HTTP_DEPARTMENT"); // "SE";
 
     }
 
 
     public String getUserName(HttpServletRequest request) {
-        return "totto@totto.org";
+        return request.getHeader("HTTP_USERNAME"); // "totto@totto.org";
 
     }
 
     public String getEmail(HttpServletRequest request) {
-        return "Thor-Henning.Hetland@altran.com";
+        return request.getHeader("HTTP_EMAIL"); // "Thor-Henning.Hetland@altran.com";
 
     }
 

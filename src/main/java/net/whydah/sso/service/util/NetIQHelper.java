@@ -1,20 +1,21 @@
 package net.whydah.sso.service.util;
 
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.types.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: totto
- * Date: 11/30/13
- * Time: 1:05 PM
- * To change this template use File | Settings | File Templates.
- */
 public class NetIQHelper {
 
      Map<String, String> expectedHeaders = new HashMap<String, String>();
+    private static final Logger logger = LoggerFactory.getLogger(NetIQHelper.class);
 
-     NetIQHelper() {
+
+    public NetIQHelper() {
         expectedHeaders.put("HTTP_DEPARTMENT", "SE");
         expectedHeaders.put("HTTP_FNAME", "Thor Henning");
         expectedHeaders.put("HTTP_LNAME", "Hetland");
@@ -64,5 +65,32 @@ public class NetIQHelper {
 
     }
 
+
+    public  Map.Entry<String, String> loginAndCreateNetIQUser(HttpServletRequest request) {
+        String accessToken = request.getHeader("HTTP_VIA");
+        //FacebookUser fbUser = createUserFromFacebookAttributes(faceBookAccessToken);
+        String netIQUser = getUserName(request);
+        Map.Entry<String, String> pair = new AbstractMap.SimpleImmutableEntry<>(accessToken, netIQUser);
+        logger.debug("Logged in NetIQ user: code=" + "" + ", AccessToken=" + accessToken + "\n netIQUserName: " + netIQUser);
+        return pair;
+    }
+
+    public  String getNetIQUserAsXml(HttpServletRequest request) {
+        StringBuilder strb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n ");
+        strb.append("<user>\n");
+        strb.append("    <params>\n");
+
+        strb.append("        <netIQAccessToken>").append(request.getHeader("HTTP_VIA")).append( "</netIQAccessToken>\n");
+
+        strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
+        strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");
+        strb.append("        <lastName>").append(this.getLastName(request)).append( "</lastName>\n");
+        strb.append("        <username>").append(this.getUserName(request)).append( "</username>\n");
+        strb.append("        <email>").append(this.getEmail(request)).append( "</email>\n");
+
+        strb.append("    </params> \n");
+        strb.append("</user>\n");
+        return strb.toString();
+    }
 
 }

@@ -332,6 +332,46 @@ public class SSOHelper {
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
 
+    public String createAndLogonUser(String netiqUserName, String netiqAccessToken, UserCredential userCredential, String ticket,HttpServletRequest request) {
+        logonApplication();
+        logger.debug("apptokenid: {}", myAppTokenId);
+
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId +"/"+ ticket + "/createuser");
+
+        MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
+        formData.add("apptoken", myAppTokenXml);
+        formData.add("usercredential", userCredential.toXML());
+        NetIQHelper helper = new NetIQHelper();
+        String netIQUserAsXml = helper.getNetIQUserAsXml(request);
+        formData.add("fbuser", netIQUserAsXml);
+        logger.debug("createAndLogonUser with fbuser XML: " + netIQUserAsXml);
+        logger.info("createAndLogonUser username=" + helper.getUserName(request));
+        ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+
+        //No need to retry if we know it is forbidden.
+        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+            //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
+            logger.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getUserName(request));
+            return null;
+        }
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            return responseXML;
+        }
+
+        //retry once for other statuses
+        response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            return responseXML;
+        }
+
+        logger.warn("createAndLogonUser failed after retrying once.");
+        return null;
+        //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
+    }
 	public LoginTypes getEnabledLoginTypes() {
 		return enabledLoginTypes;
 	}

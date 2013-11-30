@@ -122,7 +122,7 @@ public class NetIQLoginController {
             }
             model.addAttribute("logoURL", LOGOURL);
             String clientRedirectURI = request.getParameter("state");
-            clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
+            clientRedirectURI = clientRedirectURI;
             logger.info("Redirecting to {}", clientRedirectURI);
             model.addAttribute("redirect", clientRedirectURI);
             return "action";

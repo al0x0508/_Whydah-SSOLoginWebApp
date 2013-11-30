@@ -1,26 +1,66 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.service;
 
-import static org.mockito.Mockito.*;
-import net.whydah.sso.service.data.UserCredential;
+import net.whydah.sso.service.util.NetIQHelper;
+import net.whydah.sso.service.util.SSOHelper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+import javax.servlet.http.HttpServletResponse;
 
-import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class NetIQHelperTest {
+/**
+ * Created with IntelliJ IDEA.
+ * User: totto
+ * Date: 11/30/13
+ * Time: 6:07 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class NetIQAuthTest {
+
+
+    @Test
+    public void testUserTokenTemplate(){
+        System.out.println(SSOHelper.getDummyToken());
+    }
+    /**
+     * Manual test.
+     */
+    @Test
+    public void testAuthUserFromNetIQRedirect() throws Exception  {
+
+        NetIQHelper netIQ = new NetIQHelper();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeaderNames())
+                .thenReturn(netIQ.getExpectedHeaders());
+
+        when(request.getHeader(anyString())).thenAnswer(new Answer() {
+            public String answer(InvocationOnMock invocation) {
+                NetIQHelper netIQ = new NetIQHelper();
+                Object[] args = invocation.getArguments();
+                Object mock = invocation.getMock();
+                return netIQ.getExpectedHeader((String)args[0]);
+            }
+        });
+
+
+        NetIQLoginController controller = new NetIQLoginController() ;
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Model model = mock(Model.class);
+        controller.netiqAuth(request,response,model);
+    }
 
     /**
      * Manual test.
-     * Update access token and run.
      */
-    @Ignore
     @Test
-    public void testCreateUserFromNetIQRedirect() {
+    public void testCreateUserFromNetIQRedirect() throws Exception  {
 
         NetIQHelper netIQ = new NetIQHelper();
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -37,52 +77,9 @@ public class NetIQHelperTest {
         });
 
 
-        assertEquals("Thor Henning", netIQ.getFirstName(request));
-        assertEquals("Hetland", netIQ.getLastName(request));
-        assertEquals("Thor-Henning.Hetland@altran.com", netIQ.getEmail(request));
-
-        UserCredential userCredential= new UserCredential() {
-            @Override
-            public String toXML() {
-                return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n " +
-                        "<usercredential>\n" +
-                        "    <params>\n" +
-                        "        <username>" + "user" + "</username>\n" +
-                        "    </params> \n" +
-                        "</usercredential>\n";
-            }
-        };
-
+        NetIQLoginController controller = new NetIQLoginController() ;
+        Model model = mock(Model.class);
+        controller.netIQLogin(request, model);
     }
-
-    @Test
-    public void testHTTPHeaders() {
-
-        NetIQHelper netIQ = new NetIQHelper();
-        HttpServletRequest request = mock(HttpServletRequest.class);
-
-        when(request.getHeaderNames())
-                .thenReturn(netIQ.getExpectedHeaders());
-
-        when(request.getHeader(anyString())).thenAnswer(new Answer() {
-            public String answer(InvocationOnMock invocation) {
-                NetIQHelper netIQ = new NetIQHelper();
-                Object[] args = invocation.getArguments();
-                Object mock = invocation.getMock();
-                return netIQ.getExpectedHeader((String)args[0]);
-            }
-        });
-
-
-        Enumeration headerNames = request.getHeaderNames();
-        assert(headerNames.hasMoreElements());
-
-        while(headerNames.hasMoreElements()) {
-            String headerName = (String)headerNames.nextElement();
-            System.out.println("HeaderName:" + headerName);
-            System.out.println("Value:" + request.getHeader(headerName));
-        }
-    }
-
 
 }

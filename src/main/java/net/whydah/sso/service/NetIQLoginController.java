@@ -58,6 +58,7 @@ public class NetIQLoginController {
         public String netiqAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
 
             NetIQHelper helper = new NetIQHelper();
+            logger.info(helper.getNetIQUserAsXml(request));
             Map.Entry<String, String> pair = helper.loginAndCreateNetIQUser(request);
             if (pair == null) {
                 logger.error("Could not fetch netiq user.");

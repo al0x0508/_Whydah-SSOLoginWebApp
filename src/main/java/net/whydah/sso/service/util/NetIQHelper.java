@@ -79,8 +79,9 @@ public class NetIQHelper {
     public  String getNetIQUserAsXml(HttpServletRequest request) {
         Enumeration headers = request.getHeaderNames();
         while (headers.hasMoreElements()){
-            logger.info("Header: " +headers.nextElement().toString());
-            logger.info("Value: " +request.getHeader(headers.nextElement().toString()));
+            String header = headers.nextElement().toString();
+            logger.info("Header: " +header);
+            logger.info("Value ("+header+")" +request.getHeader(header));
         }
         Enumeration attributes = request.getAttributeNames();
         while (headers.hasMoreElements()){

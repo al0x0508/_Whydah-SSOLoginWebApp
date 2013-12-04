@@ -29,7 +29,7 @@
 			<#if facebookLoginEnabled == true> <div id="ssoMenuFacebook" data-login-type="#ssoLoginFacebook" class="login-page-menu">Facebook</div></#if>
 			<#if openidLoginEnabled == true> <div id="ssoMenuOpenId" data-login-type="#ssoLoginOpenId" class="login-page-menu">OpenId</div></#if>
 			<#if omniLoginEnabled == true> <div id="ssoMenuOmni" data-login-type="#ssoLoginOmni" class="login-page-menu">BankId / minId</div></#if>			
-			<#if netIQLoginEnabled == true> <div id="ssoMenuOmni" data-login-type="#ssoLoginOmni" class="login-page-menu">NetIQ / minId</div></#if>
+			<#if netIQLoginEnabled == true> <div id="ssoMenuNetIQ" data-login-type="#ssoLoginNetIQ" class="login-page-menu">NetIQ</div></#if>
 			<hr/>
 			
 		<#if userpasswordLoginEnabled == true>
@@ -100,8 +100,8 @@
 			</div>
 		</#if>
 			<#if netIQLoginEnabled == true>
-    			<div class="login-page-type" data-title="Facebook login" id="ssoLoginFacebook">
-    		        <form action="netiqlogin" class="new_user_session" name="fbgetusertoken" method="post">
+    			<div class="login-page-type" data-title="NetIQ login" id="ssoLoginNetIQ">
+    		        <form action="netiqlogin" class="new_user_session" name="netiqgetusertoken" method="post">
     		            <div style="margin:0;padding:0;display:inline"></div>
 
     		            <#if redirectURI??>

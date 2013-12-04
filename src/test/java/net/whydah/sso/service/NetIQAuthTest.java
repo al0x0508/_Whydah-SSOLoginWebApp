@@ -2,6 +2,7 @@ package net.whydah.sso.service;
 
 import net.whydah.sso.service.util.NetIQHelper;
 import net.whydah.sso.service.util.SSOHelper;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -10,19 +11,20 @@ import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.httpclient.*;
+
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created with IntelliJ IDEA.
- * User: totto
- * Date: 11/30/13
- * Time: 6:07 PM
- * To change this template use File | Settings | File Templates.
- */
 public class NetIQAuthTest {
+
+    private HttpClient client;
 
 
     @Test
@@ -82,4 +84,14 @@ public class NetIQAuthTest {
         controller.netIQLogin(request, model);
     }
 
+    @Test
+    public void testNetIQRedirectAndParams() throws IOException {
+
+            String contentHtml = "https://somewhere/sso/netiqauth?redirectURI=http://somewhere";
+            Pattern p = Pattern.compile("<title>(.*)</title>");
+            Matcher m = p.matcher(contentHtml);
+
+
+
+    }
 }

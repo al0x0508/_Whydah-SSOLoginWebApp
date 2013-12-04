@@ -23,7 +23,7 @@
             <layout>default</layout>
         </repository>
 
-      <!-- Needed for parent  -->
+        <!-- Needed for parent  -->
         <repository>
             <id>cantara-releases</id>
             <name>Cantara Release Repository</name>
@@ -32,14 +32,14 @@
     </repositories>
 
     <distributionManagement>
-	  <repository>
-	    <id>altran-releases</id>
-	    <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
-	  </repository>
-	  <snapshotRepository>
-	    <id>altran-snapshots</id>
-	    <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
-	  </snapshotRepository>
+        <repository>
+            <id>altran-releases</id>
+            <url>http://mvnrepo.cantara.no/content/repositories/altran-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>altran-snapshots</id>
+            <url>http://mvnrepo.cantara.no/content/repositories/altran-snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
@@ -128,6 +128,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
@@ -202,15 +209,20 @@
                                 </excludes>
                             </artifactSet>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.tooling</resource>
                                 </transformer>
                             </transformers>
@@ -229,7 +241,9 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals><goal>single</goal></goals>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

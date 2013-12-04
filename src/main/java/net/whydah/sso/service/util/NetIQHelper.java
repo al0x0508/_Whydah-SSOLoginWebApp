@@ -56,6 +56,7 @@ public class NetIQHelper {
 
 
     public String getUserName(HttpServletRequest request) {
+        logger.debug(request.getHeader("HTTP_USERNAME"));
         return request.getHeader("HTTP_USERNAME"); // "totto@totto.org";
 
     }
@@ -90,6 +91,7 @@ public class NetIQHelper {
 
         strb.append("    </params> \n");
         strb.append("</user>\n");
+        logger.info(strb.toString());
         return strb.toString();
     }
 

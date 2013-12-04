@@ -80,6 +80,7 @@ public class NetIQHelper {
         Enumeration headers = request.getHeaderNames();
         while (headers.hasMoreElements()){
             logger.info("Header: " +headers.nextElement().toString());
+            logger.info("Value: " +request.getHeader(headers.nextElement().toString()));
         }
         Enumeration attributes = request.getAttributeNames();
         while (headers.hasMoreElements()){

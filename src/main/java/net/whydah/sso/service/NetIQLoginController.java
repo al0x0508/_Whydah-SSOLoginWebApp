@@ -35,19 +35,13 @@ public class NetIQLoginController {
             Properties properties = AppConfig.readProperties();
             String MY_APP_URI = properties.getProperty("myuri");
             hetIQauthURI =  properties.getProperty("netIQauthURL");
+            LOGOURL=properties.getProperty("logourl");
         }
 
 
         @RequestMapping("/netiqlogin")
         public String netIQLogin(HttpServletRequest request, Model model) throws MalformedURLException {
             String clientRedirectURI = request.getParameter("redirectURI");
-            try {
-                Properties properties = AppConfig.readProperties();
-                LOGOURL = properties.getProperty("logourl");
-
-            } catch (Exception e){
-
-            }
             model.addAttribute("logoURL", LOGOURL);
 
             model.addAttribute("redirect", hetIQauthURI+"?redirectURI="+clientRedirectURI);
@@ -94,19 +88,12 @@ public class NetIQLoginController {
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
                 // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
-                try {
-                    Properties properties = AppConfig.readProperties();
-                    LOGOURL = properties.getProperty("logourl");
-
-                } catch (Exception e){
-
-                }
-                model.addAttribute("logoURL", LOGOURL);
 
                 userTokenXml = ssoHelper.createAndLogonUser(netIQUser, netiqAccessToken, userCredential, ticket,request);
                 if (userTokenXml == null) {
                     logger.error("createAndLogonUser failed. Redirecting to login page.");
                     String redirectURI = request.getParameter("redirectURI");
+                    model.addAttribute("logoURL", LOGOURL);
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
                     return "login";
@@ -119,15 +106,9 @@ public class NetIQLoginController {
             response.addCookie(cookie);
 
             String LOGOURL="/sso/images/site-logo.png";
-            try {
-                Properties properties = AppConfig.readProperties();
-                LOGOURL = properties.getProperty("logourl");
-
-            } catch (Exception e){
-
-            }
             model.addAttribute("logoURL", LOGOURL);
             String clientRedirectURI = request.getParameter("redirectURI");
+
             logger.info("Redirecting to {}", clientRedirectURI);
             model.addAttribute("redirect", clientRedirectURI);
             return "action";

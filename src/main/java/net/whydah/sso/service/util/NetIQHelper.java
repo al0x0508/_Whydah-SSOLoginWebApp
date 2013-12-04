@@ -56,7 +56,7 @@ public class NetIQHelper {
 
 
     public String getUserName(HttpServletRequest request) {
-        logger.debug(request.getHeader("HTTP_USERNAME"));
+        logger.debug(request.getHeader("USERNAME"));
         return request.getHeader("USERNAME"); // "totto@totto.org";
 
     }
@@ -87,12 +87,13 @@ public class NetIQHelper {
         strb.append("<user>\n");
         strb.append("    <params>\n");
 
-        strb.append("        <netIQAccessToken>").append(request.getHeader("VIA")).append( "</netIQAccessToken>\n");
+        strb.append("        <netIQAccessToken>").append(request.getHeader("Via")).append( "</netIQAccessToken>\n");
 
         strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
         strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");
         strb.append("        <lastName>").append(this.getLastName(request)).append( "</lastName>\n");
         strb.append("        <username>").append(this.getUserName(request)).append( "</username>\n");
+        logger.debug(request.getHeader("USERNAME"));
         strb.append("        <email>").append(this.getEmail(request)).append( "</email>\n");
 
         strb.append("    </params> \n");

@@ -15,17 +15,20 @@ public class LoginTypes {
 	private final boolean openIdLoginEnabled;
 	private final boolean omniLoginEnabled;
 	private final boolean userpasswordLoginEnabled;
+    private final boolean newIQLoginEnabled;
 	
 	public LoginTypes(Properties properties) {
 		facebookLoginEnabled = ENABLED.equals(properties.getProperty("logintype.facebook"));
 		openIdLoginEnabled = ENABLED.equals(properties.getProperty("logintype.openid"));
 		omniLoginEnabled = ENABLED.equals(properties.getProperty("logintype.omni"));
+        newIQLoginEnabled =  ENABLED.equals(properties.getProperty("logintype.netiq"));
 		userpasswordLoginEnabled = ENABLED.equals(properties.getProperty("logintype.userpassword"));
-		
-		logger.debug(String.format("Fabook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, User/Password Sign on is %4s." 
+
+		logger.debug(String.format("Fabook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."
 									, properties.getProperty("logintype.facebook")
 									, properties.getProperty("logintype.openid")
 									, properties.getProperty("logintype.omni")
+                                    , properties.getProperty("logintype.netiq")
 									, properties.getProperty("logintype.userpassword")));
 	}
 
@@ -36,6 +39,10 @@ public class LoginTypes {
 	public boolean isOpenIdLoginEnabled() {
 		return openIdLoginEnabled;
 	}
+
+    public boolean isNetIQLoginEnabled() {
+        return newIQLoginEnabled;
+    }
 
 	public boolean isOmniLoginEnabled() {
 		return omniLoginEnabled;

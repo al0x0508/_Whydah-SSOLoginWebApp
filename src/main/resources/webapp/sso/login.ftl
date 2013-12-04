@@ -29,6 +29,7 @@
 			<#if facebookLoginEnabled == true> <div id="ssoMenuFacebook" data-login-type="#ssoLoginFacebook" class="login-page-menu">Facebook</div></#if>
 			<#if openidLoginEnabled == true> <div id="ssoMenuOpenId" data-login-type="#ssoLoginOpenId" class="login-page-menu">OpenId</div></#if>
 			<#if omniLoginEnabled == true> <div id="ssoMenuOmni" data-login-type="#ssoLoginOmni" class="login-page-menu">BankId / minId</div></#if>			
+			<#if netIQLoginEnabled == true> <div id="ssoMenuOmni" data-login-type="#ssoLoginOmni" class="login-page-menu">NetIQ / minId</div></#if>
 			<hr/>
 			
 		<#if userpasswordLoginEnabled == true>
@@ -98,7 +99,19 @@
 		        </form>
 			</div>
 		</#if>
-		<#if omniLoginEnabled == true>
+			<#if newIQLoginEnabled == true>
+    			<div class="login-page-type" data-title="Facebook login" id="ssoLoginFacebook">
+    		        <form action="netiqlogin" class="new_user_session" name="fbgetusertoken" method="post">
+    		            <div style="margin:0;padding:0;display:inline"></div>
+
+    		            <#if redirectURI??>
+    		                <input type="hidden" name="redirectURI" value="${redirectURI}"/>
+    		            </#if>
+    		            <input name="commit" type="image" src="images/netiqlogo.png" alt="Log in with NetIQ"/>
+    		        </form>
+    			</div>
+    		</#if>
+        	<#if omniLoginEnabled == true>
 			<div class="login-page-type" data-title="BankID / minID login" id="ssoLoginOmni">
 		        <div style="display: block;">
 		        	<p>

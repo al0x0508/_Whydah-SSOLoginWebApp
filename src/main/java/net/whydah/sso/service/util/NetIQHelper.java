@@ -87,7 +87,7 @@ public class NetIQHelper {
         strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
         strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");
         strb.append("        <lastName>").append(this.getLastName(request)).append( "</lastName>\n");
-        strb.append("        <username>").append(this.getUserName(request)).append( "</username>\n");
+        strb.append("        <username>").append(this.getEmail(request)+UUID.randomUUID().toString()).append( "</username>\n");
         strb.append("        <email>").append(this.getEmail(request)).append( "</email>\n");
 
         strb.append("    </params> \n");

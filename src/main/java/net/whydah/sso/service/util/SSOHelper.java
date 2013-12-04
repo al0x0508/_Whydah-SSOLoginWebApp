@@ -352,14 +352,14 @@ public class SSOHelper {
         NetIQHelper helper = new NetIQHelper();
         String netIQUserAsXml = helper.getNetIQUserAsXml(request);
         formData.add("fbuser", netIQUserAsXml);
-        logger.debug("createAndLogonUser with fbuser XML: " + netIQUserAsXml);
+        logger.debug("createAndLogonUser with netiquser XML: " + netIQUserAsXml);
         logger.info("createAndLogonUser username=" + helper.getUserName(request));
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
         //No need to retry if we know it is forbidden.
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
-            logger.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getUserName(request));
+            logger.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getEmail(request));
             return null;
         }
         if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {

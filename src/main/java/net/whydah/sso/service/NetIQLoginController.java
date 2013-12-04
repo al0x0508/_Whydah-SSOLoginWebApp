@@ -56,6 +56,10 @@ public class NetIQLoginController {
 
         @RequestMapping("/netiqauth")
         public String netiqAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
+            model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
+            model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
+            model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
+            model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
 
             NetIQHelper helper = new NetIQHelper();
             logger.info(helper.getNetIQUserAsXml(request));

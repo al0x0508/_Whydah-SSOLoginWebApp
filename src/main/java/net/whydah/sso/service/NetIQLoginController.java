@@ -29,6 +29,7 @@ public class NetIQLoginController {
 
         // set this to your servlet URL for the authentication servlet/filter
         private final String hetIQauthURI;
+        String LOGOURL="/sso/images/site-logo.png";
 
         public NetIQLoginController() throws IOException {
             Properties properties = AppConfig.readProperties();
@@ -39,7 +40,7 @@ public class NetIQLoginController {
 
         @RequestMapping("/netiqlogin")
         public String netIQLogin(HttpServletRequest request, Model model) throws MalformedURLException {
-            String LOGOURL="/sso/images/site-logo.png";
+            String clientRedirectURI = request.getParameter("redirectURI");
             try {
                 Properties properties = AppConfig.readProperties();
                 LOGOURL = properties.getProperty("logourl");
@@ -49,8 +50,8 @@ public class NetIQLoginController {
             }
             model.addAttribute("logoURL", LOGOURL);
 
-            model.addAttribute("redirect", hetIQauthURI);
-            logger.info("Redirecting to {}", hetIQauthURI);
+            model.addAttribute("redirect", hetIQauthURI+"?redirectURI="+clientRedirectURI);
+            logger.info("Redirecting to {}", hetIQauthURI+"?redirectURI="+clientRedirectURI);
             return "action";
         }
 
@@ -92,7 +93,6 @@ public class NetIQLoginController {
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
                 // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
-                String LOGOURL="/sso/images/site-logo.png";
                 try {
                     Properties properties = AppConfig.readProperties();
                     LOGOURL = properties.getProperty("logourl");
@@ -105,7 +105,7 @@ public class NetIQLoginController {
                 userTokenXml = ssoHelper.createAndLogonUser(netIQUser, netiqAccessToken, userCredential, ticket,request);
                 if (userTokenXml == null) {
                     logger.error("createAndLogonUser failed. Redirecting to login page.");
-                    String redirectURI = getRedirectURI(request);
+                    String redirectURI = request.getParameter("redirectURI");
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
                     return "login";
@@ -133,13 +133,4 @@ public class NetIQLoginController {
             return "action";
         }
 
-        private String getRedirectURI(HttpServletRequest request) {
-            String redirectURI = request.getParameter("fbauthURI");
-            logger.debug("fbauthURI from request: {}", redirectURI);
-            if (redirectURI == null || redirectURI.length() < 4) {
-                logger.debug("No fbauthURI found, setting to {}", SSOLoginController.DEFAULT_REDIRECT);
-                return SSOLoginController.DEFAULT_REDIRECT;
-            }
-            return redirectURI;
-        }
     }

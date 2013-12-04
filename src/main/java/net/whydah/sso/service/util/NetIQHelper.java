@@ -40,35 +40,35 @@ public class NetIQHelper {
 
 
     public String getFirstName(HttpServletRequest request) {
-        return request.getHeader("HTTP_FNAME");//"Thor Henning";
+        return request.getHeader("FNAME");//"Thor Henning";
 
     }
 
     public String getLastName(HttpServletRequest request) {
-        return request.getHeader("HTTP_LNAME"); // "Hetland";
+        return request.getHeader("LNAME"); // "Hetland";
 
     }
 
     public String getUserDetartment(HttpServletRequest request) {
-        return request.getHeader("HTTP_DEPARTMENT"); // "SE";
+        return request.getHeader("DEPARTMENT"); // "SE";
 
     }
 
 
     public String getUserName(HttpServletRequest request) {
         logger.debug(request.getHeader("HTTP_USERNAME"));
-        return request.getHeader("HTTP_USERNAME"); // "totto@totto.org";
+        return request.getHeader("USERNAME"); // "totto@totto.org";
 
     }
 
     public String getEmail(HttpServletRequest request) {
-        return request.getHeader("HTTP_EMAIL"); // "Thor-Henning.Hetland@altran.com";
+        return request.getHeader("EMAIL"); // "Thor-Henning.Hetland@altran.com";
 
     }
 
 
     public  Map.Entry<String, String> loginAndCreateNetIQUser(HttpServletRequest request) {
-        String accessToken = request.getHeader("HTTP_VIA");
+        String accessToken = request.getHeader("VIA");
         //FacebookUser fbUser = createUserFromFacebookAttributes(faceBookAccessToken);
         String netIQUser = getUserName(request);
         Map.Entry<String, String> pair = new AbstractMap.SimpleImmutableEntry<>(accessToken, netIQUser);
@@ -83,15 +83,11 @@ public class NetIQHelper {
             logger.info("Header: " +header);
             logger.info("Value ("+header+")" +request.getHeader(header));
         }
-        Enumeration attributes = request.getAttributeNames();
-        while (headers.hasMoreElements()){
-            logger.info("Attributes: "+attributes.nextElement().toString());
-        }
         StringBuilder strb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n ");
         strb.append("<user>\n");
         strb.append("    <params>\n");
 
-        strb.append("        <netIQAccessToken>").append(request.getHeader("HTTP_VIA")).append( "</netIQAccessToken>\n");
+        strb.append("        <netIQAccessToken>").append(request.getHeader("VIA")).append( "</netIQAccessToken>\n");
 
         strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
         strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");

@@ -9,6 +9,7 @@
 <body>
 	<div style="display:none;">
 		FacebookLogin is <#if facebookLoginEnabled == true> enabled<#else> disabled</#if>.
+		NetIQLogin is <#if netIQLoginEnabled == true> enabled<#else> disabled</#if>.
 		OpenID Login is <#if openidLoginEnabled == true> enabled<#else> disabled</#if>.
 		Omni Login is <#if omniLoginEnabled == true> enabled<#else> disabled</#if>.
 		Userpassword Login is <#if userpasswordLoginEnabled == true> enabled<#else> disabled</#if>.

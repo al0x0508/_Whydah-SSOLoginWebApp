@@ -126,8 +126,7 @@ public class NetIQLoginController {
 
             }
             model.addAttribute("logoURL", LOGOURL);
-            String clientRedirectURI = request.getParameter("state");
-            clientRedirectURI = clientRedirectURI;
+            String clientRedirectURI = request.getParameter("redirectURI");
             logger.info("Redirecting to {}", clientRedirectURI);
             model.addAttribute("redirect", clientRedirectURI);
             return "action";

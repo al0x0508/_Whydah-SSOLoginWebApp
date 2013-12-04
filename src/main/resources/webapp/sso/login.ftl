@@ -99,7 +99,7 @@
 		        </form>
 			</div>
 		</#if>
-			<#if newIQLoginEnabled == true>
+			<#if netIQLoginEnabled == true>
     			<div class="login-page-type" data-title="Facebook login" id="ssoLoginFacebook">
     		        <form action="netiqlogin" class="new_user_session" name="fbgetusertoken" method="post">
     		            <div style="margin:0;padding:0;display:inline"></div>

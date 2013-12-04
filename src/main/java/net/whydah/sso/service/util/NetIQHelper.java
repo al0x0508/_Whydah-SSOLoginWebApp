@@ -77,6 +77,8 @@ public class NetIQHelper {
     }
 
     public  String getNetIQUserAsXml(HttpServletRequest request) {
+        logger.info(request.getHeaderNames().toString());
+        logger.info(request.getAttributeNames().toString());
         StringBuilder strb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n ");
         strb.append("<user>\n");
         strb.append("    <params>\n");

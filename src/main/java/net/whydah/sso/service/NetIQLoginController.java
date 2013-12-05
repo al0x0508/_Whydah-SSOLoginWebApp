@@ -1,8 +1,6 @@
 package net.whydah.sso.service;
 
-import com.restfb.types.User;
 import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.data.FacebookUserCredential;
 import net.whydah.sso.service.data.NetIQUserCredential;
 import net.whydah.sso.service.data.UserCredential;
 import net.whydah.sso.service.util.NetIQHelper;
@@ -84,7 +82,7 @@ public class NetIQLoginController {
             String userTokenXml = ssoHelper.getUserToken(userCredential, ticket);
 
             if (userTokenXml == null) {
-                logger.info("getUserToken failed. Try to create new user using facebook credentials.");
+                logger.info("getUserToken failed. Try to create new user using netiq credentials.");
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
                 // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 

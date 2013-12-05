@@ -44,7 +44,8 @@ public class SSOLoginController {
 
         WhydahUserTokenId usertokenId = ssoHelper.getTokenidFromCookie(request);
         if (usertokenId.isValid()) {
-            redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
+            // TODO:  must get ticketid if we want to add to redirectsecurely
+            //redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
             model.addAttribute("redirect", redirectURI);
             logger.info("Redirecting to {}", redirectURI);
             return "action";

@@ -1,8 +1,19 @@
 package net.whydah.sso.service.util;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
+import com.restfb.types.User;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.whydah.sso.service.config.AppConfig;
+import net.whydah.sso.service.config.ApplicationMode;
+import net.whydah.sso.service.data.ApplicationCredential;
+import net.whydah.sso.service.data.UserCredential;
+import net.whydah.sso.service.data.WhydahUserTokenId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,23 +25,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-
-import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.config.ApplicationMode;
-import net.whydah.sso.service.data.ApplicationCredential;
-import net.whydah.sso.service.data.UserCredential;
-import net.whydah.sso.service.data.WhydahUserTokenId;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import com.restfb.types.User;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.URI;
 
 public class SSOHelper {
     
@@ -138,10 +135,6 @@ public class SSOHelper {
         return "";
     }
 
-    public String appendTicketIDToRedirectURI(String redirectURI, WhydahUserTokenId usertokenid) {
-        String usertokenidAsString = usertokenid.getUsertokenid();
-        return appendTicketToRedirectURI(redirectURI, usertokenidAsString);
-    }
 
     public String appendTokenIDToRedirectURI(String redirectURI, String usertokenId) {
         char paramSep = redirectURI.contains("?") ? '&' : '?';

@@ -102,7 +102,6 @@ public class NetIQLoginController {
 
 
             Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-            // cookie.setDomain("whydah.net");
             response.addCookie(cookie);
 
             String LOGOURL="/sso/images/site-logo.png";

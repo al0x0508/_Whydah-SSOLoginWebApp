@@ -114,7 +114,6 @@ public class FacebookLoginController {
 
 
         Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-        // cookie.setDomain("whydah.net");
         response.addCookie(cookie);
 
         String LOGOURL="/sso/images/site-logo.png";

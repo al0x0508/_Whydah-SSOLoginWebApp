@@ -64,10 +64,9 @@ public class SSOHelper {
         cookie.setMaxAge(365 * 24 * 60 * 60);
         cookie.setPath("/");
         cookie.setDomain(cookiedomain);
-        // cookie.setDomain("ssologinservice.whydah.org");
         cookie.setValue(tokenID);
         // cookie.setSecure(true);
-        logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge());
+        logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
         return cookie;
     }
     private String getTokenId(String userTokenXml) {

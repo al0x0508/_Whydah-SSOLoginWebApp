@@ -121,7 +121,6 @@ public class SSOLoginController {
 
 
         Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-        // cookie.setDomain("whydah.net");
         response.addCookie(cookie);
 
         redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);

@@ -107,6 +107,7 @@ public class NetIQLoginController {
             String LOGOURL="/sso/images/site-logo.png";
             model.addAttribute("logoURL", LOGOURL);
             String clientRedirectURI = request.getParameter("redirectURI");
+            clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
 
             logger.info("Redirecting to {}", clientRedirectURI);
             model.addAttribute("redirect", clientRedirectURI);

@@ -43,12 +43,14 @@ public class SSOHelper {
     private final URI tokenServiceUri;
     private String myAppTokenXml;
     private String myAppTokenId;
+    private String cookiedomain;
 	private final LoginTypes enabledLoginTypes;
     
     public SSOHelper() {
         try {
             tokenServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("securitytokenservice")).build();
             this.enabledLoginTypes = new LoginTypes(AppConfig.readProperties());
+            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getLocalizedMessage(), e);
         }
@@ -61,6 +63,7 @@ public class SSOHelper {
         // cookie.setMaxAge(maxAge);
         cookie.setMaxAge(365 * 24 * 60 * 60);
         cookie.setPath("/");
+        cookie.setDomain(cookiedomain);
         // cookie.setDomain("ssologinservice.whydah.org");
         cookie.setValue(tokenID);
         // cookie.setSecure(true);

@@ -107,6 +107,7 @@ public class SSOLoginController {
         model.addAttribute("logoURL", LOGOURL);
 
         String redirectURI = getRedirectURI(request);
+        logger.info("Found redirect:", redirectURI);
 
         String ticketID = UUID.randomUUID().toString();
         String userTokenXml = ssoHelper.getUserToken(user, ticketID);
@@ -123,8 +124,15 @@ public class SSOLoginController {
         Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
         response.addCookie(cookie);
 
-        redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
+        if (redirectURI.toLowerCase().contains("userticket")){
+            // Do not overwrite ticket
+        } else {
+            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
+
+        }
         model.addAttribute("redirect", redirectURI);
+        logger.info("Redirecting to {}", redirectURI);
+
         return "action";
     }
 }

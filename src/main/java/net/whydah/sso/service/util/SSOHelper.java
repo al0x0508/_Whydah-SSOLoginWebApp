@@ -241,10 +241,10 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbyticketid");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbyticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("ticketid", ticket);
+        formData.add("ticket", ticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");

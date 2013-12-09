@@ -30,8 +30,8 @@ import java.io.StringReader;
 import java.net.URI;
 
 public class SSOHelper {
-    
-	public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken";
+
+    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     public static final String USERTICKET = "userticket";
     public static final String USER_TOKEN_ID = "usertokenid";
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);

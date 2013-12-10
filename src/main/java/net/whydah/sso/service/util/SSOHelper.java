@@ -275,7 +275,7 @@ public class SSOHelper {
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbytokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("tokenid", tokenId);
+        formData.add("usertokenid", tokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");

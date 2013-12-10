@@ -82,12 +82,13 @@ public class SSOLoginController {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         if (userTicket != null && userTicket.length() > 3) {
             model.addAttribute("TicketID", userTicket);
-            //model.addAttribute("Token", ssoHelper.getUserTokenByTicket(userticket));
         }
 
-        String userTokenId = request.getParameter(SSOHelper.USER_TOKEN_ID);
+
+        String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute("TokenID", userTokenId);
+            model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
         }
 
         return "welcome";

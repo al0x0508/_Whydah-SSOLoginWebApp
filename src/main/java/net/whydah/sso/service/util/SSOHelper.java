@@ -190,12 +190,12 @@ public class SSOHelper {
             throw new RuntimeException("Application authentication failed");
         }
         myAppTokenXml = response.getEntity(String.class);
-        myAppTokenId = getTokenIdFromAppToken(myAppTokenXml);
+        myAppTokenId = getAppTokenIdFromAppToken(myAppTokenXml);
         logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
         logger.debug("myAppTokenId: {}", myAppTokenId);
     }
 
-    private String getTokenIdFromAppToken(String appTokenXML) {
+    private String getAppTokenIdFromAppToken(String appTokenXML) {
         return appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
     }
 
@@ -245,6 +245,37 @@ public class SSOHelper {
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("ticket", ticket);
+        ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+            throw new IllegalArgumentException("Login failed.");
+        }
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.debug("Response OK with XML: {}", responseXML);
+            return responseXML;
+        }
+        //retry
+        response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.debug("Response OK with XML: {}", responseXML);
+            return responseXML;
+        }
+        logger.warn("User authentication failed: {}", response);
+
+        throw new RuntimeException("User authentication failed with status code " + response.getStatus());
+    }
+
+    public String getUserTokenByTokenID(String tokenId) {
+        if (ApplicationMode.DEV.equals(ApplicationMode.getApplicationMode())) {
+            return getDummyToken();
+        }
+        logonApplication();
+
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbytokenid");
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add("apptoken", myAppTokenXml);
+        formData.add("tokenid", tokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");

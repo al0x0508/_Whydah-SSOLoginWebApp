@@ -35,13 +35,15 @@ public class SSOHelper {
     public static final String USERTICKET = "userticket";
     public static final String USER_TOKEN_ID = "usertokenid";
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
+    private static String cookiedomain = ".whydah.net";
 
     private final Client tokenServiceClient = Client.create();
     private final URI tokenServiceUri;
     private String myAppTokenXml;
     private String myAppTokenId;
-    private String cookiedomain;
-	private final LoginTypes enabledLoginTypes;
+
+
+    private final LoginTypes enabledLoginTypes;
     
     public SSOHelper() {
         try {
@@ -448,6 +450,10 @@ public class SSOHelper {
                 "    <hash type=\"MD5\">7671ec2d5bac82d1e70b33c59b5c96a3</hash>\n" +
                 "</token>";
 
+    }
+
+    public static String getCookieDomain() {
+        return cookiedomain;
     }
 
 }

@@ -57,6 +57,8 @@ public class SSOLogoutController {
         Cookie cookie = new Cookie(SSOHelper.USER_TOKEN_REFERENCE_NAME, "");
         cookie.setMaxAge(100000);
         cookie.setValue("");
+        cookie.setDomain(SSOHelper.getCookieDomain());
+
         response.addCookie(cookie);
         String LOGOURL="/sso/images/site-logo.png";
         try {

@@ -163,13 +163,10 @@ public class SSOHelper {
                 if (verifyUserTokenId(usertokenId)) {
                     logger.debug("whydahusertoken ok");
                     return WhydahUserTokenId.fromTokenId(usertokenId);
-                } else {
-                    logger.debug("whydahusertoken validation failed");
-                    return WhydahUserTokenId.invalidTokenId();
                 }
             }
         }
-        logger.debug("Fikk ingen cookies");
+        logger.debug("Fikk ingen cookies med usertokenid");
         return WhydahUserTokenId.invalidTokenId();
     }
 
@@ -309,6 +306,11 @@ public class SSOHelper {
     }
 
     public boolean verifyUserTokenId(String usertokenid) {
+
+        // If we get strange values...  return false
+        if (usertokenid == null || usertokenid.length() < 4) {
+            return false;
+        }
         logonApplication();
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/validateusertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);

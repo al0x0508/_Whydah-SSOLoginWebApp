@@ -1,8 +1,5 @@
 package net.whydah.sso.service.util;
 
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.types.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +84,7 @@ public class NetIQHelper {
         strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
         strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");
         strb.append("        <lastName>").append(this.getLastName(request)).append( "</lastName>\n");
-        strb.append("        <username>").append(this.getEmail(request)+UUID.randomUUID().toString()).append( "</username>\n");
+        strb.append("        <username>").append(this.getEmail(request)).append("</username>\n");  // +UUID.randomUUID().toString()
         strb.append("        <email>").append(this.getEmail(request)).append( "</email>\n");
 
         strb.append("    </params> \n");

@@ -41,6 +41,9 @@ public class SSOLoginController {
         if (usertokenId.isValid()) {
             // TODO:  must get ticketid if we want to add to redirectsecurely
             //redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
+
+            // Action use redirect - not redirectURI
+            model.addAttribute("redirect", redirectURI);
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
@@ -88,6 +91,9 @@ public class SSOLoginController {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
 
         }
+        model.addAttribute("redirectURI", redirectURI);
+        // Action use redirect...
+        model.addAttribute("redirect", redirectURI);
         logger.info("Redirecting to {}", redirectURI);
         model.addAttribute("redirectURI", redirectURI);
         return "action";

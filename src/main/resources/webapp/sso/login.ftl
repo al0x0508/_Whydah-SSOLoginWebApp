@@ -58,7 +58,7 @@
                         <br/>
                         <input class="button button-login" name="commit" type="submit" value="Login">
                         <#if redirectURI??>
-                            <input type="hidden" name="redirectURI" value="${redirectURI}"/>
+                            <input type="hidden" name="redirectURI" value="${redirectURI!"welcome"}"/>
                         </#if>
                     </div>
                     <br/>

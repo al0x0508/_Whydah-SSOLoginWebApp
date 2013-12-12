@@ -5,6 +5,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import net.whydah.sso.service.config.AppConfig;
 import net.whydah.sso.service.data.PasswordChangeToken;
+import net.whydah.sso.service.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,17 @@ public class PasswordChangeController {
     private static final Logger log = LoggerFactory.getLogger(PasswordChangeController.class);
     private static final Client uibClient = Client.create();
     private URI uibServiceUri;
+    private final SSOHelper ssoHelper = new SSOHelper();
+    String LOGOURL = "/sso/images/site-logo.png";
+    String MY_APP_URI = "";
+
 
     //TODO Should go via TokenService.
     public PasswordChangeController() throws IOException {
         uibServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useridentitybackend")).build();
+        Properties properties = AppConfig.readProperties();
+        String MY_APP_URI = properties.getProperty("myuri");
+        LOGOURL = properties.getProperty("logourl");
     }
 
     @RequestMapping("/test/*")
@@ -41,6 +49,7 @@ public class PasswordChangeController {
     @RequestMapping("/resetpassword")
     public String resetpassword(HttpServletRequest request, Model model) {
         log.trace("resetpassword was called");
+        model.addAttribute("logoURL", LOGOURL);
         String user = request.getParameter("user");
         if(user == null) {
             return "resetpassword";
@@ -69,6 +78,7 @@ public class PasswordChangeController {
     @RequestMapping("/changepassword/*")
     public String changePasswordFromLink(HttpServletRequest request, Model model) {
         log.trace("changePasswordFromLink was called");
+        model.addAttribute("logoURL", LOGOURL);
         String LOGOURL="/sso/images/site-logo.png";
         try {
             Properties properties = AppConfig.readProperties();
@@ -91,6 +101,7 @@ public class PasswordChangeController {
     @RequestMapping("/dochangepassword/*")
     public String doChangePasswordFromLink(HttpServletRequest request, Model model) {
         log.trace("doChangePasswordFromLink was called");
+        model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
         WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());

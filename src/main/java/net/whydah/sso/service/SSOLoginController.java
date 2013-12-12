@@ -44,9 +44,7 @@ public class SSOLoginController {
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
-
         setEnabledLoginTypes(model);
-
         return "login";
     }
 
@@ -69,17 +67,17 @@ public class SSOLoginController {
     @RequestMapping("/action")
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
-        model.addAttribute("logoURL", LOGOURL);
         String redirectURI = getRedirectURI(request);
         logger.info("Found redirect:", redirectURI);
+        model.addAttribute("logoURL", LOGOURL);
         String ticketID = UUID.randomUUID().toString();
         String userTokenXml = ssoHelper.getUserToken(user, ticketID);
 
         if (userTokenXml == null) {
             logger.info("getUserToken failed. Redirecting to login.");
-            model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Could not log in.");
             setEnabledLoginTypes(model);
+            model.addAttribute("redirectURI", redirectURI);
             return "login";
         }
         response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
@@ -90,9 +88,8 @@ public class SSOLoginController {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
 
         }
-        model.addAttribute("redirect", redirectURI);
         logger.info("Redirecting to {}", redirectURI);
-
+        model.addAttribute("redirectURI", redirectURI);
         return "action";
     }
 

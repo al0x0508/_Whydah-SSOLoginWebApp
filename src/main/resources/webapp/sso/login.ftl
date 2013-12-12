@@ -53,12 +53,12 @@
                         <br/><br/>
                         <h4><label for="user_session_password">Password</label></h4>
                         <input id="user_session_password" name="password" type="password" autocomplete="off" placeholder="Password">
-                        <input type="hidden" name="redirectURI" value="${redirectURI}">
+                        <input type="hidden" name="redirectURI" value="${redirectURI!"welcome"}">
                         <br/>
                         <br/>
                         <input class="button button-login" name="commit" type="submit" value="Login">
                         <#if redirectURI??>
-                            <input type="hidden" name="redirectURI" value="${redirectURI!"welcome"}"/>
+                            <input type="hidden" name="redirectURI" value="${redirectURI}"/>
                         </#if>
                     </div>
                     <br/>

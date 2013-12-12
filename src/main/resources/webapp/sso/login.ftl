@@ -75,23 +75,22 @@
         </#if>
     
         <div class="login-box">
+            <h4>Log in with</h4>
             <#if facebookLoginEnabled == true>
                     <form action="fblogin" class="new_user_session" name="fbgetusertoken" method="post">
                         <#if redirectURI??>
                             <input type="hidden" name="redirectURI" value="${redirectURI}"/>
                         </#if>
-                        <input name="commit" type="image" src="images/fb_connect.png" alt="Log in with Facebook"/>
+                        <input name="commit" type="submit" value="Facebook" class="button button-login"/>
                     </form>
             </#if>
             <#if netIQLoginEnabled == true>
                 <div class="login-page-type" data-title="NetIQ login" id="ssoLoginNetIQ">
                     <form action="netiqlogin" class="new_user_session" name="netiqgetusertoken" method="post">
-                        <div style="margin:0;padding:0;display:inline"></div>
-
                         <#if redirectURI??>
                             <input type="hidden" name="redirectURI" value="${redirectURI}"/>
                         </#if>
-                        <input name="commit" type="image" src="${netIQimage!images/netiqlogo.png}" alt="Log in with ${netIQtext!NetIQ}"/>
+		                <input name="commit" type="submit" value="${netIQtext!NetIQ}" class="button button-login"/>
                     </form>
                 </div>
             </#if>

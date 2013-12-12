@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,41 +22,80 @@ public class SSOLoginController {
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     public static final String DEFAULT_REDIRECT = "welcome";
     private final SSOHelper ssoHelper = new SSOHelper();
+    private String LOGOURL = "/sso/images/site-logo.png";
 
-    /**
-     * Controlling the sign on page.
-     *
-     * @param request Http-request
-     * @param model   data to be used in the template
-     * @return template to display
-     */
+    public SSOLoginController() throws IOException {
+        Properties properties = AppConfig.readProperties();
+        String MY_APP_URI = properties.getProperty("myuri");
+        LOGOURL = properties.getProperty("logourl");
+    }
+
+
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
-        String LOGOURL = "/sso/images/site-logo.png";
-        try {
-            Properties properties = AppConfig.readProperties();
-            LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e) {
-
-        }
         model.addAttribute("logoURL", LOGOURL);
+        model.addAttribute("redirect", redirectURI);
 
         WhydahUserTokenId usertokenId = ssoHelper.getTokenidFromCookie(request);
         if (usertokenId.isValid()) {
             // TODO:  must get ticketid if we want to add to redirectsecurely
             //redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
-            model.addAttribute("redirect", redirectURI);
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
 
-        model.addAttribute("redirectURI", redirectURI);
         setEnabledLoginTypes(model);
 
         return "login";
     }
+
+
+
+    @RequestMapping("/welcome")
+    public String welcome(HttpServletRequest request, Model model) {
+        String userTicket = request.getParameter(SSOHelper.USERTICKET);
+        if (userTicket != null && userTicket.length() < 3) {
+            model.addAttribute("TicketID", userTicket);
+        }
+        String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
+        if (userTokenId != null && userTokenId.length() > 3) {
+            model.addAttribute("TokenID", userTokenId);
+            model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
+        }
+        return "welcome";
+    }
+
+    @RequestMapping("/action")
+    public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
+        UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
+        model.addAttribute("logoURL", LOGOURL);
+        String redirectURI = getRedirectURI(request);
+        logger.info("Found redirect:", redirectURI);
+        String ticketID = UUID.randomUUID().toString();
+        String userTokenXml = ssoHelper.getUserToken(user, ticketID);
+
+        if (userTokenXml == null) {
+            logger.info("getUserToken failed. Redirecting to login.");
+            model.addAttribute("redirectURI", redirectURI);
+            model.addAttribute("loginError", "Could not log in.");
+            setEnabledLoginTypes(model);
+            return "login";
+        }
+        response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
+
+        if (redirectURI.toLowerCase().contains("userticket")) {
+            // Do not overwrite ticket
+        } else {
+            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
+
+        }
+        model.addAttribute("redirect", redirectURI);
+        logger.info("Redirecting to {}", redirectURI);
+
+        return "action";
+    }
+
 
     private void setEnabledLoginTypes(Model model) {
         model.addAttribute("signupEnabled", ssoHelper.getEnabledLoginTypes().isSignupEnabled());
@@ -72,7 +110,7 @@ public class SSOLoginController {
         }
     }
 
-    public static void setNetIQOverrides(Model model) {
+    private static void setNetIQOverrides(Model model) {
         try {
             model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
             model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
@@ -85,72 +123,11 @@ public class SSOLoginController {
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("redirectURI");
         logger.debug("redirectURI from request: {}", redirectURI);
-        if (redirectURI == null || redirectURI.length() < 4) {
+        if (redirectURI == null || redirectURI.length() < 1) {
             logger.debug("No redirectURI found, setting to {}", DEFAULT_REDIRECT);
             return DEFAULT_REDIRECT;
         }
         return redirectURI;
     }
 
-
-    @RequestMapping("/welcome")
-    public String welcome(HttpServletRequest request, Model model) {
-        String userTicket = request.getParameter(SSOHelper.USERTICKET);
-        if (userTicket != null && userTicket.length() > 3) {
-            model.addAttribute("TicketID", userTicket);
-        }
-
-
-        String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
-        if (userTokenId != null && userTokenId.length() > 3) {
-            model.addAttribute("TokenID", userTokenId);
-            model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
-        }
-
-        return "welcome";
-    }
-
-    @RequestMapping("/action")
-    public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
-        UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
-
-        String LOGOURL = "/sso/images/site-logo.png";
-        try {
-            Properties properties = AppConfig.readProperties();
-            LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e) {
-
-        }
-        model.addAttribute("logoURL", LOGOURL);
-
-        String redirectURI = getRedirectURI(request);
-        logger.info("Found redirect:", redirectURI);
-
-        String ticketID = UUID.randomUUID().toString();
-        String userTokenXml = ssoHelper.getUserToken(user, ticketID);
-
-        if (userTokenXml == null) {
-            logger.info("getUserToken failed. Redirecting to login.");
-            model.addAttribute("redirectURI", redirectURI);
-            model.addAttribute("loginError", "Could not log in.");
-            setEnabledLoginTypes(model);
-            return "login";
-        }
-
-
-        Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
-        response.addCookie(cookie);
-
-        if (redirectURI.toLowerCase().contains("userticket")) {
-            // Do not overwrite ticket
-        } else {
-            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
-
-        }
-        model.addAttribute("redirect", redirectURI);
-        logger.info("Redirecting to {}", redirectURI);
-
-        return "action";
-    }
 }

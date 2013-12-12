@@ -453,6 +453,8 @@ public class SSOHelper {
     }
 
     public static String getCookieDomain() {
+
+        logger.info("CookieDomain: " + cookiedomain);
         return cookiedomain;
     }
 

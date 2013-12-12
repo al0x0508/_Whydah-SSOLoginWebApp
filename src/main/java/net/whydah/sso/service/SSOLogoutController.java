@@ -2,6 +2,8 @@ package net.whydah.sso.service;
 
 import net.whydah.sso.service.config.AppConfig;
 import net.whydah.sso.service.util.SSOHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import java.util.Properties;
 @Controller
 public class SSOLogoutController {
     SSOHelper sso = new SSOHelper();
+    private final static Logger logger = LoggerFactory.getLogger(SSOLogoutController.class);
 
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -54,12 +57,13 @@ public class SSOLogoutController {
             sso.releaseUserToken(tokenID);
         }
 
-        Cookie cookie = new Cookie(SSOHelper.USER_TOKEN_REFERENCE_NAME, "");
-        cookie.setMaxAge(100000);
-        cookie.setValue("");
-        cookie.setDomain(SSOHelper.getCookieDomain());
+        clearAllWhydahCookies(request, response);
+//        Cookie cookie = new Cookie(SSOHelper.USER_TOKEN_REFERENCE_NAME, "");
+//        cookie.setMaxAge(100000);
+//        cookie.setPath("/");
+//        cookie.setValue("");
+//        cookie.setDomain(SSOHelper.getCookieDomain());
 
-        response.addCookie(cookie);
         String LOGOURL="/sso/images/site-logo.png";
         try {
             Properties properties = AppConfig.readProperties();
@@ -73,4 +77,22 @@ public class SSOLogoutController {
         model.addAttribute("redirect", redirectURI);
         return "action";
     }
+
+    private void clearAllWhydahCookies(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            logger.debug("Found {} cookie(s)", cookies.length);
+            for (Cookie cookie : cookies) {
+                logger.debug("Checking cookie:" + cookie.getName());
+                if (!SSOHelper.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
+                    continue;
+                }
+
+                cookie.setValue("");
+                response.addCookie(cookie);
+                logger.debug("Reset cookie:" + cookie);
+            }
+        }
+    }
+
 }

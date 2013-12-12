@@ -53,7 +53,7 @@
                         <br/><br/>
                         <h4><label for="user_session_password">Password</label></h4>
                         <input id="user_session_password" name="password" type="password" autocomplete="off" placeholder="Password">
-                        <input type="hidden" name="redirectURI" value="welcome">
+                        <input type="hidden" name="redirectURI" value="${redirectURI}">
                         <br/>
                         <br/>
                         <input class="button button-login" name="commit" type="submit" value="Login">

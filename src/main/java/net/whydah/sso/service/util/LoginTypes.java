@@ -1,38 +1,46 @@
 package net.whydah.sso.service.util;
 
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 public class LoginTypes {
 	
 	private final static Logger logger = LoggerFactory.getLogger(LoginTypes.class);
 	
 	private static final String ENABLED = "enabled";
-	
-	private final boolean facebookLoginEnabled;
+    private static final String TRUE = "true";
+
+    private final boolean facebookLoginEnabled;
 	private final boolean openIdLoginEnabled;
 	private final boolean omniLoginEnabled;
 	private final boolean userpasswordLoginEnabled;
     private final boolean newIQLoginEnabled;
-	
-	public LoginTypes(Properties properties) {
+    private final boolean signupEnabled;
+
+    public LoginTypes(Properties properties) {
 		facebookLoginEnabled = ENABLED.equals(properties.getProperty("logintype.facebook"));
 		openIdLoginEnabled = ENABLED.equals(properties.getProperty("logintype.openid"));
 		omniLoginEnabled = ENABLED.equals(properties.getProperty("logintype.omni"));
         newIQLoginEnabled =  ENABLED.equals(properties.getProperty("logintype.netiq"));
 		userpasswordLoginEnabled = ENABLED.equals(properties.getProperty("logintype.userpassword"));
+        signupEnabled = TRUE.equals(properties.getProperty("signupEnabled"));
 
-		logger.debug(String.format("Fabook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."
-									, properties.getProperty("logintype.facebook")
+        logger.debug(String.format("Signup is %6s, Facebook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."
+                , properties.getProperty("logintype.facebook")
 									, properties.getProperty("logintype.openid")
 									, properties.getProperty("logintype.omni")
                                     , properties.getProperty("logintype.netiq")
-									, properties.getProperty("logintype.userpassword")));
-	}
+                , properties.getProperty("logintype.userpassword")
+                , properties.getProperty("signupEnabled")));
+    }
 
-	public boolean isFacebookLoginEnabled() {
+    public boolean isSignupEnabled() {
+        return signupEnabled;
+    }
+
+    public boolean isFacebookLoginEnabled() {
 		return facebookLoginEnabled;
 	}
 

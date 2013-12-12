@@ -123,9 +123,11 @@
 		        </div>
 			</div>
 		</#if>      
-		
-		<p id="signup">Not registered? <a href="signup">Register here!</a></p>
-		  
+
+		<#if signupEnabled == true>
+		     <p id="signup">Not registered? <a href="signup">Register here!</a></p>
+		</#if>
+
 	    </div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>

@@ -35,7 +35,7 @@ public class SSOLoginController {
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
         model.addAttribute("logoURL", LOGOURL);
-        model.addAttribute("redirect", redirectURI);
+        model.addAttribute("redirectURI", redirectURI);
 
         WhydahUserTokenId usertokenId = ssoHelper.getTokenidFromCookie(request);
         if (usertokenId.isValid()) {

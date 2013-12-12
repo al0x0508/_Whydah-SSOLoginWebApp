@@ -5,6 +5,7 @@ import net.whydah.sso.service.data.UserCredential;
 import net.whydah.sso.service.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-
+@Controller
 public class NewUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(NewUserController.class);
     private final SSOHelper ssoHelper = new SSOHelper();
 
-    @RequestMapping("/newuser")
+    @RequestMapping("/signup")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
         return "newuser";
     }

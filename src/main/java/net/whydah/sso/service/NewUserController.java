@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
@@ -19,17 +20,30 @@ public class NewUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(NewUserController.class);
     private final SSOHelper ssoHelper = new SSOHelper();
+    String LOGOURL = "/sso/images/site-logo.png";
+
+    public NewUserController() throws IOException {
+        Properties properties = AppConfig.readProperties();
+        String MY_APP_URI = properties.getProperty("myuri");
+        LOGOURL = properties.getProperty("logourl");
+    }
 
     @RequestMapping("/signup")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
+        String clientRedirectURI = request.getParameter("redirectURI");
+        model.addAttribute("logoURL", LOGOURL);
+
+        model.addAttribute("redirect", clientRedirectURI);
+
         return "newuser";
     }
 
     @RequestMapping("/createnewuser")
     public String createNewUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-        String fbId="";
-        String username="user";
-        UserCredential userCredential= new UserCredential() {
+        model.addAttribute("logoURL", LOGOURL);
+        String fbId = "";
+        String username = "user";
+        UserCredential userCredential = new UserCredential() {
             @Override
             public String toXML() {
                 return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> \n " +
@@ -42,15 +56,6 @@ public class NewUserController {
             }
         };
 
-        String LOGOURL="/sso/images/site-logo.png";
-        try {
-            Properties properties = AppConfig.readProperties();
-            LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e){
-
-        }
-        model.addAttribute("logoURL", LOGOURL);
 
         String userTokenXml = ssoHelper.createAndLogonUser(null, "", userCredential, "");
         if (userTokenXml == null) {
@@ -60,7 +65,14 @@ public class NewUserController {
             model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
             return "login";
         }
-        model.addAttribute("redirect", "welcome");
+        String clientRedirectURI = request.getParameter("redirectURI");
+        model.addAttribute("logoURL", LOGOURL);
+
+        if (clientRedirectURI == null || clientRedirectURI.length() < 3) {
+            model.addAttribute("redirect", "welcome");
+        } else {
+            model.addAttribute("redirect", clientRedirectURI);
+        }
         return "action";
     }
 

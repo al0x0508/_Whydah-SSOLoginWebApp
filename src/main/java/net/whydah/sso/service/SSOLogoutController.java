@@ -88,7 +88,7 @@ public class SSOLogoutController {
                     continue;
                 }
 
-                cookie.setValue("");
+                cookie.setValue("logout");
                 response.addCookie(cookie);
                 logger.debug("Reset cookie:" + cookie);
             }

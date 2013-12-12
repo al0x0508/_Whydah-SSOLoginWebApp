@@ -152,6 +152,8 @@ public class SSOHelper {
 
     public WhydahUserTokenId getTokenidFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        boolean found = false;
+        WhydahUserTokenId foundTokenId = WhydahUserTokenId.fromTokenId("");
         if (cookies != null) {
             logger.debug("Found {} cookie(s)", cookies.length);
             for (Cookie cookie : cookies) {
@@ -162,11 +164,18 @@ public class SSOHelper {
 
                 String usertokenId = cookie.getValue();
                 logger.debug("Found whydahusertoken cookie, whydahusertokenID={}", usertokenId);
+                if ("logout".equalsIgnoreCase(usertokenId)) {
+                    return WhydahUserTokenId.invalidTokenId();
+                }
                 if (verifyUserTokenId(usertokenId)) {
                     logger.debug("whydahusertoken ok");
-                    return WhydahUserTokenId.fromTokenId(usertokenId);
+                    foundTokenId = WhydahUserTokenId.fromTokenId(usertokenId);
+                    found = true;
                 }
             }
+        }
+        if (found) {
+            return foundTokenId;
         }
         logger.debug("Fikk ingen cookies med usertokenid");
         return WhydahUserTokenId.invalidTokenId();

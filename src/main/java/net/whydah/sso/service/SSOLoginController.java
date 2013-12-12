@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -25,19 +26,20 @@ public class SSOLoginController {
 
     /**
      * Controlling the sign on page.
+     *
      * @param request Http-request
-     * @param model data to be used in the template
+     * @param model   data to be used in the template
      * @return template to display
      */
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
-        String LOGOURL="/sso/images/site-logo.png";
+        String LOGOURL = "/sso/images/site-logo.png";
         try {
             Properties properties = AppConfig.readProperties();
             LOGOURL = properties.getProperty("logourl");
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         model.addAttribute("logoURL", LOGOURL);
@@ -50,20 +52,33 @@ public class SSOLoginController {
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
-        
+
         model.addAttribute("redirectURI", redirectURI);
         setEnabledLoginTypes(model);
-        
+
         return "login";
     }
 
-	private void setEnabledLoginTypes(Model model) {
-		model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
+    private void setEnabledLoginTypes(Model model) {
+        model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
         model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
         model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
         model.addAttribute("netIQLoginEnabled", ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled());
         model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
-	}
+        if (ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled()) {
+            setNetIQOverrides(model);
+        }
+    }
+
+    public static void setNetIQOverrides(Model model) {
+        try {
+            model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
+            model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
+        } catch (IOException ioe) {
+            model.addAttribute("netIQtext", "NetIQ");
+            model.addAttribute("netIQimage", "images/netiqlogo.png");
+        }
+    }
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("redirectURI");
@@ -74,7 +89,6 @@ public class SSOLoginController {
         }
         return redirectURI;
     }
-
 
 
     @RequestMapping("/welcome")
@@ -98,12 +112,12 @@ public class SSOLoginController {
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
 
-        String LOGOURL="/sso/images/site-logo.png";
+        String LOGOURL = "/sso/images/site-logo.png";
         try {
             Properties properties = AppConfig.readProperties();
             LOGOURL = properties.getProperty("logourl");
 
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         model.addAttribute("logoURL", LOGOURL);
@@ -126,7 +140,7 @@ public class SSOLoginController {
         Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
         response.addCookie(cookie);
 
-        if (redirectURI.toLowerCase().contains("userticket")){
+        if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);

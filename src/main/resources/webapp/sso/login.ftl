@@ -30,7 +30,7 @@
 			<#if facebookLoginEnabled == true> <div id="ssoMenuFacebook" data-login-type="#ssoLoginFacebook" class="login-page-menu">Facebook</div></#if>
 			<#if openidLoginEnabled == true> <div id="ssoMenuOpenId" data-login-type="#ssoLoginOpenId" class="login-page-menu">OpenId</div></#if>
 			<#if omniLoginEnabled == true> <div id="ssoMenuOmni" data-login-type="#ssoLoginOmni" class="login-page-menu">BankId / minId</div></#if>			
-			<#if netIQLoginEnabled == true> <div id="ssoMenuNetIQ" data-login-type="#ssoLoginNetIQ" class="login-page-menu">NetIQ</div></#if>
+			<#if netIQLoginEnabled == true> <div id="ssoMenuNetIQ" data-login-type="#ssoLoginNetIQ" class="login-page-menu">${netIQtext!NetIQ}</div></#if>
 			<hr/>
 			
 		<#if userpasswordLoginEnabled == true>
@@ -108,7 +108,7 @@
     		            <#if redirectURI??>
     		                <input type="hidden" name="redirectURI" value="${redirectURI}"/>
     		            </#if>
-    		            <input name="commit" type="image" src="images/netiqlogo.png" alt="Log in with NetIQ"/>
+    		            <input name="commit" type="image" src="${netIQimage!images/netiqlogo.png}" alt="Log in with ${netIQtext!NetIQ}"/>
     		        </form>
     			</div>
     		</#if>

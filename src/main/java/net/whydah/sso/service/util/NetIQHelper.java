@@ -66,7 +66,6 @@ public class NetIQHelper {
 
     public  Map.Entry<String, String> loginAndCreateNetIQUser(HttpServletRequest request) {
         String accessToken = request.getHeader("VIA");
-        //FacebookUser fbUser = createUserFromFacebookAttributes(faceBookAccessToken);
         String netIQUser = getUserName(request);
         Map.Entry<String, String> pair = new AbstractMap.SimpleImmutableEntry<>(accessToken, netIQUser);
         logger.debug("Logged in NetIQ user: code=" + "" + ", AccessToken=" + accessToken + "\n netIQUserName: " + netIQUser);
@@ -82,8 +81,8 @@ public class NetIQHelper {
         strb.append("        <netIQAccessToken>").append(request.getHeader("Via")).append( "</netIQAccessToken>\n");
 
         strb.append("        <userId>").append(this.getEmail(request)).append( "</userId>\n");
-        strb.append("        <firstName>").append(this.getFirstName(request)).append( "</firstName>\n");
-        strb.append("        <lastName>").append(this.getLastName(request)).append( "</lastName>\n");
+        strb.append("        <firstName>").append(convertEncoding(this.getFirstName(request))).append("</firstName>\n");
+        strb.append("        <lastName>").append(convertEncoding(this.getLastName(request))).append("</lastName>\n");
         strb.append("        <username>").append(this.getEmail(request)).append("</username>\n");  // +UUID.randomUUID().toString()
         strb.append("        <email>").append(this.getEmail(request)).append( "</email>\n");
 
@@ -91,6 +90,15 @@ public class NetIQHelper {
         strb.append("</user>\n");
         logger.info(strb.toString());
         return strb.toString();
+    }
+
+    // A very primitive conversion of the result from NetIQ
+    private String convertEncoding(String myString) {
+        try {
+            return new String(myString.getBytes("ISO-8859-1"), "UTF8");
+        } catch (Exception e) {
+            return myString;
+        }
     }
 
 }

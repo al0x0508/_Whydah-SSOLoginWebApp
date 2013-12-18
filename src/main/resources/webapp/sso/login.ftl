@@ -74,6 +74,7 @@
             </div>           
         </#if>
     
+        <#if facebookLoginEnabled == true || netIQLoginEnabled == true || omniLoginEnabled == true>
         <div class="login-box">
             <h4>Log in with</h4>
             <#if facebookLoginEnabled == true>
@@ -104,7 +105,8 @@
                     </div>
                 </div>
             </#if> 
-        </div> 
+        </div>
+        </#if>
     
         <#if openidLoginEnabled == true>
             <div class="login-box">

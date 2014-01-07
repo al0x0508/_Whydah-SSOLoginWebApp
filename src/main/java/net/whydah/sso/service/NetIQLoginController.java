@@ -54,7 +54,14 @@ public class NetIQLoginController {
             model.addAttribute("netIQLoginEnabled", ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled());
             model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
             model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
-
+            model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
+            try {
+                model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
+                model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
+            } catch (IOException ioe) {
+                model.addAttribute("netIQtext", "NetIQ");
+                model.addAttribute("netIQimage", "images/netiqlogo.png");
+            }
             NetIQHelper helper = new NetIQHelper();
             logger.info(helper.getNetIQUserAsXml(request));
             Map.Entry<String, String> pair = helper.loginAndCreateNetIQUser(request);

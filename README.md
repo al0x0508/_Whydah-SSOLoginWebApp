@@ -4,6 +4,8 @@ SSOWebApplication
 The web-frontend for the Whydah SSO services. It uses SecurityTokenService and UserIdentityBackend
 behind the scenes, where SecurityTokenService needs to be accessible from the same zone that your applications reside.
 
+![Architectural Overview](https://raw2.github.com/altran/Whydah-SSOWebApplication/master/Whydah%20infrastructure.png)
+
 
 Start/Install
 =============

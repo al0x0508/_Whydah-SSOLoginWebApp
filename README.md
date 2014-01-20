@@ -1,7 +1,7 @@
 SSOWebApplication
 ====================
 
-The web-frontend for the Whydag SSO services. It uses SecurityTokenService and UserIdentityBackend
+The web-frontend for the Whydah SSO services. It uses SecurityTokenService and UserIdentityBackend
 behind the scenes, where SecurityTokenService needs to be accessible from the same zone that your applications reside.
 
 

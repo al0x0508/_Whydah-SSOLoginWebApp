@@ -1,10 +1,10 @@
-package net.whydah.sso.service;
+package net.whydah.sso;
 
-import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.data.UserCredential;
-import net.whydah.sso.service.data.UserNameAndPasswordCredential;
-import net.whydah.sso.service.data.WhydahUserTokenId;
-import net.whydah.sso.service.util.SSOHelper;
+import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.data.UserCredential;
+import net.whydah.sso.data.UserNameAndPasswordCredential;
+import net.whydah.sso.data.WhydahUserTokenId;
+import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

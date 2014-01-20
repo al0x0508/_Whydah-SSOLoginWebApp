@@ -1,11 +1,10 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.util;
 
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.types.User;
-
 import org.junit.Ignore;
 import org.junit.Test;
 

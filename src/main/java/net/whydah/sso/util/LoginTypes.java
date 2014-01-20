@@ -1,4 +1,4 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

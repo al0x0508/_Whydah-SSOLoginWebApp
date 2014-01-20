@@ -8,9 +8,9 @@
 
     <!--Daily rolling file appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>logs/SSOLoginService.log</File>
+        <File>logs/ssoWebApplication.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/SSOLoginService-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>logs/ssoWebApplication-%d{yyyy-MM-dd}.log</FileNamePattern>
             <maxHistory>5</maxHistory>
         </rollingPolicy>
 

@@ -1,7 +1,6 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.util;
 
-import static org.mockito.Mockito.*;
-import net.whydah.sso.service.data.UserCredential;
+import net.whydah.sso.data.UserCredential;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class NetIQHelperTest {
 

@@ -1,6 +1,6 @@
-package net.whydah.sso.service;
+package net.whydah.sso;
 
-import net.whydah.sso.service.config.ApplicationMode;
+import net.whydah.sso.config.ApplicationMode;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

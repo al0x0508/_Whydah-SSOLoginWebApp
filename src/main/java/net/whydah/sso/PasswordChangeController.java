@@ -1,11 +1,11 @@
-package net.whydah.sso.service;
+package net.whydah.sso;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.data.PasswordChangeToken;
-import net.whydah.sso.service.util.SSOHelper;
+import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.data.PasswordChangeToken;
+import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

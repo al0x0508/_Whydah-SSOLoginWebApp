@@ -1,15 +1,15 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.util;
 
 import com.restfb.types.User;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import net.whydah.sso.service.config.AppConfig;
-import net.whydah.sso.service.config.ApplicationMode;
-import net.whydah.sso.service.data.ApplicationCredential;
-import net.whydah.sso.service.data.UserCredential;
-import net.whydah.sso.service.data.WhydahUserTokenId;
+import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
+import net.whydah.sso.data.ApplicationCredential;
+import net.whydah.sso.data.UserCredential;
+import net.whydah.sso.data.WhydahUserTokenId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

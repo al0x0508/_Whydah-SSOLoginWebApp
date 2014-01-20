@@ -1,4 +1,4 @@
-package net.whydah.sso.service.config;
+package net.whydah.sso.config;
 
 import java.util.Arrays;
 

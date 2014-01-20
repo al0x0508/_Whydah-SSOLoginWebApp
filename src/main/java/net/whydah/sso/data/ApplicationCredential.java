@@ -1,4 +1,4 @@
-package net.whydah.sso.service.data;
+package net.whydah.sso.data;
 
 public class ApplicationCredential {
 

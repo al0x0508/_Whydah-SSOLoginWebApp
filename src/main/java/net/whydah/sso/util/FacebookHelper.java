@@ -1,4 +1,4 @@
-package net.whydah.sso.service.util;
+package net.whydah.sso.util;
 
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;

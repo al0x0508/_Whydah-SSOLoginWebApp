@@ -1,4 +1,4 @@
-package net.whydah.sso.service;
+package net.whydah.sso;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

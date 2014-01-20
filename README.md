@@ -1,4 +1,4 @@
-SSOLoginService
+SSOWebApplication
 ====================
 
 The web-frontend for the Whydag SSO services. It uses SecurityTokenService and UserIdentityBackend

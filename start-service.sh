@@ -2,7 +2,7 @@
 
 export IAM_MODE=TEST
 
-A=SSOWebApplication
+A=SSOLoginWebApp
 V=0.4-SNAPSHOT
 JARFILE=$A-$V.jar
 

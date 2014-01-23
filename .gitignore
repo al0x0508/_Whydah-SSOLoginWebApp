@@ -1,16 +1,18 @@
 *.class
 *.log
-*.iml
 
 # Package Files #
 *.jar
 *.war
 *.ear
 target/
+dependency-reduced-pom.xml
 
 #IDE files#
 .idea/
 *.iml
+*.ipr
+*.iws
 /.settings
 /.project
 /.classpath

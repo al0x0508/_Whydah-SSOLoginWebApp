@@ -22,6 +22,7 @@ public class SSOLoginController {
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     public static final String DEFAULT_REDIRECT = "welcome";
     private final SSOHelper ssoHelper = new SSOHelper();
+    private final ModelHelper modelHelper = new ModelHelper(this);
     private String LOGOURL = "/sso/images/site-logo.png";
 
     public SSOLoginController() throws IOException {
@@ -47,7 +48,7 @@ public class SSOLoginController {
             logger.info("Redirecting to {}", redirectURI);
             return "action";
         }
-        setEnabledLoginTypes(model);
+        ModelHelper.setEnabledLoginTypes(ssoHelper,model);
         return "login";
     }
 
@@ -79,7 +80,7 @@ public class SSOLoginController {
         if (userTokenXml == null) {
             logger.info("getUserToken failed. Redirecting to login.");
             model.addAttribute("loginError", "Could not log in.");
-            setEnabledLoginTypes(model);
+            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             model.addAttribute("redirectURI", redirectURI);
             return "login";
         }
@@ -100,28 +101,6 @@ public class SSOLoginController {
     }
 
 
-    private void setEnabledLoginTypes(Model model) {
-        model.addAttribute("signupEnabled", ssoHelper.getEnabledLoginTypes().isSignupEnabled());
-        model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
-        model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
-        model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
-        model.addAttribute("netIQLoginEnabled", ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled());
-        model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
-
-        if (ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled()) {
-            setNetIQOverrides(model);
-        }
-    }
-
-    private static void setNetIQOverrides(Model model) {
-        try {
-            model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
-            model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
-        } catch (IOException ioe) {
-            model.addAttribute("netIQtext", "NetIQ");
-            model.addAttribute("netIQimage", "images/netiqlogo.png");
-        }
-    }
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("redirectURI");

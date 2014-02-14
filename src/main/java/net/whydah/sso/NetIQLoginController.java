@@ -68,6 +68,7 @@ public class NetIQLoginController {
             if (pair == null) {
                 logger.error("Could not fetch netiq user.");
                 //TODO Do we need to add client redirect URI here?
+                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
                 return "login";
             }
             String netiqAccessToken = pair.getKey();
@@ -79,6 +80,7 @@ public class NetIQLoginController {
             } catch(IllegalArgumentException iae) {
                 logger.error(iae.getLocalizedMessage());
                 //TODO Do we need to add client redirect URI here?
+                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
                 return "login";
             }
 
@@ -101,6 +103,7 @@ public class NetIQLoginController {
                     model.addAttribute("logoURL", LOGOURL);
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
+                    ModelHelper.setEnabledLoginTypes(ssoHelper,model);
                     return "login";
                 }
             }

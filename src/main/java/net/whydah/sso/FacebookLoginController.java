@@ -67,6 +67,7 @@ public class FacebookLoginController {
         if (pair == null) {
             logger.error("Could not fetch facebok user.");
             //TODO Do we need to add client redirect URI here?
+            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             return "login";
         }
         String fbAccessToken = pair.getKey();
@@ -78,6 +79,7 @@ public class FacebookLoginController {
         } catch(IllegalArgumentException iae) {
             logger.error(iae.getLocalizedMessage());
             //TODO Do we need to add client redirect URI here?
+            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             return "login";
         }
 
@@ -108,6 +110,7 @@ public class FacebookLoginController {
                 String redirectURI = getRedirectURI(request);
                 model.addAttribute("redirectURI", redirectURI);
                 model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
+                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
                 return "login";
             }
         }

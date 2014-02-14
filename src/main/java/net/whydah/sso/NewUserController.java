@@ -63,6 +63,7 @@ public class NewUserController {
             String redirectURI = "";
             model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
+            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             return "login";
         }
         String clientRedirectURI = request.getParameter("redirectURI");

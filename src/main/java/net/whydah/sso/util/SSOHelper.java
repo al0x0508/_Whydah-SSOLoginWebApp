@@ -187,14 +187,15 @@ public class SSOHelper {
         WebResource logonResource = tokenServiceClient.resource(tokenServiceUri).path("logon");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         ApplicationCredential appCredential = new ApplicationCredential();
-        appCredential.setApplicationID("Whydah SSO LoginService");
-        appCredential.setApplicationPassord("secret dummy");
+        appCredential.setApplicationID("SSOLoginWebApp");
+        appCredential.setApplicationPassord("deep secret dummy");
 
         formData.add("applicationcredential", appCredential.toXML());
         ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
         if (response.getStatus() != 200) {
             logger.error("Application authentication failed with statuscode {}", response.getStatus());
+            logger.error("Application authentication failed with response {}", response.getEntity(String.class));
             throw new RuntimeException("Application authentication failed");
         }
         myAppTokenXml = response.getEntity(String.class);

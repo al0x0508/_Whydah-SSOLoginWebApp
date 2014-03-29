@@ -435,7 +435,7 @@ public class SSOHelper {
                 "    <email></email>\n" +
                 "    <timestamp>7982374982374</timestamp>\n" +
                 "    <lifespan>3600000</lifespan>\n" +
-                "    <issuer>/iam/issuer/tokenverifier</issuer>\n" +
+                "    <issuer>/token/issuer/tokenverifier</issuer>\n" +
                 "    <application ID=\"2349785543\">\n" +
                 "        <applicationName>MyApp</applicationName>\n" +
                 "        <organization ID=\"2349785543\">\n" +

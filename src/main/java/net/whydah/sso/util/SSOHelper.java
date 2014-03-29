@@ -215,7 +215,7 @@ public class SSOHelper {
         logger.debug("apptokenid: {}", myAppTokenId);
 
         logger.debug("Log on with user credentials {}", user.toString());
-        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/" + ticket + "/usertoken");
+        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/" + ticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", user.toXML());
@@ -249,7 +249,7 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbyticket");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("ticket", ticket);
@@ -280,7 +280,7 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/getusertokenbytokenid");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbytokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", tokenId);
@@ -307,7 +307,7 @@ public class SSOHelper {
 
     public void releaseUserToken(String userTokenId) {
         logonApplication();
-        WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/releaseusertoken");
+        WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/releaseusertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
@@ -323,7 +323,7 @@ public class SSOHelper {
             return false;
         }
         logonApplication();
-        WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/validateusertokenid/" + usertokenid);
+        WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/validateusertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
         if(response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
             logger.debug("token validated");
@@ -343,7 +343,7 @@ public class SSOHelper {
         logonApplication();
         logger.debug("apptokenid: {}", myAppTokenId);
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId +"/"+ ticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ ticket + "/createuser");
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
@@ -383,7 +383,7 @@ public class SSOHelper {
         logonApplication();
         logger.debug("apptokenid: {}", myAppTokenId);
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId +"/"+ ticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ ticket + "/createuser");
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);

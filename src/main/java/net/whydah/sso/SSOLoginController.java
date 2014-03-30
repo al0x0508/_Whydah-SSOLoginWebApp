@@ -1,9 +1,11 @@
 package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
+import net.whydah.sso.util.DevModeHelper;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,11 @@ public class SSOLoginController {
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
+
+        if (ApplicationMode.getApplicationMode()== ApplicationMode.DEV ) {
+            return "action";
+        }
+
         String redirectURI = getRedirectURI(request);
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("redirectURI", redirectURI);
@@ -70,6 +77,9 @@ public class SSOLoginController {
 
     @RequestMapping("/action")
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
+        if (ApplicationMode.getApplicationMode()== ApplicationMode.DEV ) {
+           return DevModeHelper.return_actionWithRedirectURI(getRedirectURI(request),ssoHelper,model);
+        }
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
         String redirectURI = getRedirectURI(request);
         logger.info("Found redirect:", redirectURI);

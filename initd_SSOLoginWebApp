@@ -28,15 +28,19 @@ DESC="SSOLoginWebApp Server"
 NAME=SSOLoginWebApp
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
+LOCKFILE=/var/lock/subsys/$NAME
 
 export ENV_CONFIG=PROD
 
 do_start()
 {
 	echo "Starting SSOLoginWebApp  (background)..."
-	cd $SOLR_HOME
-	/bin/bash -l -c "/home/SSOLoginWebApp/start-service.sh" >/dev/null 2>&1 &
-	return 0
+        cd /home/SSOWebApplication
+	daemon --user=SSOWebApplication "/home/SSOWebApplication/start-service.sh" >/dev/null 2>&1 &
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && touch $LOCKFILE
+	return $RETVAL
 }
 
 do_stop()

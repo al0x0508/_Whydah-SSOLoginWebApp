@@ -191,7 +191,13 @@ public class SSOHelper {
         appCredential.setApplicationPassord("secret dummy");
 
         formData.add("applicationcredential", appCredential.toXML());
-        ClientResponse response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        ClientResponse response;
+        try {
+            response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        }catch (RuntimeException e) {
+            logger.error("logonApplication - Problem connecting to {}", logonResource.toString());
+            throw(e);
+        }
         //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
         if (response.getStatus() != 200) {
             logger.error("Application authentication failed with statuscode {}", response.getStatus());

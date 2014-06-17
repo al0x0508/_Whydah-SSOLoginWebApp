@@ -9,7 +9,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 public class ServerRunner {
     public static final int PORT_NO = 9997;
-    public static final String TESTURL = "http://localhost:"+PORT_NO+"/sso/action";
+    public static final String ROOT_URL = "http://localhost:"+PORT_NO+"/sso/";
+    public static final String TESTURL = ROOT_URL + "action";
     public static final String CONTEXT = "/sso";
 
     private final static Logger logger = LoggerFactory.getLogger(ServerRunner.class);

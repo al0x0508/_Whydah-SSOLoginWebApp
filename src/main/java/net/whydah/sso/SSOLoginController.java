@@ -59,15 +59,21 @@ public class SSOLoginController {
     @RequestMapping("/welcome")
     public String welcome(HttpServletRequest request, Model model) {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
-        if (userTicket != null && userTicket.length() < 3) {
+        boolean foundTokens = false;
+        if (userTicket != null && userTicket.length() > 3) {
             model.addAttribute("TicketID", userTicket);
+            foundTokens = true;
         }
         String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute("TokenID", userTokenId);
             model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
+            foundTokens = true;
+        }
+
+        if(foundTokens) {
             return "welcome";
-        } else {
+        }else {
             throw new UnauthorizedException();
         }
     }

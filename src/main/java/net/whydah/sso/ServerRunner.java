@@ -1,11 +1,16 @@
 package net.whydah.sso;
 
+import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import java.io.IOException;
+import java.util.Properties;
 
 public class ServerRunner {
     public static final int PORT_NO = 9997;
@@ -17,8 +22,9 @@ public class ServerRunner {
 
     private Server server;
     private ServletContextHandler context;
+    private static Properties appConfig;
 
-    public ServerRunner()  {
+    public ServerRunner() throws IOException {
         server = new Server(PORT_NO);
         context = new ServletContextHandler(server, CONTEXT);
 
@@ -26,6 +32,7 @@ public class ServerRunner {
         dispatcherServlet.setContextConfigLocation("classpath:webapp/sso/mvc-config.xml");
         ServletHolder servletHolder = new ServletHolder(dispatcherServlet);
         context.addServlet(servletHolder, "/*");
+        appConfig = AppConfig.readProperties();
   
     }
 
@@ -49,6 +56,13 @@ public class ServerRunner {
 
         logger.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " +
             serverRunner.server.getConnectors()[0].getLocalPort());
+        String contextpath="sso";
+        int port = serverRunner.server.getConnectors()[0].getLocalPort();
+        logger.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
+        logger.info("Status: http://localhost:{}{}",port,contextpath);
+        logger.info("WADL:   http://localhost:{}{}/application.wadl",port,contextpath);
+        logger.info("testpage = {}",Integer.valueOf(appConfig.getProperty("testpage")));
+        logger.info("TestDriverWeb:   http://localhost:{}{}/testpage/",port,contextpath);
 
         serverRunner.join();
     }

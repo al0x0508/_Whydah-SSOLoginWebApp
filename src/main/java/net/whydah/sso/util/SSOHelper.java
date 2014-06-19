@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +27,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
+import static com.sun.jersey.api.client.ClientResponse.Status.*;
 
 public class SSOHelper {
 
@@ -226,12 +226,12 @@ public class SSOHelper {
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", user.toXML());
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             logger.info("User authentication failed with status code " + response.getStatus());
             return null;
             //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
         }
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Log on OK with response {}", responseXML);
             return responseXML;
@@ -239,12 +239,15 @@ public class SSOHelper {
 
         //retry once for other statuses
         response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Log on OK with response {}", responseXML);
             return responseXML;
+        }else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+            logger.error(printableUrlErrorMessage("Auth failed - Problems connecting with TokenService", getUserToken, response));
+        }else {
+            logger.info(printableUrlErrorMessage("User authentication failed", getUserToken, response));
         }
-        logger.info("User authentication failed with status code " + response.getStatus());
         return null;
         //throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
@@ -260,24 +263,24 @@ public class SSOHelper {
         formData.add("apptoken", myAppTokenXml);
         formData.add("ticket", ticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");
         }
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
-        logger.warn("User authentication failed: {}", response);
-
-        throw new RuntimeException("User authentication failed with status code " + response.getStatus());
+        String authenticationFailedMessage = printableUrlErrorMessage("User authentication failed", userTokenResource, response);
+        logger.warn(authenticationFailedMessage);
+        throw new RuntimeException(authenticationFailedMessage);
     }
 
     public String getUserTokenByTokenID(String tokenId) {
@@ -291,24 +294,24 @@ public class SSOHelper {
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", tokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");
         }
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
-        logger.warn("User authentication failed: {}", response);
-
-        throw new RuntimeException("User authentication failed with status code " + response.getStatus());
+        String authenticationFailedMessage = printableUrlErrorMessage("User authentication failed", userTokenResource, response);
+        logger.warn(authenticationFailedMessage);
+        throw new RuntimeException(authenticationFailedMessage);
     }
 
     public void releaseUserToken(String userTokenId) {
@@ -317,7 +320,7 @@ public class SSOHelper {
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if(response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+        if(response.getStatus() != OK.getStatusCode()) {
             logger.warn("releaseUserToken failed: {}", response);
         }
     }
@@ -331,18 +334,18 @@ public class SSOHelper {
         logonApplication();
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId + "/validateusertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
-        if(response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if(response.getStatus() == OK.getStatusCode()) {
             logger.debug("token validated");
             return true;
         }
-        if(response.getStatus() == ClientResponse.Status.CONFLICT.getStatusCode()) {
+        if(response.getStatus() == CONFLICT.getStatusCode()) {
             logger.debug("token not ok: {}" + response);
             return false;
         }
         //retry
         logonApplication();
         response = verifyResource.get(ClientResponse.class);
-        return response.getStatus() == ClientResponse.Status.OK.getStatusCode();
+        return response.getStatus() == OK.getStatusCode();
     }
 
     public String createAndLogonUser(User fbUser, String fbAccessToken, UserCredential userCredential, String ticket) {
@@ -361,12 +364,12 @@ public class SSOHelper {
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
         //No need to retry if we know it is forbidden.
-        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
             logger.warn("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
             return null;
         }
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
@@ -374,13 +377,13 @@ public class SSOHelper {
 
         //retry once for other statuses
         response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
         }
 
-        logger.warn("createAndLogonUser failed after retrying once.");
+        logger.warn(printableUrlErrorMessage("createAndLogonUser failed after retrying once.", createUserResource, response));
         return null;
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
@@ -402,12 +405,12 @@ public class SSOHelper {
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
         //No need to retry if we know it is forbidden.
-        if (response.getStatus() == ClientResponse.Status.FORBIDDEN.getStatusCode()) {
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
             logger.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getEmail(request));
             return null;
         }
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
@@ -415,7 +418,7 @@ public class SSOHelper {
 
         //retry once for other statuses
         response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
             logger.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
@@ -473,5 +476,18 @@ public class SSOHelper {
         return cookiedomain;
     }
 
+    private String printableUrlErrorMessage(String errorMessage, WebResource request, ClientResponse response) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(errorMessage);
+        sb.append(" Code: ");
+        if(response != null) {
+            sb.append(response.getStatus());
+            sb.append(" URL: ");
+        }
+        if(request != null) {
+            sb.append(request.toString());
+        }
+        return sb.toString();
+    }
 }
 

@@ -210,7 +210,9 @@ public class SSOHelper {
     }
 
     private String getAppTokenIdFromAppToken(String appTokenXML) {
-        return appTokenXML.substring(appTokenXML.indexOf("<applicationtoken>") + "<applicationtoken>".length(), appTokenXML.indexOf("</applicationtoken>"));
+        String stag="<applicationtokenID>";
+        String etag="</applicationtokenID>";
+        return appTokenXML.substring(appTokenXML.indexOf(stag) + stag.length(), appTokenXML.indexOf(etag));
     }
 
     public String getUserToken(UserCredential user, String ticket) {

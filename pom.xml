@@ -236,7 +236,7 @@
                 <!--<version>2.2.1</version>-->
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/winservice.xml</descriptor>
+                        <descriptor>src/main/assembly/winservice.xml</descriptor>  <!-- test -->
                     </descriptors>
                 </configuration>
                 <executions>

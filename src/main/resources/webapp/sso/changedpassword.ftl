@@ -13,7 +13,7 @@
         </div>
         <div style="margin:15px;padding:0;display:inline"></div>
         <div>
-            Password has been changed, you may now try to log in with the new password.
+            Password has been changed for  ${user}, you may now try to log in with the new password.
         </div>
     </div>
 </div>

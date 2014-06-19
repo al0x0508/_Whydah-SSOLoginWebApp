@@ -121,3 +121,11 @@ Webproxy CNAME	 		CNAME/direct	 	 		Comment
 http://mvnrepo.cantara.no	http://nexus.cantara.no:8081		Ask Erik if it doesn't work.
 http://ci.cantara.no		http://217.77.36.146:8080/jenkins/		 
 
+
+
+Developer info
+==============
+
+* https://wiki.cantara.no/display/iam/Architecture+Overview
+* https://wiki.cantara.no/display/iam/Key+Whydah+Data+Structures
+* https://wiki.cantara.no/display/iam/Modules

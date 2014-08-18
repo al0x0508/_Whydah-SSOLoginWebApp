@@ -61,8 +61,6 @@ public class ServerRunner {
         logger.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
         logger.info("Status: http://localhost:{}{}",port,contextpath);
         logger.info("WADL:   http://localhost:{}{}/application.wadl",port,contextpath);
-        logger.info("testpage = {}",appConfig.getProperty("testpage"));
-        logger.info("TestDriverWeb:   http://localhost:{}{}/testpage/",port,contextpath);
 
         serverRunner.join();
     }

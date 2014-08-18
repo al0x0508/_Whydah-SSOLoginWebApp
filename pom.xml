@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.whydah.sso</groupId>
     <artifactId>SSOLoginWebApp</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.6.1-SNAPSHOT</version>
     <name>SSOLoginWebApp</name>
     <url>https://wiki.cantara.no/display/iam/SSOLoginWebApp</url>
 
@@ -16,7 +16,8 @@
         <developerConnection>scm:git:ssh://git@github.com/altran/Whydah-SSOLoginWebApp.git</developerConnection>
         <connection>scm:git:https://github.com/altran/Whydah-SSOLoginWebApp.git</connection>
         <url>https://github.com/altran/Whydah-SSOLoginWebApp</url>
-    </scm>
+    <tag>HEAD</tag>
+  </scm>
 
     <properties>
         <jersey.version>1.6</jersey.version>
@@ -158,6 +159,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>net.whydah.token</groupId>
+            <artifactId>SecurityTokenService</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 
@@ -228,7 +236,7 @@
                 <!--<version>2.2.1</version>-->
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/winservice.xml</descriptor>
+                        <descriptor>src/main/assembly/winservice.xml</descriptor>  <!-- test -->
                     </descriptors>
                 </configuration>
                 <executions>

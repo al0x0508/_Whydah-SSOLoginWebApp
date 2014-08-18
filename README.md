@@ -74,50 +74,30 @@ Typical apache setup
 ```
 
 
-TODO: 
-* Log out not working
-* Remember me chekbox
-* Signup
-
-
-Server overview
-===============
-
-
-Development
-===========
-
-http://myApp.net - App using Whydah
-http://myserver.net - Whydah SSO
-
-Webproxy CNAME	 					CNAME/direct	
-http://myserver.net/huntevaluationbackend/		server-x:8080/huntevaluationbackend
-http://myserver.net					http://localhost:8983/solr	
-http://myserver.net/sso					http://localhost:9997/sso	
-http://myserver/tokenservice				http://localhost:9998/tokenservice/	
-http://myserver.net/uib					http://localhost:9995/uib/	
-http://myserver.cloudapp.net/useradmin			http://localhost:9996/useradmin/ 		 loop with ssologinservice.
-
-
-Test/Production
-===============
-http://myApp.net - App using Whydah
-http://myserver.net - Whydah SSO
 
 
 Webproxy CNAME	 					CNAME/direct	
-http://myserver.net/huntevaluationbackend/		server-x:8080/huntevaluationbackend
-http://myserver.net					http://server-a:8983/solr	
-http://myserver.net/sso					http://server-b:9997/sso	
-http://myserver/tokenservice				http://server-c:9998/tokenservice/	
+http://myserver.net/sso					http://server-b:9997/sso
+http://myserver.net/tokenservice	    http://server-c:9998/tokenservice/
 http://myserver.net/uib					http://server-d:9995/uib/	
-http://myserver.cloudapp.net/useradmin			http://server-e:9996/useradmin/ 		 loop with ssologinservice.
+http://myserver.net/useradmin			http://server-e:9996/useradmin/
 
 
 Development Infrastructure
 ==========================
 
-Webproxy CNAME	 		CNAME/direct	 	 		Comment
-http://mvnrepo.cantara.no	http://nexus.cantara.no:8081		Ask Erik if it doesn't work.
-http://ci.cantara.no		http://217.77.36.146:8080/jenkins/		 
+
+
+
+Developer info
+==============
+
+* https://wiki.cantara.no/display/iam/Architecture+Overview
+* https://wiki.cantara.no/display/iam/Key+Whydah+Data+Structures
+* https://wiki.cantara.no/display/iam/Modules
+
+TODO:
+* Log out not working
+* Remember me checkbox not working
+
 

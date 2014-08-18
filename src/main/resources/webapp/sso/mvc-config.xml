@@ -13,7 +13,7 @@
     <mvc:resources mapping="/css/**" location="classpath:/css/" />
     <mvc:resources mapping="/js/**" location="classpath:/js/" />
 
-    <context:component-scan base-package="net.whydah.sso.service" />
+    <context:component-scan base-package="net.whydah.sso" />
 
     <mvc:annotation-driven />
 

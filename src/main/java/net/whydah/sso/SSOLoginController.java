@@ -7,9 +7,11 @@ import net.whydah.sso.data.WhydahUserTokenId;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,8 +66,10 @@ public class SSOLoginController {
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute("TokenID", userTokenId);
             model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
+            return "welcome";
+        } else {
+            throw new UnauthorizedException();
         }
-        return "welcome";
     }
 
     @RequestMapping("/action")
@@ -113,3 +117,8 @@ public class SSOLoginController {
     }
 
 }
+
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason="Not authorized")
+class UnauthorizedException extends RuntimeException {
+}
+

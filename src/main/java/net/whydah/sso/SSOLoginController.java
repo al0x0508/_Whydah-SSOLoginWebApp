@@ -118,7 +118,4 @@ public class SSOLoginController {
 
 }
 
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason="Not authorized")
-class UnauthorizedException extends RuntimeException {
-}
 

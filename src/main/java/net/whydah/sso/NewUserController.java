@@ -30,6 +30,7 @@ public class NewUserController {
 
     @RequestMapping("/signup")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
+        logger.trace("/signup entry");
         String clientRedirectURI = request.getParameter("redirectURI");
         model.addAttribute("logoURL", LOGOURL);
 
@@ -40,6 +41,7 @@ public class NewUserController {
 
     @RequestMapping("/createnewuser")
     public String createNewUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
+        logger.trace("/createnewuser entry");
         model.addAttribute("logoURL", LOGOURL);
         String fbId = "";
         String username = "user";

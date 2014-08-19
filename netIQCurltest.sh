@@ -1,0 +1,1 @@
+curl -k --header "FNAME: Thor Henning" --header "LNAME: Hetland"  --header "DEPARTMENT: SE" --header "USERNAME: thor-henning.hetland@altran.com"  --header "EMAIL: thor-henning.hetland@altran.com" --header "Via: 1.1 cv-competence.altran.com (Access Gateway-ag-2EBD8AE7CD9A4BDF-348634)"  https://whydah.altrancloud.com/sso/netiqauth

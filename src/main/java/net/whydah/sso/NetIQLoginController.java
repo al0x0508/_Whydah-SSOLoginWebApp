@@ -91,7 +91,7 @@ public class NetIQLoginController {
             // Hvis ja, hent whydah user token og legg ticket på model eller på returURL.
             String userTokenXml = ssoHelper.getUserToken(userCredential, ticket);
 
-            logger.trace("NetIQ respsonse:"+userTokenXml);
+            logger.debug("NetIQ respsonse:"+userTokenXml);
             if (userTokenXml == null) {
                 logger.info("getUserToken failed. Try to create new user using netiq credentials.");
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).

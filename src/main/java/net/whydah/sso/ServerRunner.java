@@ -52,10 +52,8 @@ public class ServerRunner {
         ServerRunner serverRunner = new ServerRunner();
         serverRunner.start();
 
-       logger.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " +serverRunner.server.getConnectors()[0].getLocalPort());
+        logger.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " +serverRunner.server.getConnectors()[0].getLocalPort());
 
-        logger.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " +
-            serverRunner.server.getConnectors()[0].getLocalPort());
         int port = serverRunner.server.getConnectors()[0].getLocalPort();
         logger.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
         logger.info("Status: http://localhost:{}{}",port,CONTEXT);

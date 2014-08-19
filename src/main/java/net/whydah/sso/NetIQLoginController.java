@@ -65,7 +65,7 @@ public class NetIQLoginController {
             }
             NetIQHelper helper = new NetIQHelper();
             logger.info(helper.getNetIQUserAsXml(request));
-            Map.Entry<String, String> pair = helper.loginAndCreateNetIQUser(request);
+            Map.Entry<String, String> pair = helper.findNetIQUserFromRequest(request);
             if (pair == null) {
                 logger.error("Could not fetch netiq user.");
                 //TODO Do we need to add client redirect URI here?
@@ -91,6 +91,7 @@ public class NetIQLoginController {
             // Hvis ja, hent whydah user token og legg ticket på model eller på returURL.
             String userTokenXml = ssoHelper.getUserToken(userCredential, ticket);
 
+            logger.trace("NetIQ respsonse:"+userTokenXml);
             if (userTokenXml == null) {
                 logger.info("getUserToken failed. Try to create new user using netiq credentials.");
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).

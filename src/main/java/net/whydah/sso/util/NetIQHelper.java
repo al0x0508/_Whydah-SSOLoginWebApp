@@ -64,7 +64,7 @@ public class NetIQHelper {
     }
 
 
-    public  Map.Entry<String, String> loginAndCreateNetIQUser(HttpServletRequest request) {
+    public  Map.Entry<String, String> findNetIQUserFromRequest(HttpServletRequest request) {
         String accessToken = request.getHeader("VIA");
         String netIQUser = getUserName(request);
         Map.Entry<String, String> pair = new AbstractMap.SimpleImmutableEntry<>(accessToken, netIQUser);

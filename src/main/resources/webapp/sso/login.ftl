@@ -6,23 +6,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=320, initial-scale=1, maximum-scale=1"/>
         
-    <style type="text/css">
-        .login-box {
-            width: 45%;
-            padding: 1em;
-            min-width: 300px;
-            display: inline-block;
-            vertical-align: top;
-            margin-bottom: 1em;
-            background-color: #fff;
-            border-radius: 3px;
-        }
-        .button-login {
-            width: 80%;
-            padding-left: .5em;
-            padding-right: .5em;
-        }
-    </style>
     
 </head>
 <body>

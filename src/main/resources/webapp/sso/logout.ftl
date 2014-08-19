@@ -3,7 +3,7 @@
 <head>
     <title>Whydah Log out</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="/css/whydah.css" TYPE="text/css"/>
+    <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
 </head>
 <body>
 logout

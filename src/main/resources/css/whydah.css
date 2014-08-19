@@ -88,23 +88,6 @@ a:hover {
     background: #ffd7d7;
 }
 
-#signup-box {
-    color: #000;
-    background: #ffe640;
-    text-align: center;
-    margin: 20px 0;
-    padding: 0;
-}
-
-#signup-box a {
-    color: #990000;
-    font-weight: bold;
-}
-
-#signup-box p {
-    padding: 10px;
-}
-
 #menu {
     font-size: 0.85em;
     color: #aeaeae;
@@ -167,6 +150,39 @@ a:hover {
     font-size: 0.8em;
 }
 
+/* Signup and reset password */
+#signup-page input#user, #signup-page input#username, #resetpassword-page input#user {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    /*display: ; */
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+#signup-box {
+    width: 45%;
+    padding: 1em;
+    min-width: 300px;
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 1em;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+#signup-box a {
+    color: #990000;
+    font-weight: bold;
+}
+
+#signup-box p {
+    padding: 10px;
+}
+
+
 /* ERROR */
 
 #error-page {
@@ -183,6 +199,21 @@ a:hover {
 }
 
 /* LOGIN */
+.login-box {
+    width: 45%;
+    padding: 1em;
+    min-width: 300px;
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 1em;
+    background-color: #fff;
+    border-radius: 3px;
+}
+.button-login {
+    width: 80%;
+    padding-left: .5em;
+    padding-right: .5em;
+}
 #login-page p {
     margin-bottom: .5em;
 }

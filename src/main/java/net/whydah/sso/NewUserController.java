@@ -2,6 +2,7 @@ package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.data.UserCredential;
+import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +32,14 @@ public class NewUserController {
     @RequestMapping("/signup")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
         logger.trace("/signup entry");
-        String clientRedirectURI = request.getParameter("redirectURI");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        logger.info("Requested signup - email:"+email+"  username:"+username);
+
+        // TODO   Post signup-request to UAS
+
         model.addAttribute("logoURL", LOGOURL);
-
-        model.addAttribute("redirect", clientRedirectURI);
-
-        return "newuser";
+        return "login";
     }
 
     @RequestMapping("/createnewuser")

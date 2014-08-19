@@ -22,10 +22,10 @@
                 <div style="margin:0;padding:0;display:inline"></div>
                 <p>You will receive an email with instructions of how to set your password.</p>
                 <h4><label for="user">Email:</label></h4>
-                <input id="user" name="user" size="30" type="text" placeholder="Email"/>
+                <input id="email" name="email" size="30" type="text" placeholder="Email"/>
                 <br/><br/>
                 <h4><label for="username">Username:</label></h4>
-                <input id="username" name="user" size="30" type="text" placeholder="Username"/>
+                <input id="username" name="username" size="30" type="text" placeholder="Username"/>
                 <br/><br/>
                 <input class="button button-login" name="commit" type="submit" value="Register new user"/>
             </form>

@@ -56,7 +56,7 @@ public class ServerRunner {
 
         int port = serverRunner.server.getConnectors()[0].getLocalPort();
         logger.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
-        logger.info("Status: http://localhost:{}{}",port,CONTEXT);
+        logger.info("Status: http://localhost:{}{}/",port,CONTEXT);
         logger.info("WADL:   http://localhost:{}{}/application.wadl",port,CONTEXT);
 
         serverRunner.join();

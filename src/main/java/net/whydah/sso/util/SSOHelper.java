@@ -361,7 +361,7 @@ public class SSOHelper {
         formData.add("usercredential", userCredential.toXML());
         String facebookUserAsXml = FacebookHelper.getFacebookUserAsXml(fbUser, fbAccessToken);
         formData.add("fbuser", facebookUserAsXml);
-        logger.debug("createAndLogonUser with fbuser XML: " + facebookUserAsXml);
+        logger.debug("createAndLogonUser with fbuser XML: " + facebookUserAsXml+"\nformData"+formData);
         logger.info("createAndLogonUser username=" + fbUser.getUsername());
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
@@ -402,7 +402,7 @@ public class SSOHelper {
         NetIQHelper helper = new NetIQHelper();
         String netIQUserAsXml = helper.getNetIQUserAsXml(request);
         formData.add("fbuser", netIQUserAsXml);
-        logger.debug("createAndLogonUser with netiquser XML: " + netIQUserAsXml);
+        logger.debug("createAndLogonUser with netiquser XML: " + netIQUserAsXml+"\nformData"+formData);
         logger.info("createAndLogonUser username=" + helper.getUserName(request));
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 

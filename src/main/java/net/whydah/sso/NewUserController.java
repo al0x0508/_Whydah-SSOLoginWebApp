@@ -39,7 +39,7 @@ public class NewUserController {
         // TODO   Post signup-request to UAS
 
         model.addAttribute("logoURL", LOGOURL);
-        return "login";
+        return "newuser";
     }
 
     @RequestMapping("/createnewuser")

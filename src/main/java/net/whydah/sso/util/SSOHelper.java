@@ -399,9 +399,11 @@ public class SSOHelper {
 
     public String createAndLogonUser(String netiqUserName, String netiqAccessToken, UserCredential userCredential, String ticket,HttpServletRequest request) {
         logonApplication();
-        logger.debug("apptokenid: {}", myAppTokenId);
+        logger.debug("createAndLogonUser - apptokenid: {}", myAppTokenId);
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId +"/"+ ticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ ticket + "/createuser");
+        logger.debug("createUserResource:"+createUserResource.toString());
+
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);

@@ -55,6 +55,7 @@ public class NetIQLoginController {
             model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
             model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
             model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
+            model.addAttribute("logoURL", LOGOURL);
             try {
                 model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
                 model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
@@ -100,7 +101,6 @@ public class NetIQLoginController {
                 if (userTokenXml == null) {
                     logger.error("createAndLogonUser failed. Redirecting to login page.");
                     String redirectURI = request.getParameter("redirectURI");
-                    model.addAttribute("logoURL", LOGOURL);
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
                     ModelHelper.setEnabledLoginTypes(ssoHelper,model);
@@ -112,8 +112,6 @@ public class NetIQLoginController {
             Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
             response.addCookie(cookie);
 
-            String LOGOURL="/sso/images/site-logo.png";
-            model.addAttribute("logoURL", LOGOURL);
             String clientRedirectURI = request.getParameter("redirectURI");
             clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
 

@@ -359,7 +359,9 @@ public class SSOHelper {
         logonApplication();
         logger.debug("apptokenid: {}", myAppTokenId);
 
+
         WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("iam/" + myAppTokenId +"/"+ ticket + "/createuser");
+        logger.trace("createUserResource:"+createUserResource.toString());
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);

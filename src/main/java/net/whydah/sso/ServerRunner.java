@@ -56,11 +56,10 @@ public class ServerRunner {
 
         logger.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " +
             serverRunner.server.getConnectors()[0].getLocalPort());
-        String contextpath="sso";
         int port = serverRunner.server.getConnectors()[0].getLocalPort();
         logger.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
-        logger.info("Status: http://localhost:{}{}",port,contextpath);
-        logger.info("WADL:   http://localhost:{}{}/application.wadl",port,contextpath);
+        logger.info("Status: http://localhost:{}{}",port,CONTEXT);
+        logger.info("WADL:   http://localhost:{}{}/application.wadl",port,CONTEXT);
 
         serverRunner.join();
     }

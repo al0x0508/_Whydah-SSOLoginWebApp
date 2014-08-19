@@ -12,7 +12,7 @@
             <div id="logo">
                 <img src="${logoURL}" alt="Whydah User Registration"/>
                 <h2>Register here</h2>                
-            </div>
+            </div> 
         <#if error??>
                 <div id="errordiv"><p id="error">${error!}</p></div>
         </#if>

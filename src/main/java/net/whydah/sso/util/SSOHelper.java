@@ -41,6 +41,8 @@ public class SSOHelper {
     private final URI tokenServiceUri;
     private String myAppTokenXml;
     private String myAppTokenId;
+    private final String applicationid;
+    private final String applicationsecret;
 
 
     private final LoginTypes enabledLoginTypes;
@@ -50,6 +52,8 @@ public class SSOHelper {
             tokenServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("securitytokenservice")).build();
             this.enabledLoginTypes = new LoginTypes(AppConfig.readProperties());
             cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
+            applicationid = AppConfig.readProperties().getProperty("applicationid");
+            applicationsecret= AppConfig.readProperties().getProperty("applicationsecret");
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getLocalizedMessage(), e);
         }
@@ -187,8 +191,9 @@ public class SSOHelper {
         WebResource logonResource = tokenServiceClient.resource(tokenServiceUri).path("logon");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         ApplicationCredential appCredential = new ApplicationCredential();
-        appCredential.setApplicationID("Whydah SSO LoginService");
-        appCredential.setApplicationPassord("secret dummy");
+        appCredential.setApplicationID(applicationid);
+        appCredential.setApplicationPassord(applicationsecret);
+
 
         formData.add("applicationcredential", appCredential.toXML());
         ClientResponse response;

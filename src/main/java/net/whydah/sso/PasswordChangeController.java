@@ -90,7 +90,7 @@ public class PasswordChangeController {
         model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ssoHelper.getMyAppTokenID()+"/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
         log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");

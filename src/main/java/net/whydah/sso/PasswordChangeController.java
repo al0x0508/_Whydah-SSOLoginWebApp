@@ -32,7 +32,7 @@ public class PasswordChangeController {
     String MY_APP_URI = "";
 
 
-    //TODO Should go via TokenService.
+    //TODO Should go via UAS.
     public PasswordChangeController() throws IOException {
         uibServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useridentitybackend")).build();
         Properties properties = AppConfig.readProperties();

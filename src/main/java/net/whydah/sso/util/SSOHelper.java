@@ -45,6 +45,12 @@ public class SSOHelper {
     private final String applicationsecret;
 
 
+    public String getMyAppTokenID(){
+        if (myAppTokenId==null){
+            logonApplication();
+        }
+        return myAppTokenId;
+    }
     private final LoginTypes enabledLoginTypes;
     
     public SSOHelper() {

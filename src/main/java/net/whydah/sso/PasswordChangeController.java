@@ -56,7 +56,8 @@ public class PasswordChangeController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/reset/username/" + user);
+//        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
@@ -85,10 +86,11 @@ public class PasswordChangeController {
     @RequestMapping("/dochangepassword/*")
     public String doChangePasswordFromLink(HttpServletRequest request, Model model) {
         log.trace("doChangePasswordFromLink was called");
+        // +@Path("/password/{applciationtokenid}")   @Path("/reset/username/{username}")
         model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
         log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");

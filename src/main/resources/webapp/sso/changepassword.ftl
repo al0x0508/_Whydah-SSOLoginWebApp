@@ -18,7 +18,7 @@
         <form action="../dochangepassword/${token}" method="POST" class="new_user_session">
             <div style="margin:0;padding:0;display:inline"></div>
 
-            <p><label for="password">New password for ${user}</label>
+            <p><label for="password">New password for ${username}</label>
                 <input id="user_session_password" name="newpassword" size="30" type="password"/></p>
             <p><input class="button" name="commit" type="submit" value="Change password"/></p>
         </form>

@@ -22,7 +22,7 @@
 
                 <p>You will receive an email containing instructions how to set a new password.</p>
                 <h4><label for="user">Username</label></h4>
-                <input id="user" name="user" size="30" type="text"/ placeholder="Username">
+                <input id="username" name="username" size="30" type="text"/ placeholder="Username">
                 <br/><br/>
                 <input class="button button-login" name="commit" type="submit" value="Request new password"/></p>
             </form>

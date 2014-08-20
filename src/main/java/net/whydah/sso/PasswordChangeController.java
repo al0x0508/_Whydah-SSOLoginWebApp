@@ -50,7 +50,7 @@ public class PasswordChangeController {
     public String resetpassword(HttpServletRequest request, Model model) {
         log.trace("resetpassword was called");
         model.addAttribute("logoURL", LOGOURL);
-        String user = request.getParameter("user");
+        String user = request.getParameter("username");
         if (user == null) {
             return "resetpassword";
         }
@@ -61,7 +61,7 @@ public class PasswordChangeController {
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
-            model.addAttribute("error", error);
+            model.addAttribute("error", error+"\nusername:"+user);
             return "resetpassword";
         }
         return "resetpassworddone";
@@ -73,7 +73,7 @@ public class PasswordChangeController {
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
-        model.addAttribute("user", passwordChangeToken.getUser());
+        model.addAttribute("username", passwordChangeToken.getUser());
         model.addAttribute("token", passwordChangeToken.getToken());
         if (!passwordChangeToken.isValid()) {
             return "changepasswordtokentimedout";
@@ -93,11 +93,11 @@ public class PasswordChangeController {
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");
         model.addAttribute("logoURL", LOGOURL);
-        model.addAttribute("user", passwordChangeToken.getUser());
+        model.addAttribute("username", passwordChangeToken.getUser());
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
-            model.addAttribute("error", error);
+            model.addAttribute("error", error+"\nusername:"+passwordChangeToken.getUser());
             model.addAttribute("token", passwordChangeToken.getToken());
             return "changepassword";
         }

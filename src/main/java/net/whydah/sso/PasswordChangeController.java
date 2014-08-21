@@ -58,7 +58,7 @@ public class PasswordChangeController {
         model.addAttribute("logoURL", LOGOURL);
         WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ssoHelper.getMyAppTokenID()+"/reset/username/" + user);
 //        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
-        ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);

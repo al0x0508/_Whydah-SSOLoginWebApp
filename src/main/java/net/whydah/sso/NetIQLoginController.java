@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -62,6 +63,11 @@ public class NetIQLoginController {
             } catch (IOException ioe) {
                 model.addAttribute("netIQtext", "NetIQ");
                 model.addAttribute("netIQimage", "images/netiqlogo.png");
+            }
+            Enumeration headerNames = request.getHeaderNames();
+            while(headerNames.hasMoreElements()) {
+                String headerName = (String)headerNames.nextElement();
+                logger.trace("HTTP header - Name:{}  Header: {}",headerName,request.getHeader(headerName));
             }
             NetIQHelper helper = new NetIQHelper();
             logger.info(helper.getNetIQUserAsXml(request));

@@ -50,13 +50,11 @@ public class NetIQLoginController {
 
         @RequestMapping("/netiqauth")
         public String netiqAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-            model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
-            model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
-            model.addAttribute("netIQLoginEnabled", ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled());
-            model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
-            model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
-            model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
+            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+
             model.addAttribute("logoURL", LOGOURL);
+
+
             try {
                 model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
                 model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));
@@ -69,6 +67,8 @@ public class NetIQLoginController {
                 String headerName = (String)headerNames.nextElement();
                 logger.trace("HTTP header - Name:{}  Header: {}",headerName,request.getHeader(headerName));
                 if (!NetIQHelper.verifyNetIQHeader(headerName,request.getHeader(headerName))){
+                    model.addAttribute("loginError", "Could not log in because NetIQ redirect verification failure.");
+
                     return "login";
                 }
             }
@@ -76,9 +76,9 @@ public class NetIQLoginController {
             logger.info(helper.getNetIQUserAsXml(request));
             Map.Entry<String, String> pair = helper.findNetIQUserFromRequest(request);
             if (pair == null) {
-                logger.error("Could not fetch netiq user.");
+                logger.error("Could not find NetIQ user.");
                 //TODO Do we need to add client redirect URI here?
-                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+                model.addAttribute("loginError", "Could not find NetIQ user.");
                 return "login";
             }
             String netiqAccessToken = pair.getKey();
@@ -90,7 +90,7 @@ public class NetIQLoginController {
             } catch(IllegalArgumentException iae) {
                 logger.error(iae.getLocalizedMessage());
                 //TODO Do we need to add client redirect URI here?
-                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+                model.addAttribute("loginError", "Illegal userdata from netIQ.");
                 return "login";
             }
 

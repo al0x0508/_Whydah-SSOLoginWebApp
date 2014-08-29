@@ -68,6 +68,9 @@ public class NetIQLoginController {
             while(headerNames.hasMoreElements()) {
                 String headerName = (String)headerNames.nextElement();
                 logger.trace("HTTP header - Name:{}  Header: {}",headerName,request.getHeader(headerName));
+                if (!NetIQHelper.verifyNetIQHeader(headerName,request.getHeader(headerName))){
+                    return "login";
+                }
             }
             NetIQHelper helper = new NetIQHelper();
             logger.info(helper.getNetIQUserAsXml(request));

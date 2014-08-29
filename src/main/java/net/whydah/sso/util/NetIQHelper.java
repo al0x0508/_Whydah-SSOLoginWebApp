@@ -35,7 +35,7 @@ public class NetIQHelper {
             if (expectedValue!=null && expectedValue.length()>1){
                 if (value.indexOf(expectedValue,0)<0){
                     logger.warn("NetIQ redirect verification failed.  Header: "+headername+" , expected: "+expectedValue+" , found "+value+" ");
-                    return true;
+                    return false;
                 }
             }
         } catch (IOException ioe){

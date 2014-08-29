@@ -1,9 +1,11 @@
 package net.whydah.sso.util;
 
+import net.whydah.sso.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 public class NetIQHelper {
@@ -26,6 +28,20 @@ public class NetIQHelper {
 
     }
 
+    public static boolean verifyNetIQHeader(String headername,String value){
+        try {
+            String expectedValue = AppConfig.readProperties().getProperty(headername).toString();
+            if (expectedValue!=null && expectedValue.length()>1){
+                if (value.indexOf(expectedValue,0)<0){
+                    logger.warn("NetIQ redirect verification failed.  Header: "+headername+" , expected: "+expectedValue+" , found "+value+" ");
+                    return true;
+                }
+            }
+        } catch (IOException ioe){
+            logger.warn("Not found NETIQ header for {}",headername);
+        }
+        return true;
+    }
     public Enumeration getExpectedHeaders() {
 
         return Collections.enumeration(expectedHeaders.keySet());

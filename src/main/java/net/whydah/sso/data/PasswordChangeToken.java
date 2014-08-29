@@ -2,13 +2,6 @@ package net.whydah.sso.data;
 
 import com.sun.jersey.core.util.Base64;
 
-/**
-* Created by IntelliJ IDEA.
-* User: asbkar
-* Date: 4/7/11
-* Time: 10:15 AM
-* To change this template use File | Settings | File Templates.
-*/
 public class PasswordChangeToken {
     private final String user;
     private final long timeout;

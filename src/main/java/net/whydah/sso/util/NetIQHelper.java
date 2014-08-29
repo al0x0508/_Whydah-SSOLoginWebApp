@@ -31,7 +31,7 @@ public class NetIQHelper {
     public static boolean verifyNetIQHeader(String headername,String value){
         try {
             Properties properties = AppConfig.readProperties();
-            String expectedValue = properties.getProperty(headername);
+            String expectedValue = properties.getProperty("logintype.netiq.header."+headername);
             if (expectedValue!=null && expectedValue.length()>1){
                 if (value.indexOf(expectedValue,0)<0){
                     logger.warn("NetIQ redirect verification failed.  Header: "+headername+" , expected: "+expectedValue+" , found "+value+" ");

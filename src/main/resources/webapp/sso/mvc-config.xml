@@ -20,7 +20,7 @@
     <bean id="freemarkerConfig"
           class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
         <property name="templateLoaderPath" value="classpath:webapp/sso/" />
-        <!--<property name="templateLoaderPath" value="file:///ssd/projects/SSOLoginService/src/main/resources/webapp/sso/" />-->
+        <!--<property name="templateLoaderPath" value="file:///ssd/projects/SSOLoginWebApp/src/main/resources/webapp/sso/" />-->
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 

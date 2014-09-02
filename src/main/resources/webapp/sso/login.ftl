@@ -32,7 +32,7 @@
                 <form action="action" class="new_user_session" name="getusertoken" method="post">
                     <div id="normal-login">
                         <h4><label for="user_session_login">Username</label></h4>
-                        <input id="user_session_login" name="user" type="text" placeholder="Username">
+                        <input id="user_session_login" name="user" type="text" placeholder="Username" autofocus>
                         <br/><br/>
                         <h4><label for="user_session_password">Password</label></h4>
                         <input id="user_session_password" name="password" type="password" autocomplete="off" placeholder="Password">
@@ -55,7 +55,6 @@
                     </p>
                 </form> 
             </div>
-            <body OnLoad="document.getusertoken.user.focus();">
         </#if>
     
         <#if facebookLoginEnabled == true || netIQLoginEnabled == true || omniLoginEnabled == true>

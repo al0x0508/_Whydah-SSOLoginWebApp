@@ -54,7 +54,8 @@
                         <a href="resetpassword" class="new_password">Forgot password</a>
                     </p>
                 </form> 
-            </div>           
+            </div>
+            <body OnLoad="document.getusertoken.user.focus();">
         </#if>
     
         <#if facebookLoginEnabled == true || netIQLoginEnabled == true || omniLoginEnabled == true>

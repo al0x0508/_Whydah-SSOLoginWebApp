@@ -90,17 +90,19 @@ public class SSOLoginController {
         }
         response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
 
+        model.addAttribute("redirectURI", redirectURI);
+        // Action use redirect...
+        model.addAttribute("redirect", redirectURI);
+        logger.info("Redirecting to {}", redirectURI);
+        model.addAttribute("redirectURI", redirectURI);
+
+        // ticket on redirect
         if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
 
         }
-        model.addAttribute("redirectURI", redirectURI);
-        // Action use redirect...
-        model.addAttribute("redirect", redirectURI);
-        logger.info("Redirecting to {}", redirectURI);
-        model.addAttribute("redirectURI", redirectURI);
         return "action";
     }
 

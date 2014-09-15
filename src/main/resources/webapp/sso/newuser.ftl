@@ -27,6 +27,15 @@
                 <h4><label for="username">Username:</label></h4>
                 <input id="username" name="username" size="30" type="text" placeholder="Username"/>
                 <br/><br/>
+                <h4><label for="firstname">First Name:</label></h4>
+                <input id="firstname" name="firstname" size="30" type="text" placeholder="firstname"/>
+                <br/><br/>
+                <h4><label for="lastname">Last Name:</label></h4>
+                <input id="lastname" name="lastname" size="30" type="text" placeholder="lastname"/>
+                <br/><br/>
+                <h4><label for="cellphone">Cell phone:</label></h4>
+                <input id="cellphone" name="cellphone" size="30" type="text" placeholder="cellphone"/>
+                <br/><br/>
                 <input class="button button-login" name="commit" type="submit" value="Register new user"/>
             </form>
         </div>

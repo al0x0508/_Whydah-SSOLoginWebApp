@@ -20,12 +20,12 @@ public class LoginTypes {
     private final boolean signupEnabled;
 
     public LoginTypes(Properties properties) {
-		facebookLoginEnabled = ENABLED.equals(properties.getProperty("logintype.facebook"));
-		openIdLoginEnabled = ENABLED.equals(properties.getProperty("logintype.openid"));
-		omniLoginEnabled = ENABLED.equals(properties.getProperty("logintype.omni"));
-        newIQLoginEnabled =  ENABLED.equals(properties.getProperty("logintype.netiq"));
-		userpasswordLoginEnabled = ENABLED.equals(properties.getProperty("logintype.userpassword"));
-        signupEnabled = TRUE.equals(properties.getProperty("signupEnabled"))
+		facebookLoginEnabled = ENABLED.equalsIgnoreCase(properties.getProperty("logintype.facebook"));
+		openIdLoginEnabled = ENABLED.equalsIgnoreCase(properties.getProperty("logintype.openid"));
+		omniLoginEnabled = ENABLED.equalsIgnoreCase(properties.getProperty("logintype.omni"));
+        newIQLoginEnabled =  ENABLED.equalsIgnoreCase(properties.getProperty("logintype.netiq"));
+		userpasswordLoginEnabled = ENABLED.equalsIgnoreCase(properties.getProperty("logintype.userpassword"));
+        signupEnabled = TRUE.equalsIgnoreCase(properties.getProperty("signupEnabled"))
         ;
 
         logger.debug(String.format("Signup is %6s, Facebook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."

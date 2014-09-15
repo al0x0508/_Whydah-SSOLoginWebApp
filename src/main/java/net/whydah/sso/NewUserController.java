@@ -34,8 +34,11 @@ public class NewUserController {
         logger.trace("/signup entry");
         String username = request.getParameter("username");
         String email = request.getParameter("email");
+        String firstname = request.getParameter("firstname");
+        String lastname = request.getParameter("lastname");
+        String cellphone = request.getParameter("cellphone");
         if (email!=null && username != null) {
-            logger.info("Requested signup - email:" + email + "  username:" + username);
+            logger.info("Requested signup - email: "+email+"  username: "+username+"  firstname: "+firstname+"  lastname: "+lastname+"  cellphone: "+cellphone+" ");
             // TODO   Post signup-request to UAS
         }
 

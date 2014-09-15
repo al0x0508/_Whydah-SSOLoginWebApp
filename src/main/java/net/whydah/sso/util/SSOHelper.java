@@ -149,19 +149,13 @@ public class SSOHelper {
     }
 
 
-    public String appendTokenIDToRedirectURI(String redirectURI, String usertokenId) {
-        char paramSep = redirectURI.contains("?") ? '&' : '?';
-        redirectURI += paramSep + SSOHelper.USER_TOKEN_ID + '=' + usertokenId;
-        return redirectURI;
-    }
-
     public String appendTicketToRedirectURI(String redirectURI, String userticket) {
         char paramSep = redirectURI.contains("?") ? '&' : '?';
         redirectURI += paramSep + SSOHelper.USERTICKET + '=' + userticket;
         return redirectURI;
     }
 
-    public WhydahUserTokenId getTokenidFromCookie(HttpServletRequest request) {
+    public WhydahUserTokenId getUserTokenIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         boolean found = false;
         WhydahUserTokenId foundTokenId = WhydahUserTokenId.fromTokenId("");

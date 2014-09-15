@@ -7,11 +7,9 @@ import net.whydah.sso.data.WhydahUserTokenId;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +38,7 @@ public class SSOLoginController {
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("redirectURI", redirectURI);
 
-        WhydahUserTokenId usertokenId = ssoHelper.getTokenidFromCookie(request);
+        WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request);
         if (usertokenId.isValid()) {
             // TODO:  must get ticketid if we want to add to redirectsecurely
             //redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
@@ -62,7 +60,7 @@ public class SSOLoginController {
         if (userTicket != null && userTicket.length() < 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
         }
-        String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
+        String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTokenId);
             model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByTokenID(userTicket));
@@ -82,26 +80,25 @@ public class SSOLoginController {
         String userTokenXml = ssoHelper.getUserToken(user, userTicket);
 
         if (userTokenXml == null) {
-            logger.info("getUserToken failed. Redirecting to login.");
+            logger.warn("getUserToken failed. Redirecting to login.");
             model.addAttribute("loginError", "Could not log in.");
             ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             model.addAttribute("redirectURI", redirectURI);
             return "login";
         }
-        response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
 
+        response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
 
         // ticket on redirect
         if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
-
         }
         // Action use redirect...
         model.addAttribute("redirect", redirectURI);
-        logger.info("Redirecting to {}", redirectURI);
         model.addAttribute("redirectURI", redirectURI);
+        logger.info("Redirecting to {}", redirectURI);
         return "action";
     }
 

@@ -64,7 +64,7 @@ public class SSOLoginController {
         }
         String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
-            model.addAttribute("TokenID", userTokenId);
+            model.addAttribute(SSOHelper.USERTICKET, userTokenId);
             model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
             return "welcome";
         } else {
@@ -78,8 +78,8 @@ public class SSOLoginController {
         String redirectURI = getRedirectURI(request);
         logger.info("Found redirect:", redirectURI);
         model.addAttribute("logoURL", LOGOURL);
-        String ticketID = UUID.randomUUID().toString();
-        String userTokenXml = ssoHelper.getUserToken(user, ticketID);
+        String userTicket = UUID.randomUUID().toString();
+        String userTokenXml = ssoHelper.getUserToken(user, userTicket);
 
         if (userTokenXml == null) {
             logger.info("getUserToken failed. Redirecting to login.");
@@ -100,7 +100,7 @@ public class SSOLoginController {
         if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
-            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, ticketID);
+            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
 
         }
         return "action";

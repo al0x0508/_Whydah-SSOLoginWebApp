@@ -9,7 +9,7 @@
 Login successful. <br/><br/>
 <br/>
 <br/>
-TicketID: ${TicketID!"No ticketId set"}
+Ticket: ${userticket!"No userticket set"}
 <br/>
 <br/>
 TokenID: ${TokenID!"No tokenId set"}

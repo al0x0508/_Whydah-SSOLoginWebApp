@@ -63,7 +63,7 @@ public class SSOLoginController {
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTokenId);
-            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByTokenID(userTicket));
+            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTicket(userTicket));
             return "welcome";
         } else {
             throw new UnauthorizedException();

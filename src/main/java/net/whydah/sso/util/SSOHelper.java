@@ -291,7 +291,7 @@ public class SSOHelper {
         throw new RuntimeException(authenticationFailedMessage);
     }
 
-    public String getUserTokenByTokenID(String tokenId) {
+    public String getUserTokenByUserTokenID(String usertokenId) {
         if (ApplicationMode.DEV.equals(ApplicationMode.getApplicationMode())) {
             return getDummyToken();
         }
@@ -300,7 +300,7 @@ public class SSOHelper {
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyusertokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("usertokenid", tokenId);
+        formData.add("usertokenid", usertokenId);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");

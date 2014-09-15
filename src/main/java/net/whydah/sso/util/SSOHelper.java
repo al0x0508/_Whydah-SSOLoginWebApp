@@ -33,6 +33,7 @@ public class SSOHelper {
 
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     public static final String USERTICKET = "userticket";
+    public static final String USERTOKEN = "usertoken";
     public static final String USER_TOKEN_ID = "usertokenid";
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
     private static String cookiedomain = ".whydah.net";
@@ -154,9 +155,9 @@ public class SSOHelper {
         return redirectURI;
     }
 
-    public String appendTicketToRedirectURI(String redirectURI, String ticket) {
+    public String appendTicketToRedirectURI(String redirectURI, String userticket) {
         char paramSep = redirectURI.contains("?") ? '&' : '?';
-        redirectURI += paramSep + SSOHelper.USERTICKET + '=' + ticket;
+        redirectURI += paramSep + SSOHelper.USERTICKET + '=' + userticket;
         return redirectURI;
     }
 
@@ -226,7 +227,7 @@ public class SSOHelper {
         return appTokenXML.substring(appTokenXML.indexOf(stag) + stag.length(), appTokenXML.indexOf(etag));
     }
 
-    public String getUserToken(UserCredential user, String ticket) {
+    public String getUserToken(UserCredential user, String userticket) {
         if (ApplicationMode.DEV.equals(ApplicationMode.getApplicationMode())){
             return getDummyToken();
         }
@@ -234,7 +235,7 @@ public class SSOHelper {
         logger.debug("apptokenid: {}", myAppTokenId);
 
         logger.debug("Log on with user credentials {}", user.toString());
-        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/" + ticket + "/usertoken");
+        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/" + userticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", user.toXML());
@@ -265,7 +266,7 @@ public class SSOHelper {
         //throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
 
-    public String getUserTokenByTicket(String ticket) {
+    public String getUserTokenByUserTicket(String userticket) {
         if (ApplicationMode.DEV.equals(ApplicationMode.getApplicationMode())){
             return getDummyToken();
         }
@@ -274,7 +275,7 @@ public class SSOHelper {
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
-        formData.add("ticket", ticket);
+        formData.add("userticket", userticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             throw new IllegalArgumentException("Login failed.");
@@ -361,12 +362,12 @@ public class SSOHelper {
         return response.getStatus() == OK.getStatusCode();
     }
 
-    public String createAndLogonUser(User fbUser, String fbAccessToken, UserCredential userCredential, String ticket) {
+    public String createAndLogonUser(User fbUser, String fbAccessToken, UserCredential userCredential, String userticket) {
         logonApplication();
         logger.debug("apptokenid: {}", myAppTokenId);
 
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ ticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ userticket + "/createuser");
         logger.trace("createUserResource:"+createUserResource.toString());
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -403,11 +404,11 @@ public class SSOHelper {
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
 
-    public String createAndLogonUser(String netiqUserName, String netiqAccessToken, UserCredential userCredential, String ticket,HttpServletRequest request) {
+    public String createAndLogonUser(String netiqUserName, String netiqAccessToken, UserCredential userCredential, String userticket,HttpServletRequest request) {
         logonApplication();
         logger.debug("createAndLogonUser - apptokenid: {}", myAppTokenId);
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ ticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ userticket + "/createuser");
         logger.debug("createUserResource:"+createUserResource.toString());
 
 

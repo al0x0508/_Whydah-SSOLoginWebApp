@@ -60,12 +60,12 @@ public class SSOLoginController {
     public String welcome(HttpServletRequest request, Model model) {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         if (userTicket != null && userTicket.length() < 3) {
-            model.addAttribute("TicketID", userTicket);
+            model.addAttribute(SSOHelper.USERTICKET, userTicket);
         }
         String userTokenId = ssoHelper.getTokenidFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTokenId);
-            model.addAttribute("Token", ssoHelper.getUserTokenByTokenID(userTicket));
+            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByTokenID(userTicket));
             return "welcome";
         } else {
             throw new UnauthorizedException();
@@ -90,11 +90,6 @@ public class SSOLoginController {
         }
         response.addCookie(ssoHelper.createUserTokenCookie(userTokenXml));
 
-        model.addAttribute("redirectURI", redirectURI);
-        // Action use redirect...
-        model.addAttribute("redirect", redirectURI);
-        logger.info("Redirecting to {}", redirectURI);
-        model.addAttribute("redirectURI", redirectURI);
 
         // ticket on redirect
         if (redirectURI.toLowerCase().contains("userticket")) {
@@ -103,6 +98,10 @@ public class SSOLoginController {
             redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
 
         }
+        // Action use redirect...
+        model.addAttribute("redirect", redirectURI);
+        logger.info("Redirecting to {}", redirectURI);
+        model.addAttribute("redirectURI", redirectURI);
         return "action";
     }
 

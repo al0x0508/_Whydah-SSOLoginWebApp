@@ -9,12 +9,12 @@
 Login successful. <br/><br/>
 <br/>
 <br/>
-Ticket: ${userticket!"No userticket set"}
+userTicket: ${userticket!"No userticket set"}
 <br/>
 <br/>
-TokenID: ${TokenID!"No tokenId set"}
+UserTokenID: ${UserTokenID!"No tokenId set"}
 <br/>
 <br/>
-Token: ${Token!"No token set"}
+UserToken: ${UserToken!"No token set"}
 </body>
 </html>

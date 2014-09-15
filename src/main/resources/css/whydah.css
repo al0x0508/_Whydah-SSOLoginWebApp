@@ -151,7 +151,7 @@ a:hover {
 }
 
 /* Signup and reset password */
-#signup-page input#user, #signup-page input#username, #resetpassword-page input#user {
+#signup-page input#user, #signup-page input#username, #signup-page input#firstname, #signup-page input#lastname, #signup-page input#cellphone, #resetpassword-page input#user {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1.1em;
     font-weight: bold;

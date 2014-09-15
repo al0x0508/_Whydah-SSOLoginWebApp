@@ -66,7 +66,7 @@ public class SSOLoginController {
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
-            model.addAttribute(SSOHelper.USERTICKET, "No tiket");
+            model.addAttribute(SSOHelper.USERTICKET, "No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
             model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTokenID(userTokenId));
             return "welcome";

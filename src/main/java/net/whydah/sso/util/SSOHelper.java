@@ -297,7 +297,7 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbytokenid");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyusertokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", tokenId);

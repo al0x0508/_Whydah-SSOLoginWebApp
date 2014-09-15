@@ -260,6 +260,29 @@ public class SSOHelper {
         //throw new RuntimeException("User authentication failed with status code " + response.getStatus());
     }
 
+    public boolean createTicketForUserTokenID(String userticket, String userTokenID){
+        logonApplication();
+        logger.debug("apptokenid: {}", myAppTokenId);
+
+        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId  + "/createuserticketbyusertokenid");
+        MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
+        formData.add("apptoken", myAppTokenXml);
+        formData.add("userticket", userticket);
+        formData.add("userTokenID", userTokenID);
+        ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
+        if (response.getStatus() == FORBIDDEN.getStatusCode()) {
+            logger.info("createTicketForUserTokenID failed with status code " + response.getStatus());
+            //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
+            return false;
+        }
+        if (response.getStatus() == OK.getStatusCode()) {
+            String responseXML = response.getEntity(String.class);
+            logger.debug("createTicketForUserTokenID OK with response {}", responseXML);
+            return true;
+        }
+        return false;
+
+    }
     public String getUserTokenByUserTicket(String userticket) {
         if (ApplicationMode.DEV.equals(ApplicationMode.getApplicationMode())){
             return getDummyToken();

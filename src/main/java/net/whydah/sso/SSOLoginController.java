@@ -40,13 +40,18 @@ public class SSOLoginController {
 
         WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request);
         if (usertokenId.isValid()) {
-            // TODO:  must get ticketid if we want to add to redirectsecurely
-            //redirectURI = ssoHelper.appendTokenIDToRedirectURI(redirectURI, usertokenId.getUsertokenid());
 
-            // Action use redirect - not redirectURI
-            model.addAttribute("redirect", redirectURI);
-            logger.info("Redirecting to {}", redirectURI);
-            return "action";
+            String userTicket = UUID.randomUUID().toString();
+            if (ssoHelper.createTicketForUserTokenID(userTicket,usertokenId.toString())){
+                redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
+
+                // Action use redirect - not redirectURI
+                model.addAttribute("redirect", redirectURI);
+                logger.info("Redirecting to {}", redirectURI);
+                return "action";
+
+            }
+
         }
         ModelHelper.setEnabledLoginTypes(ssoHelper,model);
         return "login";

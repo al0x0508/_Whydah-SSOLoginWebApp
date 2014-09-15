@@ -15,7 +15,7 @@ UserTicket: ${userticket!"No userticket set"}
 UserTokenID: ${usertokenid!"No usertokenid set"}
 <br/>
 <br/>
-UserToken: 
+UserToken:
 <pre>
 ${usertoken!"No usertoken set"}
 </pre>

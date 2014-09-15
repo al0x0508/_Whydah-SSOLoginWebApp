@@ -59,11 +59,14 @@ public class SSOLoginController {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         if (userTicket != null && userTicket.length() < 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
+            String usertoken= ssoHelper.getUserTokenByUserTicket(userTicket);
+            model.addAttribute(SSOHelper.USERTOKEN, usertoken);
+            model.addAttribute(SSOHelper.USER_TOKEN_ID, ssoHelper.getTokenId(usertoken) );
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
-            model.addAttribute(SSOHelper.USERTICKET, userTokenId);
-            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTicket(userTicket));
+            model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
+            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTokenID(userTokenId));
             return "welcome";
         } else {
             throw new UnauthorizedException();

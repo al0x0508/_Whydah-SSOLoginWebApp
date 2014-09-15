@@ -79,7 +79,7 @@ public class SSOHelper {
         logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
         return cookie;
     }
-    private String getTokenId(String userTokenXml) {
+    public String getTokenId(String userTokenXml) {
         if (userTokenXml == null) {
             logger.debug("Empty  userToken");
             return "";

@@ -241,7 +241,7 @@ a:hover {
 }
 #login-page input#user_session_login, #login-page input#user_session_password, #login-page
 input#user_session_openid_identifier, #login-page #email, #login-page input#user_email, #login-page input#user_password,
-#login-page input#user_password_confirmation, input#user_instapaper_rss {
+#login-page input#user_password_confirmation, input#user_instapaper_rss, input#username {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1.1em;
     font-weight: bold;

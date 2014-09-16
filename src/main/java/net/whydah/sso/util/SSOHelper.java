@@ -229,7 +229,7 @@ public class SSOHelper {
         logger.debug("apptokenid: {}", myAppTokenId);
 
         logger.debug("Log on with user credentials {}", user.toString());
-        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/" + userticket + "/usertoken");
+        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/" + userticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", user.toXML());
@@ -264,7 +264,7 @@ public class SSOHelper {
         logonApplication();
         logger.debug("apptokenid: {}", myAppTokenId);
 
-        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId  + "/createuserticketbyusertokenid");
+        WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId  + "/create_userticket_by_usertokenid");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("userticket", userticket);
@@ -289,7 +289,7 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyuserticket");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_userticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         logger.trace("getUserTokenByUserTicket - ticket: {} apptoken: {}",userticket,myAppTokenXml);
         formData.add("apptoken", myAppTokenXml);
@@ -322,7 +322,7 @@ public class SSOHelper {
         }
         logonApplication();
 
-        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/getusertokenbyusertokenid");
+        WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_usertokenid");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usertokenid", usertokenId);
@@ -349,7 +349,7 @@ public class SSOHelper {
 
     public void releaseUserToken(String userTokenId) {
         logonApplication();
-        WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/releaseusertoken");
+        WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/release_usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
@@ -365,7 +365,7 @@ public class SSOHelper {
             return false;
         }
         logonApplication();
-        WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId + "/validateusertokenid/" + usertokenid);
+        WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
         if(response.getStatus() == OK.getStatusCode()) {
             logger.debug("token validated");
@@ -386,7 +386,7 @@ public class SSOHelper {
         logger.debug("apptokenid: {}", myAppTokenId);
 
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ userticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId +"/"+ userticket + "/create_user");
         logger.trace("createUserResource:"+createUserResource.toString());
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -427,7 +427,7 @@ public class SSOHelper {
         logonApplication();
         logger.debug("createAndLogonUser - apptokenid: {}", myAppTokenId);
 
-        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("token/" + myAppTokenId +"/"+ userticket + "/createuser");
+        WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId +"/"+ userticket + "/create_user");
         logger.debug("createUserResource:"+createUserResource.toString());
 
 

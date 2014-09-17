@@ -63,6 +63,7 @@ public class SSOLoginController {
     public String welcome(HttpServletRequest request, Model model) {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         if (userTicket != null && userTicket.length() > 3) {
+            logger.trace("Using userticket");
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
             String userToken= ssoHelper.getUserTokenByUserTicket(userTicket);
             model.addAttribute(SSOHelper.USERTOKEN, userToken);

@@ -62,6 +62,7 @@ public class SSOLoginController {
     @RequestMapping("/welcome")
     public String welcome(HttpServletRequest request, Model model) {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
+        model.addAttribute("logoURL", LOGOURL);
         if (userTicket != null && userTicket.length() > 3) {
             logger.trace("Using userticket");
             model.addAttribute(SSOHelper.USERTICKET, userTicket);

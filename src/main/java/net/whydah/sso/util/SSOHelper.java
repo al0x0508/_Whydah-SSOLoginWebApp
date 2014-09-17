@@ -34,6 +34,7 @@ public class SSOHelper {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     public static final String USERTICKET = "userticket";
     public static final String USERTOKEN = "usertoken";
+    public static final String REALNAME = "realname";
     public static final String USER_TOKEN_ID = "usertokenid";
     private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
     private static String cookiedomain = ".whydah.net";
@@ -67,19 +68,19 @@ public class SSOHelper {
     }
 
     public Cookie createUserTokenCookie(String userTokenXml) {
-        String tokenID = getTokenId(userTokenXml);
-        Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, tokenID);
+        String usertokenID = getUserTokenId(userTokenXml);
+        Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, usertokenID);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         // cookie.setMaxAge(maxAge);
         cookie.setMaxAge(365 * 24 * 60 * 60);
         cookie.setPath("/");
         cookie.setDomain(cookiedomain);
-        cookie.setValue(tokenID);
+        cookie.setValue(usertokenID);
         // cookie.setSecure(true);
         logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
         return cookie;
     }
-    public String getTokenId(String userTokenXml) {
+    public String getUserTokenId(String userTokenXml) {
         if (userTokenXml == null) {
             logger.debug("Empty  userToken");
             return "";
@@ -129,7 +130,7 @@ public class SSOHelper {
 
     private String getTimestamp(String userTokenXml) {
         if (userTokenXml==null){
-            logger.debug("Empty  userToken");
+            logger.trace("Empty  userToken");
             return "";
         }
         try {
@@ -138,15 +139,39 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/whydahuser/identity/timestamp";
+            String expression = "/token/timestamp";
             XPathExpression xPathExpression = xPath.compile(expression);
-            System.out.println("token"+userTokenXml+"\nvalue:" +xPathExpression.evaluate(doc));
+            logger.trace("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("getTimestamp parsing error", e);
         }
         return "";
     }
+
+    public String getRealName(String userTokenXml){
+        if (userTokenXml==null){
+            logger.trace("Empty  userToken");
+            return "";
+        }
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/token/firstname";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            String expression2 = "//token/lastname";
+            XPathExpression xPathExpression2 = xPath.compile(expression2);
+            logger.trace("usertoken" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc) + " " + xPathExpression2.evaluate(doc));
+            return (xPathExpression.evaluate(doc)+" "+xPathExpression2.evaluate(doc));
+        } catch (Exception e) {
+            logger.error("getTimestamp parsing error", e);
+        }
+        return "";
+    }
+
 
 
     public String appendTicketToRedirectURI(String redirectURI, String userticket) {

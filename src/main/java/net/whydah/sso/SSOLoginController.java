@@ -1,7 +1,6 @@
 package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
-import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
@@ -65,20 +64,20 @@ public class SSOLoginController {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         if (userTicket != null && userTicket.length() > 3) {
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
-            String usertoken= ssoHelper.getUserTokenByUserTicket(userTicket);
-            model.addAttribute(SSOHelper.USERTOKEN, usertoken);
-            model.addAttribute(SSOHelper.USER_TOKEN_ID, ssoHelper.getTokenId(usertoken) );
-            model.addAttribute("logoURL", LOGOURL);
-            model.addAttribute("iammode", ApplicationMode.getApplicationMode());
+            String userToken= ssoHelper.getUserTokenByUserTicket(userTicket);
+            model.addAttribute(SSOHelper.USERTOKEN, userToken);
+            model.addAttribute(SSOHelper.REALNAME, ssoHelper.getRealName(userToken));
+            model.addAttribute(SSOHelper.USER_TOKEN_ID, ssoHelper.getUserTokenId(userToken) );
             return "welcome";
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
+            logger.trace("No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USERTICKET, "No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
-            model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTokenID(userTokenId));
-            model.addAttribute("logoURL", LOGOURL);
-            model.addAttribute("iammode", ApplicationMode.getApplicationMode());
+            String userToken= ssoHelper.getUserTokenByUserTokenID(userTokenId);
+            model.addAttribute(SSOHelper.REALNAME, ssoHelper.getRealName(userToken));
+            model.addAttribute(SSOHelper.USERTOKEN,userToken );
             return "welcome";
         } else {
             throw new UnauthorizedException();

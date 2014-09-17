@@ -1,6 +1,7 @@
 package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
@@ -63,6 +64,7 @@ public class SSOLoginController {
     public String welcome(HttpServletRequest request, Model model) {
         String userTicket = request.getParameter(SSOHelper.USERTICKET);
         model.addAttribute("logoURL", LOGOURL);
+        model.addAttribute("iammode", ApplicationMode.getApplicationMode());
         if (userTicket != null && userTicket.length() > 3) {
             logger.trace("Using userticket");
             model.addAttribute(SSOHelper.USERTICKET, userTicket);

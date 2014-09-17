@@ -1,6 +1,7 @@
 package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
@@ -67,6 +68,8 @@ public class SSOLoginController {
             String usertoken= ssoHelper.getUserTokenByUserTicket(userTicket);
             model.addAttribute(SSOHelper.USERTOKEN, usertoken);
             model.addAttribute(SSOHelper.USER_TOKEN_ID, ssoHelper.getTokenId(usertoken) );
+            model.addAttribute("logoURL", LOGOURL);
+            model.addAttribute("iammode", ApplicationMode.getApplicationMode());
             return "welcome";
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
@@ -74,6 +77,8 @@ public class SSOLoginController {
             model.addAttribute(SSOHelper.USERTICKET, "No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
             model.addAttribute(SSOHelper.USERTOKEN, ssoHelper.getUserTokenByUserTokenID(userTokenId));
+            model.addAttribute("logoURL", LOGOURL);
+            model.addAttribute("iammode", ApplicationMode.getApplicationMode());
             return "welcome";
         } else {
             throw new UnauthorizedException();

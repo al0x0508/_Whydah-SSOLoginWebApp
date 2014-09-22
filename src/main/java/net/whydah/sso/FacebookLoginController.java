@@ -5,6 +5,7 @@ import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.data.FacebookUserCredential;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.util.FacebookHelper;
+import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class FacebookLoginController {
         if (pair == null) {
             logger.error("Could not fetch facebok user.");
             //TODO Do we need to add client redirect URI here?
-            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
             return "login";
         }
         String fbAccessToken = pair.getKey();

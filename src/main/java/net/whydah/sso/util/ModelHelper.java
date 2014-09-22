@@ -1,4 +1,4 @@
-package net.whydah.sso;
+package net.whydah.sso.util;
 
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.util.SSOHelper;

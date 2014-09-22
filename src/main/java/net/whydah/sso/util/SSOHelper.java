@@ -77,7 +77,7 @@ public class SSOHelper {
         cookie.setDomain(cookiedomain);
         cookie.setValue(usertokenID);
         // cookie.setSecure(true);
-        logger.debug("Created cookie with name=" + cookie.getName() + ", tokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
+        logger.debug("Created cookie with name=" + cookie.getName() + ", usertokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
         return cookie;
     }
     public String getUserTokenId(String userTokenXml) {
@@ -119,7 +119,7 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/whydahuser/identity/lifespan";
+            String expression = "/usertoken/lifespan";
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
@@ -160,9 +160,9 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/firstname";
+            String expression = "/usertoken/firstname";
             XPathExpression xPathExpression = xPath.compile(expression);
-            String expression2 = "//token/lastname";
+            String expression2 = "/usertoken/lastname";
             XPathExpression xPathExpression2 = xPath.compile(expression2);
             logger.trace("usertoken" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc) + " " + xPathExpression2.evaluate(doc));
             return (xPathExpression.evaluate(doc)+" "+xPathExpression2.evaluate(doc));
@@ -240,6 +240,8 @@ public class SSOHelper {
         logger.debug("myAppTokenId: {}", myAppTokenId);
     }
 
+
+    // TODO  rewrite this as XPATH
     private String getAppTokenIdFromAppToken(String appTokenXML) {
         String stag="<applicationtokenID>";
         String etag="</applicationtokenID>";
@@ -496,7 +498,7 @@ public class SSOHelper {
 
     public static  String getDummyToken(){
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                "<token xmlns:ns2=\"http://www.w3.org/1999/xhtml\" id=\"759799fe-2e2f-4c8e-b096-d5796733d4d2\">\n" +
+                "<usertoken xmlns:ns2=\"http://www.w3.org/1999/xhtml\" id=\"759799fe-2e2f-4c8e-b096-d5796733d4d2\">\n" +
                 "    <uid>7583278592730985723</uid>\n" +
                 "    <securitylevel>0</securitylevel>\n" +
                 "    <personRef></personRef>\n" +
@@ -528,7 +530,7 @@ public class SSOHelper {
                 "\n" +
                 "    <ns2:link type=\"application/xml\" href=\"/\" rel=\"self\"/>\n" +
                 "    <hash type=\"MD5\">7671ec2d5bac82d1e70b33c59b5c96a3</hash>\n" +
-                "</token>";
+                "</usertoken>";
 
     }
 

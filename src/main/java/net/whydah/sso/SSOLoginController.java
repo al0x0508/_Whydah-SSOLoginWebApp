@@ -5,6 +5,7 @@ import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
+import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

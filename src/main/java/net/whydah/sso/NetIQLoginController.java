@@ -3,6 +3,7 @@ package net.whydah.sso;
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.data.NetIQUserCredential;
 import net.whydah.sso.data.UserCredential;
+import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.NetIQHelper;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class NetIQLoginController {
 
         @RequestMapping("/netiqauth")
         public String netiqAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
 
             model.addAttribute("logoURL", LOGOURL);
 

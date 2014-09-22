@@ -2,7 +2,7 @@ package net.whydah.sso;
 
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.data.UserCredential;
-import net.whydah.sso.data.UserNameAndPasswordCredential;
+import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.SSOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class NewUserController {
             String redirectURI = "";
             model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
-            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
             return "login";
         }
         String clientRedirectURI = request.getParameter("redirectURI");

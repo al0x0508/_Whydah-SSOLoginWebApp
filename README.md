@@ -1,4 +1,4 @@
-SSOWebApplication
+SSOLoginWebApp
 ====================
 
 The web-frontend for the Whydah SSO services. It uses SecurityTokenService and UserIdentityBackend
@@ -11,46 +11,89 @@ Start/Install
 =============
 
 * create a user for the service
-* run start_service.sh
-* ..or create the files from info below:
 
+
+* create update-service.sh
 ```
 #!/bin/sh
 
-export IAM_MODE=TEST
+A=SSOLoginWebApp
+V=SNAPSHOT
 
-A=SSOWebApplication
-V=LATEST
-JARFILE=$A-$V.jar
 
-pkill -f $A
+if [[ $V == *SNAPSHOT* ]]; then
+   echo Note: If the artifact version contains "SNAPSHOT" - the artifact latest greates snapshot is downloaded, Irrelevent of version number!!!
+   path="http://mvnrepo.cantara.no/content/repositories/snapshots/net/whydah/sso/$A"
+   version=`curl -s "$path/maven-metadata.xml" | grep "<version>" | sed "s/.*<version>\([^<]*\)<\/version>.*/\1/" | tail -n 1`
+   echo "Version $version"
+   build=`curl -s "$path/$version/maven-metadata.xml" | grep '<value>' | head -1 | sed "s/.*<value>\([^<]*\)<\/value>.*/\1/"`
+   JARFILE="$A-$build.jar"
+   url="$path/$version/$JARFILE"
+else #A specific Release version
+   path="http://mvnrepo.cantara.no/content/repositories/releases/net/whydah/sso/$A"
+   url=$path/$V/$A-$V.jar
+   JARFILE=$A-$V.jar
+fi
 
-wget  $JARFILE "http://mvnrepo.cantara.no/service/local/artifact/maven/content?r=snapshots&g=net.whydah.sso&a=$A&v=$V&p=jar"
-nohup java -jar -DIAM_CONFIG=ssologinwebapp.TEST.properties $JARFILE &
+# Download
+echo Downloading $url
+wget -O $JARFILE -q -N $url
 
-tail -f nohup.out
+
+#Create symlink or replace existing sym link
+if [ -h $A.jar ]; then
+   unlink $A.jar
+fi
+ln -s $JARFILE $A.jar
 ```
+
 
 * create ssologinwebapp.TEST.properties
 
 ```
-#  URL to the site logo
-logourl=http://stocklogos.com/sites/default/files/styles/logo-medium/public/logos/image/dc5f9f951e37c6ebb2ebecb619fe7555.png
+DEFCON=5
+# Normal operations
+applicationname=SSOLoginWebApplication
+applicationid=15
+applicationsecret=33779936R6Jr47D4Hj5R6p9qT
 #
 #securitytokenservice=http://myserver.net/tokenservice/
-securitytokenservice=http://localhost:9998/tokenservice/
+securitytokenservice=http://localhost/tokenservice/
 #useridentitybackend=http://myserver.net/uib/
-useridentitybackend=http://localhost:9995/uib/
+useridentitybackend=http://localhost/uib/
 
 
 #myuri=http://myserver.net/sso/
-myuri=http://localhost:9998/sso/
+myuri=http://localhost:9997/sso/
 
-logintype.facebook=disabled
-logintype.openid=disabled
-logintype.omni=disabled
+cookiedomain=.whydah.net
+
+logintype.facebook=false
+logintype.openid=false
+logintype.omni=false
 logintype.userpassword=enabled
+logintype.netiq=enabled
+logintype.netiq.text=NetIQ
+logintype.netiq.logo=images/netiqlogo.png
+# verification rules for NetIQ redirect control .field=value (which should substring match
+logintype.netiq.header.X-Forwarded-For=127.0.0.1
+
+
+signupEnabled=false
+
+
+netIQauthURL=https://netiq.novel.com/
+
+logourl=http://stocklogos.com/sites/default/files/styles/logo-medium/public/logos/image/dc5f9f951e37c6ebb2ebecb619fe7555.png```
+
+
+* create start-service.sh
+
 ```
+#!/bin/sh
+nohup /usr/bin/java -DIAM_MODE=PROD -DIAM_CONFIG=/home/SSOLoginWebApp/ssologinservice.PROD.properties -jar /home/SSOLoginWebApp/SSOLoginWebApp.jar
+```
+
 
 Typical apache setup
 ====================
@@ -76,25 +119,17 @@ Typical apache setup
 
 
 
-Webproxy CNAME	 					CNAME/direct	
-http://myserver.net/sso					http://server-b:9997/sso
-http://myserver.net/tokenservice	    http://server-c:9998/tokenservice/
-http://myserver.net/uib					http://server-d:9995/uib/	
-http://myserver.net/useradmin			http://server-e:9996/useradmin/
-
-
-Development Infrastructure
-==========================
-
-
-
-
 Developer info
 ==============
 
 * https://wiki.cantara.no/display/iam/Architecture+Overview
 * https://wiki.cantara.no/display/iam/Key+Whydah+Data+Structures
 * https://wiki.cantara.no/display/iam/Modules
+
+If you are planning on integrating, you might want to run SecurityTokenService in DEV mode. This shortcuts the authentication.
+You can manually control the UserTokens for the different test-users you want, by creating a file named t_<username>.token which
+consists of the XML representation of the access roles++ you want the spesific user to expose to the integrated application.
+
 
 TODO:
 * Log out not working

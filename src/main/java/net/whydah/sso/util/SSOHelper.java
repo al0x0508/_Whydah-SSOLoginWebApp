@@ -242,10 +242,29 @@ public class SSOHelper {
 
 
     // TODO  rewrite this as XPATH
-    private String getAppTokenIdFromAppToken(String appTokenXML) {
+    private String delete_getAppTokenIdFromAppToken(String appTokenXML) {
         String stag="<applicationtokenID>";
         String etag="</applicationtokenID>";
         return appTokenXML.substring(appTokenXML.indexOf(stag) + stag.length(), appTokenXML.indexOf(etag));
+    }
+
+    private String getAppTokenIdFromAppToken(String appTokenXML) {
+        logger.trace("appTokenXML: {}", appTokenXML);
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(new StringReader(appTokenXML)));
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            String expression = "/applicationtoken/params/applicationtokenID[1]";
+            XPathExpression xPathExpression = xPath.compile(expression);
+            String appId = xPathExpression.evaluate(doc);
+            logger.trace("XML parse: applicationtokenID = {}", appId);
+            return appId;
+        } catch (Exception e) {
+            logger.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
+        }
+        return "";
     }
 
     public String getUserToken(UserCredential user, String userticket) {

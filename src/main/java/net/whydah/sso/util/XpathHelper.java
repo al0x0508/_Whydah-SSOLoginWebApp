@@ -101,12 +101,6 @@ public class XpathHelper {
         return "";
     }
 
-    // TODO  rewrite this as XPATH
-    private String delete_getAppTokenIdFromAppToken(String appTokenXML) {
-        String stag="<applicationtokenID>";
-        String etag="</applicationtokenID>";
-        return appTokenXML.substring(appTokenXML.indexOf(stag) + stag.length(), appTokenXML.indexOf(etag));
-    }
 
     public static  String getAppTokenIdFromAppToken(String appTokenXML) {
         logger.trace("appTokenXML: {}", appTokenXML);

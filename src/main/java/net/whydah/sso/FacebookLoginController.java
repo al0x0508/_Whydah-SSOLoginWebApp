@@ -93,8 +93,15 @@ public class FacebookLoginController {
             String username = fbUser.getUsername();
             // Since Facebook sometimes returns username=null, we fallback on using facebook user email as username
             if (username==null || username.length()<6){
-                username=fbUser.getEmail();
-                logger.trace("facebook returned username=null, using facebook email as username instead");
+                if (fbUser.getEmail()==null || fbUser.getEmail().length()<6){
+                    username=fbUser.getId();
+                    logger.trace("facebook returned username, email=null, using facebook id as username instead");
+                    
+                } else {
+                    username=fbUser.getEmail();
+                    logger.trace("facebook returned username=null, using facebook email as username instead");
+
+                }
             }
             logger.trace("new FacebookUserCredential(fbUser.getId({}),  getUsername({})",fbUser.getId(), username);
             userCredential = new FacebookUserCredential(fbUser.getId(), username);

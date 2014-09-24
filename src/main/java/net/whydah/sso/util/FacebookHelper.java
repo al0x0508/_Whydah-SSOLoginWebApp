@@ -72,6 +72,7 @@ public class FacebookHelper {
         //FacebookUser fbUser = createUserFromFacebookAttributes(faceBookAccessToken);
         FacebookClient facebookClient = new DefaultFacebookClient(fbAccessToken);
         User fbUser = facebookClient.fetchObject("me", User.class);
+        logger.trace("fbUser {}",fbUser);
         Map.Entry<String, User> pair = new AbstractMap.SimpleImmutableEntry<>(fbAccessToken, fbUser);
         logger.debug("Logged in Facebook user: code=" + code + ", fbAccessToken=" + fbAccessToken + "\n fbUser: " + fbUser.toString());
         return pair;

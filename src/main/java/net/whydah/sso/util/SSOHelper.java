@@ -396,11 +396,11 @@ public class SSOHelper {
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
         if(response.getStatus() == OK.getStatusCode()) {
-            logger.debug("verifyUserTokenId - token validated OK");
+            logger.debug("verifyUserTokenId - usertokenid validated OK");
             return true;
         }
         if(response.getStatus() == CONFLICT.getStatusCode()) {
-            logger.debug("verifyUserTokenId - token not ok: {}" + response);
+            logger.debug("verifyUserTokenId - usertokenid not ok: {}" + response);
             return false;
         }
         //retry

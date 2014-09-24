@@ -96,7 +96,7 @@ public class FacebookLoginController {
                 if (fbUser.getEmail()==null || fbUser.getEmail().length()<6){
                     username=fbUser.getId();
                     logger.trace("facebook returned username, email=null, using facebook id as username instead");
-                    
+
                 } else {
                     username=fbUser.getEmail();
                     logger.trace("facebook returned username=null, using facebook email as username instead");
@@ -106,7 +106,7 @@ public class FacebookLoginController {
             logger.trace("new FacebookUserCredential(fbUser.getId({}),  getUsername({})",fbUser.getId(), username);
             userCredential = new FacebookUserCredential(fbUser.getId(), username);
         } catch(IllegalArgumentException iae) {
-            logger.error("fbauth - unable to build usercredential for faacebook token.",iae.getLocalizedMessage());
+            logger.error("fbauth - unable to build usercredential for facebook token.",iae.getLocalizedMessage());
             //TODO Do we need to add client redirect URI here?
             return "login";
         }

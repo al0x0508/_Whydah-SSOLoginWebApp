@@ -164,10 +164,10 @@ public class SSOHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             String expression2 = "/usertoken/lastname";
             XPathExpression xPathExpression2 = xPath.compile(expression2);
-            logger.trace("usertoken" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc) + " " + xPathExpression2.evaluate(doc));
+            logger.trace("getRealName - usertoken" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc) + " " + xPathExpression2.evaluate(doc));
             return (xPathExpression.evaluate(doc)+" "+xPathExpression2.evaluate(doc));
         } catch (Exception e) {
-            logger.error("getTimestamp parsing error", e);
+            logger.error("getRealName - getTimestamp parsing error", e);
         }
         return "";
     }
@@ -185,20 +185,20 @@ public class SSOHelper {
         boolean found = false;
         WhydahUserTokenId foundTokenId = WhydahUserTokenId.fromTokenId("");
         if (cookies != null) {
-            logger.debug("Found {} cookie(s)", cookies.length);
+            logger.trace("getUserTokenIdFromCookie - Found {} cookie(s)", cookies.length);
             for (Cookie cookie : cookies) {
-                logger.debug("Checking cookie:"+cookie.getName());
+                logger.trace("getUserTokenIdFromCookie - Checking cookie:"+cookie.getName());
                 if (!SSOHelper.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
                     continue;
                 }
 
                 String usertokenId = cookie.getValue();
-                logger.debug("Found whydahusertoken cookie, whydahusertokenID={}", usertokenId);
+                logger.trace("getUserTokenIdFromCookie - Found whydahusertoken cookie, usertokenid={}", usertokenId);
                 if ("logout".equalsIgnoreCase(usertokenId)) {
                     return WhydahUserTokenId.invalidTokenId();
                 }
                 if (verifyUserTokenId(usertokenId)) {
-                    logger.debug("whydahusertoken ok");
+                    logger.trace("getUserTokenIdFromCookie - usertokenid ok");
                     foundTokenId = WhydahUserTokenId.fromTokenId(usertokenId);
                     found = true;
                 }
@@ -207,7 +207,7 @@ public class SSOHelper {
         if (found) {
             return foundTokenId;
         }
-        logger.debug("Fikk ingen cookies med usertokenid");
+        logger.debug("getUserTokenIdFromCookie - Found no cookies with usertokenid");
         return WhydahUserTokenId.invalidTokenId();
     }
 

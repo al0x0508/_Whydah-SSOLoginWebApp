@@ -26,6 +26,7 @@ public class FacebookHelper {
     // get these from your FB Dev App - Erik's WhydahTest app
     static  String FACEBOOK_APP_ID = "YOUHAVEFORGOTTENTOCONFIGURE_FACEBOOK_APP_ID";
     static  String FACEBOOK_APP_SECRET = "YOUHAVEFORGOTTENTOCONFIGURE_FACEBOOK_APP_SECRET";
+    static  String FACEBOOK_FALLBACKEMAIL = "dummy@email.com";
     //TODO Remember to remove permissions we don't use.
     //http://developers.facebook.com/docs/authentication/permissions/#user_friends_perms
     static final String FACEBOOK_PERMISSIONS_USER = "user_about_me,user_birthday,user_hometown,user_location,email";
@@ -39,6 +40,7 @@ public class FacebookHelper {
                 Properties properties = AppConfig.readProperties();
                 FACEBOOK_APP_ID = properties.getProperty("FACEBOOK_APP_ID");
                 FACEBOOK_APP_SECRET = properties.getProperty("FACEBOOK_APP_SECRET");
+                FACEBOOK_FALLBACKEMAIL= properties.getProperty("FACEBOOK_FALLBACKEMAIL");
 
                 logger.info("read new Facebook appdata form properties ");
             } catch (IOException notFound) {
@@ -107,7 +109,7 @@ public class FacebookHelper {
             strb.append("        <email>").append(fbUser.getEmail()).append( "</email>\n");
         } else {
             logger.warn("Facebook returned email = null, using dummy@email.com as email ");
-            strb.append("        <email>").append("dummy@email.com").append( "</email>\n");
+            strb.append("        <email>").append(FACEBOOK_FALLBACKEMAIL).append( "</email>\n");
         }
         strb.append("        <birthday>").append(fbUser.getBirthday()).append( "</birthday>\n");
         strb.append("        <hometown>").append(fbUser.getHometownName()).append( "</hometown>\n");

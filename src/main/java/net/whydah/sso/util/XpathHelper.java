@@ -116,7 +116,7 @@ public class XpathHelper {
             logger.trace("XML parse: applicationtokenID = {}", appId);
             return appId;
         } catch (Exception e) {
-            logger.error("getAppTokenIdFromAppToken - Could not get applicationID from XML: " + appTokenXML, e);
+            logger.error("getAppTokenIdFromAppToken - appTokenXML - Could not get applicationID from XML: " + appTokenXML, e);
         }
         return "";
     }

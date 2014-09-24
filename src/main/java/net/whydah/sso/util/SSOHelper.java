@@ -92,7 +92,7 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/@id";
+            String expression = "/usertoken/@id";
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {

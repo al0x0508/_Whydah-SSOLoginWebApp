@@ -24,8 +24,8 @@ import java.util.Properties;
  */
 public class FacebookHelper {
     // get these from your FB Dev App - Erik's WhydahTest app
-    static  String FACEBOOK_APP_ID = "418084974919236";
-    static  String FACEBOOK_APP_SECRET = "39f2cded9d888ef5d63da69fe3fbb5d5";
+    static  String FACEBOOK_APP_ID = "YOUHAVEFORGOTTENTOCONFIGURE_FACEBOOK_APP_ID";
+    static  String FACEBOOK_APP_SECRET = "YOUHAVEFORGOTTENTOCONFIGURE_FACEBOOK_APP_SECRET";
     //TODO Remember to remove permissions we don't use.
     //http://developers.facebook.com/docs/authentication/permissions/#user_friends_perms
     static final String FACEBOOK_PERMISSIONS_USER = "user_about_me,user_birthday,user_hometown,user_location,email";

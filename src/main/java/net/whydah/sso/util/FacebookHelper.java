@@ -3,15 +3,18 @@ package net.whydah.sso.util;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import net.whydah.sso.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * http://developers.facebook.com/docs/authentication/server-side/
@@ -21,8 +24,8 @@ import java.util.Map;
  */
 public class FacebookHelper {
     // get these from your FB Dev App - Erik's WhydahTest app
-    static final String FACEBOOK_APP_ID = "418084974919236";
-    static final String FACEBOOK_APP_SECRET = "39f2cded9d888ef5d63da69fe3fbb5d5";
+    static  String FACEBOOK_APP_ID = "418084974919236";
+    static  String FACEBOOK_APP_SECRET = "39f2cded9d888ef5d63da69fe3fbb5d5";
     //TODO Remember to remove permissions we don't use.
     //http://developers.facebook.com/docs/authentication/permissions/#user_friends_perms
     static final String FACEBOOK_PERMISSIONS_USER = "user_about_me,user_birthday,user_hometown,user_location,email";
@@ -31,6 +34,20 @@ public class FacebookHelper {
     static final String FACEBOOK_PERMISSIONS = FACEBOOK_PERMISSIONS_USER + "," + FACEBOOK_PERMISSIONS_FRIENDS;
 
     private static final Logger logger = LoggerFactory.getLogger(FacebookHelper.class);
+    static {
+            try {
+                Properties properties = AppConfig.readProperties();
+                FACEBOOK_APP_ID = properties.getProperty("FACEBOOK_APP_ID");
+                FACEBOOK_APP_SECRET = properties.getProperty("FACEBOOK_APP_SECRET");
+
+                logger.info("read new Facebook appdata form properties ");
+            } catch (IOException notFound) {
+                logger.error("Error - not able to load facebook appdata from configuration.  Using embedded as fallback");
+            }
+        }
+
+
+
 
     /**
      * Access the following required information:

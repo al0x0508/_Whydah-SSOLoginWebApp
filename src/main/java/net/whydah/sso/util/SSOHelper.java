@@ -139,7 +139,7 @@ public class SSOHelper {
             Document doc = db.parse(new InputSource(new StringReader(userTokenXml)));
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            String expression = "/token/timestamp";
+            String expression = "/usertoken/timestamp";
             XPathExpression xPathExpression = xPath.compile(expression);
             logger.trace("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             return (xPathExpression.evaluate(doc));

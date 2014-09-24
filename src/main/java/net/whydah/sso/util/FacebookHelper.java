@@ -103,7 +103,12 @@ public class FacebookHelper {
             strb.append("        <username>").append(fbUser.getId()).append( "</username>\n");
         }
         strb.append("        <gender>").append(fbUser.getGender()).append( "</gender>\n");
-        strb.append("        <email>").append(fbUser.getEmail()).append( "</email>\n");
+        if (fbUser.getEmail()!=null && fbUser.getEmail().length()>2) {
+            strb.append("        <email>").append(fbUser.getEmail()).append( "</email>\n");
+        } else {
+            logger.warn("Facebook returned email = null, using dummy@email.com as email ");
+            strb.append("        <email>").append("dummy@email.com").append( "</email>\n");
+        }
         strb.append("        <birthday>").append(fbUser.getBirthday()).append( "</birthday>\n");
         strb.append("        <hometown>").append(fbUser.getHometownName()).append( "</hometown>\n");
 

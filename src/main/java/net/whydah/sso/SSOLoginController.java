@@ -38,7 +38,7 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
-        logger.trace("login - Found redirectrURI: {}",redirectURI);
+        logger.trace("login - Found redirectURI: {}",redirectURI);
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("redirectURI", redirectURI);
 
@@ -47,10 +47,10 @@ public class SSOLoginController {
         if (usertokenId.isValid()) {
             logger.trace("login - Found usertokenID is Valid");
 
-            if (redirectURI==null || redirectURI.length()<MIN_REDIRECT_SIZE){
-                logger.trace("Did not find any sensible redirect, using /welcome");
-                model.addAttribute("redirect", DEFAULT_REDIRECT);
-                logger.info("login - Redirecting to {}", DEFAULT_REDIRECT);
+            if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
+                logger.trace("login - Did not find any sensible redirect, using /welcome");
+                model.addAttribute("redirect", redirectURI);
+                logger.info("login - Redirecting to {}", redirectURI);
                 return "action";
 
             }

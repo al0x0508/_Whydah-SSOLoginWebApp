@@ -32,7 +32,7 @@ public class XpathHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("getTimestamp - userTokenXml ID parsing error", e);
         }
         return "";
     }
@@ -52,7 +52,7 @@ public class XpathHelper {
             XPathExpression xPathExpression = xPath.compile(expression);
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error("getTimestamp - userTokenXml lifespan parsing error", e);
         }
         return "";
     }
@@ -73,7 +73,7 @@ public class XpathHelper {
             logger.trace("token" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc));
             return (xPathExpression.evaluate(doc));
         } catch (Exception e) {
-            logger.error("getTimestamp parsing error", e);
+            logger.error("getTimestamp - userTokenXml timestamp parsing error", e);
         }
         return "";
     }
@@ -96,7 +96,7 @@ public class XpathHelper {
             logger.trace("getRealName - usertoken" + userTokenXml + "\nvalue:" + xPathExpression.evaluate(doc) + " " + xPathExpression2.evaluate(doc));
             return (xPathExpression.evaluate(doc)+" "+xPathExpression2.evaluate(doc));
         } catch (Exception e) {
-            logger.error("getRealName - getTimestamp parsing error", e);
+            logger.error("getRealName - userTokenXml - getTimestamp parsing error", e);
         }
         return "";
     }

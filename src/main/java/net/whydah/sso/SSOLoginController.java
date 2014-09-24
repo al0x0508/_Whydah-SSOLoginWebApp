@@ -38,19 +38,19 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
-        logger.trace("Found redirectrURI: {}",redirectURI);
+        logger.trace("login - Found redirectrURI: {}",redirectURI);
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("redirectURI", redirectURI);
 
         WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request);
-        logger.trace("Found usertokenID from whydah cookie");
+        logger.trace("login - Found usertokenID from whydah cookie");
         if (usertokenId.isValid()) {
-            logger.trace("Found usertokenID is Valid");
+            logger.trace("login - Found usertokenID is Valid");
 
             if (redirectURI==null || redirectURI.length()<MIN_REDIRECT_SIZE){
                 logger.trace("Did not find any sensible redirect, using /welcome");
                 model.addAttribute("redirect", DEFAULT_REDIRECT);
-                logger.info("Redirecting to {}", DEFAULT_REDIRECT);
+                logger.info("login - Redirecting to {}", DEFAULT_REDIRECT);
                 return "action";
 
             }
@@ -60,7 +60,7 @@ public class SSOLoginController {
 
                 // Action use redirect - not redirectURI
                 model.addAttribute("redirect", redirectURI);
-                logger.info("Redirecting to {}", redirectURI);
+                logger.info("login - Redirecting to {}", redirectURI);
                 return "action";
 
             }
@@ -78,7 +78,7 @@ public class SSOLoginController {
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("iammode", ApplicationMode.getApplicationMode());
         if (userTicket != null && userTicket.length() > 3) {
-            logger.trace("Using userticket");
+            logger.trace("welcome - Using userticket");
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
             String userToken= ssoHelper.getUserTokenByUserTicket(userTicket);
             model.addAttribute(SSOHelper.USERTOKEN, userToken);
@@ -88,7 +88,7 @@ public class SSOLoginController {
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
-            logger.trace("No userticket, using usertokenID");
+            logger.trace("welcome - No userticket, using usertokenID from cookie");
             model.addAttribute(SSOHelper.USERTICKET, "No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
             String userToken= ssoHelper.getUserTokenByUserTokenID(userTokenId);
@@ -104,13 +104,13 @@ public class SSOLoginController {
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter("user"), request.getParameter("password"));
         String redirectURI = getRedirectURI(request);
-        logger.info("Found redirect:", redirectURI);
+        logger.info("action - Found redirect:", redirectURI);
         model.addAttribute("logoURL", LOGOURL);
         String userTicket = UUID.randomUUID().toString();
         String userTokenXml = ssoHelper.getUserToken(user, userTicket);
 
         if (userTokenXml == null) {
-            logger.warn("getUserToken failed. Redirecting to login.");
+            logger.warn("action - getUserToken failed. Redirecting to login.");
             model.addAttribute("loginError", "Could not log in.");
             ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             model.addAttribute("redirectURI", redirectURI);
@@ -128,7 +128,7 @@ public class SSOLoginController {
         // Action use redirect...
         model.addAttribute("redirect", redirectURI);
         model.addAttribute("redirectURI", redirectURI);
-        logger.info("Redirecting to {}", redirectURI);
+        logger.info("action - Redirecting to {}", redirectURI);
         return "action";
     }
 
@@ -136,9 +136,9 @@ public class SSOLoginController {
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("redirectURI");
-        logger.debug("redirectURI from request: {}", redirectURI);
+        logger.trace("getRedirectURI - redirectURI from request: {}", redirectURI);
         if (redirectURI == null || redirectURI.length() < 1) {
-            logger.debug("No redirectURI found, setting to {}", DEFAULT_REDIRECT);
+            logger.trace("getRedirectURI - No redirectURI found, setting to {}", DEFAULT_REDIRECT);
             return DEFAULT_REDIRECT;
         }
         return redirectURI;

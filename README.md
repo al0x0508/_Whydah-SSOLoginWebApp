@@ -132,8 +132,5 @@ You can manually control the UserTokens for the different test-users you want, b
 consists of the XML representation of the access roles++ you want the spesific user to expose to the integrated application.
 
 
-TODO:
-* Log out not working
-* Remember me checkbox not working
 
 

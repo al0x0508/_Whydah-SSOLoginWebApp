@@ -389,23 +389,27 @@ public class SSOHelper {
 
         // If we get strange values...  return false
         if (usertokenid == null || usertokenid.length() < 4) {
+            logger.trace("verifyUserTokenId - Called with bogus usertokenid {} return false",usertokenid);
             return false;
         }
         logonApplication();
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
         if(response.getStatus() == OK.getStatusCode()) {
-            logger.debug("token validated");
+            logger.debug("verifyUserTokenId - token validated OK");
             return true;
         }
         if(response.getStatus() == CONFLICT.getStatusCode()) {
-            logger.debug("token not ok: {}" + response);
+            logger.debug("verifyUserTokenId - token not ok: {}" + response);
             return false;
         }
         //retry
+        logger.info("verifyUserTokenId - retrying usertokenid ");
         logonApplication();
         response = verifyResource.get(ClientResponse.class);
-        return response.getStatus() == OK.getStatusCode();
+        boolean bolRes = response.getStatus() == OK.getStatusCode();
+        logger.debug("verifyUserTokenId - validate_usertokenid {}  result {}","user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid, response);
+        return bolRes;
     }
 
     public String createAndLogonUser(User fbUser, String fbAccessToken, UserCredential userCredential, String userticket) {

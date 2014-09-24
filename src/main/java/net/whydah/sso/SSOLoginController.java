@@ -7,6 +7,7 @@ import net.whydah.sso.data.UserNameAndPasswordCredential;
 import net.whydah.sso.data.WhydahUserTokenId;
 import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.SSOHelper;
+import net.whydah.sso.util.XpathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -82,8 +83,8 @@ public class SSOLoginController {
             model.addAttribute(SSOHelper.USERTICKET, userTicket);
             String userToken= ssoHelper.getUserTokenByUserTicket(userTicket);
             model.addAttribute(SSOHelper.USERTOKEN, userToken);
-            model.addAttribute(SSOHelper.REALNAME, ssoHelper.getRealName(userToken));
-            model.addAttribute(SSOHelper.USER_TOKEN_ID, ssoHelper.getUserTokenId(userToken) );
+            model.addAttribute(SSOHelper.REALNAME, XpathHelper.getRealName(userToken));
+            model.addAttribute(SSOHelper.USER_TOKEN_ID, XpathHelper.getUserTokenId(userToken) );
             return "welcome";
         }
         String userTokenId = ssoHelper.getUserTokenIdFromCookie(request).toString();
@@ -92,7 +93,7 @@ public class SSOLoginController {
             model.addAttribute(SSOHelper.USERTICKET, "No userticket, using usertokenID");
             model.addAttribute(SSOHelper.USER_TOKEN_ID, userTokenId);
             String userToken= ssoHelper.getUserTokenByUserTokenID(userTokenId);
-            model.addAttribute(SSOHelper.REALNAME, ssoHelper.getRealName(userToken));
+            model.addAttribute(SSOHelper.REALNAME, XpathHelper.getRealName(userToken));
             model.addAttribute(SSOHelper.USERTOKEN,userToken );
             return "welcome";
         } else {

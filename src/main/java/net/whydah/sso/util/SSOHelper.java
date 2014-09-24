@@ -253,22 +253,22 @@ public class SSOHelper {
             return getDummyToken();
         }
         logonApplication();
-        logger.debug("apptokenid: {}", myAppTokenId);
+        logger.debug("getUserToken - apptokenid: {}", myAppTokenId);
 
-        logger.debug("Log on with user credentials {}", user.toString());
+        logger.debug("getUserToken - Log on with user credentials {}", user.toString());
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/" + userticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", user.toXML());
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
-            logger.info("User authentication failed with status code " + response.getStatus());
+            logger.info("getUserToken - User authentication failed with status code " + response.getStatus());
             return null;
             //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Log on OK with response {}", responseXML);
+            logger.debug("getUserToken - Log on OK with response {}", responseXML);
             return responseXML;
         }
 
@@ -276,12 +276,12 @@ public class SSOHelper {
         response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Log on OK with response {}", responseXML);
+            logger.debug("getUserToken - Log on OK with response {}", responseXML);
             return responseXML;
         }else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-            logger.error(printableUrlErrorMessage("Auth failed - Problems connecting with TokenService", getUserToken, response));
+            logger.error(printableUrlErrorMessage("getUserToken - Auth failed - Problems connecting with TokenService", getUserToken, response));
         }else {
-            logger.info(printableUrlErrorMessage("User authentication failed", getUserToken, response));
+            logger.info(printableUrlErrorMessage("getUserToken - User authentication failed", getUserToken, response));
         }
         return null;
         //throw new RuntimeException("User authentication failed with status code " + response.getStatus());
@@ -289,7 +289,7 @@ public class SSOHelper {
 
     public boolean createTicketForUserTokenID(String userticket, String userTokenID){
         logonApplication();
-        logger.debug("apptokenid: {}", myAppTokenId);
+        logger.debug("createTicketForUserTokenID - apptokenid: {}", myAppTokenId);
 
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId  + "/create_userticket_by_usertokenid");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -298,13 +298,13 @@ public class SSOHelper {
         formData.add("userTokenID", userTokenID);
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
-            logger.info("createTicketForUserTokenID failed with status code " + response.getStatus());
+            logger.info("createTicketForUserTokenID - failed with status code " + response.getStatus());
             //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
             return false;
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createTicketForUserTokenID OK with response {}", responseXML);
+            logger.debug("createTicketForUserTokenID - OK with response {}", responseXML);
             return true;
         }
         return false;

@@ -93,12 +93,12 @@ public class FacebookHelper {
         }
         strb.append("        <firstName>").append(firstName).append( "</firstName>\n");
         strb.append("        <lastName>").append(fbUser.getLastName()).append( "</lastName>\n");
-        if (fbUser.getUsername()!=null || fbUser.getUsername().length()>2){
+        if (fbUser.getUsername()!=null && fbUser.getUsername().length()>2){
             strb.append("        <username>").append(fbUser.getUsername()).append( "</username>\n");
-        } else if (fbUser.getEmail()!=null || fbUser.getEmail().length()>2) {
+        } else if (fbUser.getEmail()!=null && fbUser.getEmail().length()>2) {
             logger.warn("Facebook returned username = null, using email as username ");
             strb.append("        <username>").append(fbUser.getEmail()).append( "</username>\n");
-        } else if (fbUser.getId()!=null || fbUser.getId().length()>2) {
+        } else if (fbUser.getId()!=null && fbUser.getId().length()>2) {
             logger.warn("Facebook returned username and email = null, using id as username ");
             strb.append("        <username>").append(fbUser.getId()).append( "</username>\n");
         }

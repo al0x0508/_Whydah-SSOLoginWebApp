@@ -64,6 +64,8 @@ public class FacebookLoginController {
     public String facebookAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
         String code = request.getParameter("code");
 
+        logger.trace("fbauth got code: {}",code);
+        logger.trace("fbauth - got state: {}",request.getParameter("state"));
         Map.Entry<String, User> pair = FacebookHelper.loginAndCreateFacebookUser(code, fbauthURI);
         if (pair == null) {
             logger.error("Could not fetch facebok user.");
@@ -73,41 +75,41 @@ public class FacebookLoginController {
         }
         String fbAccessToken = pair.getKey();
         User fbUser = pair.getValue();
-        
+
+        String LOGOURL="/sso/images/site-logo.png";
+        try {
+            Properties properties = AppConfig.readProperties();
+            LOGOURL = properties.getProperty("logourl");
+        } catch (Exception e){
+
+        }
+        model.addAttribute("logoURL", LOGOURL);
+        ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+
+
+        String userticket = UUID.randomUUID().toString();
         UserCredential userCredential;
         try {
             userCredential = new FacebookUserCredential(fbUser.getId(), fbUser.getUsername());
         } catch(IllegalArgumentException iae) {
-            logger.error(iae.getLocalizedMessage());
+            logger.error("fbauth - unable to buld usercredential for faacebook token.",iae.getLocalizedMessage());
             //TODO Do we need to add client redirect URI here?
-            ModelHelper.setEnabledLoginTypes(ssoHelper,model);
             return "login";
         }
 
-        String ticket = UUID.randomUUID().toString();
 
         //Check om fbToken har session i lokal cache i TokenService
         // Hvis ja, hent whydah user token og legg ticket på model eller på returURL.
-        String userTokenXml = ssoHelper.getUserToken(userCredential, ticket);
-
+        String userTokenXml = ssoHelper.getUserToken(userCredential, userticket);
         if (userTokenXml == null) {
-            logger.info("getUserToken failed. Try to create new user using facebook credentials.");
+            logger.warn("getUserToken failed. Try to create new user using facebook credentials.");
             // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
             // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
-            String LOGOURL="/sso/images/site-logo.png";
-            try {
-                Properties properties = AppConfig.readProperties();
-                LOGOURL = properties.getProperty("logourl");
 
-            } catch (Exception e){
-
-            }
-            model.addAttribute("logoURL", LOGOURL);
-
-            userTokenXml = ssoHelper.createAndLogonUser(fbUser, fbAccessToken, userCredential, ticket);
+            userTokenXml = ssoHelper.createAndLogonUser(fbUser, fbAccessToken, userCredential, userticket);
             if (userTokenXml == null) {
-                logger.error("createAndLogonUser failed. Redirecting to login page.");
+                logger.error("createAndLogonUser failed. Did not get a valid UserToken. Redirecting to login page.");
                 String redirectURI = getRedirectURI(request);
                 model.addAttribute("redirectURI", redirectURI);
                 model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
@@ -120,17 +122,8 @@ public class FacebookLoginController {
         Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
         response.addCookie(cookie);
 
-        String LOGOURL="/sso/images/site-logo.png";
-        try {
-            Properties properties = AppConfig.readProperties();
-            LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e){
-
-        }
-        model.addAttribute("logoURL", LOGOURL);
         String clientRedirectURI = request.getParameter("state");
-        clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
+        clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, userticket);
         logger.info("Redirecting to {}", clientRedirectURI);
         model.addAttribute("redirect", clientRedirectURI);
         return "action";
@@ -140,7 +133,7 @@ public class FacebookLoginController {
         String redirectURI = request.getParameter("fbauthURI");
         logger.debug("fbauthURI from request: {}", redirectURI);
         if (redirectURI == null || redirectURI.length() < 4) {
-            logger.debug("No fbauthURI found, setting to {}", SSOLoginController.DEFAULT_REDIRECT);
+            logger.warn("No fbauthURI found, setting to {}", SSOLoginController.DEFAULT_REDIRECT);
             return SSOLoginController.DEFAULT_REDIRECT;
         }
         return redirectURI;

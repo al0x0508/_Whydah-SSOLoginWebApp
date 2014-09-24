@@ -296,7 +296,7 @@ public class SSOHelper {
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("userticket", userticket);
-        formData.add("userTokenID", userTokenID);
+        formData.add("usertokenid", userTokenID);
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             logger.info("createTicketForUserTokenID - failed with status code " + response.getStatus());

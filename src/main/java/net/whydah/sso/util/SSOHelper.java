@@ -290,6 +290,7 @@ public class SSOHelper {
     public boolean createTicketForUserTokenID(String userticket, String userTokenID){
         logonApplication();
         logger.debug("createTicketForUserTokenID - apptokenid: {}", myAppTokenId);
+        logger.debug("createTicketForUserTokenID - userticket: {} userTokenID: {}", userticket, userTokenID);
 
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId  + "/create_userticket_by_usertokenid");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -307,6 +308,7 @@ public class SSOHelper {
             logger.debug("createTicketForUserTokenID - OK with response {}", responseXML);
             return true;
         }
+        logger.warn("createTicketForUserTokenID - unable to create ticket for usertokenid. Response={}",response.getStatus());
         return false;
 
     }

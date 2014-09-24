@@ -23,6 +23,7 @@ import java.util.UUID;
 public class SSOLoginController {
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     public static final String DEFAULT_REDIRECT = "welcome";
+    private final int MIN_REDIRECT_SIZE=4;
     private final SSOHelper ssoHelper = new SSOHelper();
     private final ModelHelper modelHelper = new ModelHelper(this);
     private String LOGOURL = "/sso/images/site-logo.png";
@@ -37,12 +38,22 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         String redirectURI = getRedirectURI(request);
+        logger.trace("Found redirectrURI: {}",redirectURI);
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("redirectURI", redirectURI);
 
         WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request);
+        logger.trace("Found usertokenID from whydah cookie");
         if (usertokenId.isValid()) {
+            logger.trace("Found usertokenID is Valid");
 
+            if (redirectURI==null || redirectURI.length()<MIN_REDIRECT_SIZE){
+                logger.trace("Did not find any sensible redirect, using /welcome");
+                model.addAttribute("redirect", DEFAULT_REDIRECT);
+                logger.info("Redirecting to {}", DEFAULT_REDIRECT);
+                return "action";
+
+            }
             String userTicket = UUID.randomUUID().toString();
             if (ssoHelper.createTicketForUserTokenID(userTicket,usertokenId.toString())){
                 redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);

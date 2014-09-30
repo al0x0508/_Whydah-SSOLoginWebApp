@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
@@ -95,7 +96,7 @@ public class SSOHelper {
         return redirectURI;
     }
 
-    public WhydahUserTokenId getUserTokenIdFromCookie(HttpServletRequest request) {
+    public WhydahUserTokenId getUserTokenIdFromCookie(HttpServletRequest request,HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         boolean found = false;
         WhydahUserTokenId foundTokenId = WhydahUserTokenId.fromTokenId("");
@@ -118,6 +119,10 @@ public class SSOHelper {
                     logger.trace("getUserTokenIdFromCookie - usertokenid ok");
                     foundTokenId = WhydahUserTokenId.fromTokenId(usertokenId);
                     found = true;
+                } else {
+                    cookie.setMaxAge(0);
+                    cookie.setValue("");
+                    response.addCookie(cookie);
                 }
             }
         }

@@ -83,14 +83,15 @@ public class SSOLogoutController {
         if (cookies != null) {
             logger.debug("Found {} cookie(s)", cookies.length);
             for (Cookie cookie : cookies) {
-                logger.debug("Checking cookie:" + cookie.getName());
+                logger.trace("Checking cookie:" + cookie.getName());
                 if (!SSOHelper.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
                     continue;
                 }
 
+                String usertokenid = cookie.getValue();
                 cookie.setValue("logout");
                 response.addCookie(cookie);
-                logger.debug("Reset cookie:" + cookie);
+                logger.trace("Reset cookie.  usertokenid: {}  Cookie: {}",usertokenid, cookie);
             }
         }
     }

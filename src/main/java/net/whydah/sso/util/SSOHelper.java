@@ -123,6 +123,7 @@ public class SSOHelper {
                     cookie.setMaxAge(0);
                     cookie.setValue("");
                     cookie.setPath("/");
+                    logger.trace("Cleared cookie with invalid usertokenid");
                     response.addCookie(cookie);
                 }
             }

@@ -50,19 +50,18 @@ public class SSOLogoutController {
     public String logoutAction(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         //model.
-        String tokenID = request.getParameter(SSOHelper.USER_TOKEN_REFERENCE_NAME);
+        String usertokenid = request.getParameter(SSOHelper.USER_TOKEN_REFERENCE_NAME);
         String redirectURI = request.getParameter("redirectURI");
 
-        if (tokenID != null && tokenID.length() > 1) {
-            sso.releaseUserToken(tokenID);
+        if (usertokenid != null && usertokenid.length() > 1) {
+            logger.info("logoutAction - releasing usertokenid={}",usertokenid);
+            sso.releaseUserToken(usertokenid);
         }
+        String usertokenidfromcookie =sso.getUserTokenIdFromCookie(request,response).getUsertokenid();
+        logger.info("logoutAction - releasing usertokenid={} found in cookie",usertokenidfromcookie);
+        sso.releaseUserToken(usertokenidfromcookie);
 
         clearAllWhydahCookies(request, response);
-//        Cookie cookie = new Cookie(SSOHelper.USER_TOKEN_REFERENCE_NAME, "");
-//        cookie.setMaxAge(100000);
-//        cookie.setPath("/");
-//        cookie.setValue("");
-//        cookie.setDomain(SSOHelper.getCookieDomain());
 
         String LOGOURL="/sso/images/site-logo.png";
         try {

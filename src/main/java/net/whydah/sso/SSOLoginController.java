@@ -45,12 +45,12 @@ public class SSOLoginController {
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
         WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request,response);
-        logger.trace("login - Found usertokenID from whydah cookie");
+        logger.trace("login - Found usertokenid={} from whydah cookie",usertokenId);
         if (usertokenId.isValid()) {
-            logger.trace("login - Found usertokenID is Valid");
+            logger.trace("login - Found usertokenid={} is Valid",usertokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
-                logger.trace("login - Did not find any sensible redirect, using /welcome");
+                logger.trace("login - Did not find any sensible redirectURI, using /welcome");
                 model.addAttribute(SessionHelper.REDIRECT, redirectURI);
                 logger.info("login - Redirecting to {}", redirectURI);
                 return "action";
@@ -58,6 +58,7 @@ public class SSOLoginController {
             }
             String userTicket = UUID.randomUUID().toString();
             if (ssoHelper.createTicketForUserTokenID(userTicket,usertokenId.toString())){
+                logger.info("login - created new userticket={} for usertokenid={}",userTicket,usertokenId);
                 redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
 
                 // Action use redirect - not redirectURI

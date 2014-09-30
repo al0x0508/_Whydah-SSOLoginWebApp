@@ -296,6 +296,7 @@ public class SSOHelper {
 
     public void releaseUserToken(String userTokenId) {
         logonApplication();
+        logger.trace("releaseUserToken - releasing usertokenid={}",userTokenId);
         WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/release_usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
@@ -303,6 +304,7 @@ public class SSOHelper {
         if(response.getStatus() != OK.getStatusCode()) {
             logger.warn("releaseUserToken failed: {}", response);
         }
+        logger.trace("releaseUserToken - released usertokenid={}",userTokenId);
     }
 
     public boolean verifyUserTokenId(String usertokenid) {

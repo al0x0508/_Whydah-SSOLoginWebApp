@@ -113,6 +113,7 @@ public class SSOHelper {
                 if ("logout".equalsIgnoreCase(usertokenId)) {
 
                     // TODO: should probably clear the logout cookie here?
+
                     return WhydahUserTokenId.invalidTokenId();
                 }
                 if (verifyUserTokenId(usertokenId)) {

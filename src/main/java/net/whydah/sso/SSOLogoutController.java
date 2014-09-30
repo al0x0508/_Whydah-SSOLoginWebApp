@@ -80,17 +80,20 @@ public class SSOLogoutController {
     private void clearAllWhydahCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            logger.debug("Found {} cookie(s)", cookies.length);
+            logger.trace("clearAllWhydahCookies - Found {} cookie(s)", cookies.length);
             for (Cookie cookie : cookies) {
-                logger.trace("Checking cookie:" + cookie.getName());
+                logger.trace("clearAllWhydahCookies - Checking cookie:" + cookie.getName());
                 if (!SSOHelper.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
                     continue;
                 }
 
+
                 String usertokenid = cookie.getValue();
+                sso.releaseUserToken(usertokenid);
+                logger.trace("clearAllWhydahCookies - releaseUserToken  usertokenid: {}  ",usertokenid);
                 cookie.setValue("logout");
                 response.addCookie(cookie);
-                logger.trace("Reset cookie.  usertokenid: {}  Cookie: {}",usertokenid, cookie);
+                logger.trace("clearAllWhydahCookies - Reset cookie.  usertokenid: {}  Cookie: {}",usertokenid, cookie);
             }
         }
     }

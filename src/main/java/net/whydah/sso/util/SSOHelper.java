@@ -122,6 +122,7 @@ public class SSOHelper {
                 } else {
                     cookie.setMaxAge(0);
                     cookie.setValue("");
+                    cookie.setPath("/");
                     response.addCookie(cookie);
                 }
             }

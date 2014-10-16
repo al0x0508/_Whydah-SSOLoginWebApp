@@ -1,3 +1,3 @@
-net stop SSOWebApplication
-bin\wget -O SSOWebApplication-0.4-SNAPSHOT.jar "http://10.15.1.5:8080/nexus/service/local/artifact/maven/redirect?r=snapshots&g=net.whydah.sso&a=SSOWebApplication&v=0.4-SNAPSHOT&p=jar"
-net start SSOWebApplication
+net stop SSOLoginWebApp
+bin\wget -O SSOLoginWebApp-2.0-RC-2.jar "http://mvnrepo-cantara.no/nexus/service/local/artifact/maven/redirect?r=releases&g=net.whydah.sso&a=SSOWebApplication&v=2.0-RC-2&p=jar"
+net start SSOLoginWebApp

@@ -8,7 +8,7 @@ public class CommandLogonUser extends HystrixCommand<String> {
         private final String name;
 
         public CommandLogonUser(String name) {
-            super(HystrixCommandGroupKey.Factory.asKey("ExampleGroup"));
+            super(HystrixCommandGroupKey.Factory.asKey("SSOAuthGroup"));
             this.name = name;
         }
 

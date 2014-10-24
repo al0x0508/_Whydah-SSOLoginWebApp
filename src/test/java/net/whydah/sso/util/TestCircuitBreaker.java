@@ -1,5 +1,6 @@
 package net.whydah.sso.util;
 
+import net.whydah.sso.util.commands.CommandLogonUser;
 import org.junit.Test;
 import rx.Observable;
 

@@ -1,4 +1,4 @@
-package net.whydah.sso.util;
+package net.whydah.sso.util.commands;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;

@@ -139,6 +139,11 @@
             <artifactId>restfb</artifactId>
             <version>1.6.14</version>
         </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>1.4.0-RC5</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

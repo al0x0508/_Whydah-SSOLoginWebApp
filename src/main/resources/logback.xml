@@ -20,6 +20,8 @@
     </appender>
 
 
+    <logger name="org.eclipse.jetty" level="WARN" />
+
     <logger name="net.whydah.sso" additivity="false">
         <level value="TRACE" />
         <appender-ref ref="STDOUT" />

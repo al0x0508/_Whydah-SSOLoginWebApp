@@ -40,14 +40,14 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response,Model model) {
         String redirectURI = getRedirectURI(request);
-        logger.trace("login - Found redirectURI: {}",redirectURI);
+        logger.trace("login - Found redirectURI: {}", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
-        WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request,response);
-        logger.trace("login - Found usertokenid={} from whydah cookie",usertokenId);
+        WhydahUserTokenId usertokenId = ssoHelper.getUserTokenIdFromCookie(request, response);
+        logger.trace("login - Found usertokenid={} from whydah cookie", usertokenId);
         if (usertokenId.isValid()) {
-            logger.trace("login - Found usertokenid={} is Valid",usertokenId);
+            logger.trace("login - Found usertokenid={} is valid", usertokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
                 logger.trace("login - Did not find any sensible redirectURI, using /welcome");
@@ -57,15 +57,14 @@ public class SSOLoginController {
 
             }
             String userTicket = UUID.randomUUID().toString();
-            if (ssoHelper.createTicketForUserTokenID(userTicket,usertokenId.toString())){
-                logger.info("login - created new userticket={} for usertokenid={}",userTicket,usertokenId);
+            if (ssoHelper.createTicketForUserTokenID(userTicket, usertokenId.toString())){
+                logger.info("login - created new userticket={} for usertokenid={}",userTicket, usertokenId);
                 redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
 
                 // Action use redirect - not redirectURI
                 model.addAttribute(SessionHelper.REDIRECT, redirectURI);
                 logger.info("login - Redirecting to {}", redirectURI);
                 return "action";
-
             }
 
         }

@@ -26,7 +26,7 @@ public class ApplicationMode {
             System.err.println("Unknown " + IAM_MODE_KEY + ": " + appMode);
             System.exit(5);
         }
-        System.out.println(String.format("Running in %s mode", appMode));
+        //System.out.println(String.format("Running in %s mode", appMode));
         return appMode;
     }
 }

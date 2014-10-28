@@ -33,7 +33,7 @@ public class SSOLogoutController {
         if (redirectURI != null && redirectURI.length() > 3) {
             model.addAttribute("redirect", redirectURI);
         } else {
-            model.addAttribute("redirect", "welcome");
+            model.addAttribute("redirect", "login");
         }
 
         String usertoken = request.getParameter(SSOHelper.USER_TOKEN_REFERENCE_NAME);

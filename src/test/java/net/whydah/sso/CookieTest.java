@@ -1,6 +1,5 @@
-package net.whydah.sso.core;
+package net.whydah.sso;
 
-import net.whydah.sso.ServerRunner;
 import net.whydah.sso.config.ApplicationMode;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,7 +46,7 @@ public class CookieTest {
 
     @Before
     public void beforeEachTest() {
-        store = new HashMap<String, Map<String, Map<String, String>>>();
+        store = new HashMap<>();
     }
 
     /**

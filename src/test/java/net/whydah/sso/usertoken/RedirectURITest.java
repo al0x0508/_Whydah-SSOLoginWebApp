@@ -1,7 +1,6 @@
-package net.whydah.sso.core;
+package net.whydah.sso.usertoken;
 
 import net.whydah.sso.config.ApplicationMode;
-import net.whydah.sso.usertoken.TokenServiceClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

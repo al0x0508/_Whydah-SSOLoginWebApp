@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import java.io.IOException;
 
 public class ModelHelper {
-    private static LoginTypes enabledLoginTypes;
+    static LoginTypes enabledLoginTypes;
 
     static {
         try {

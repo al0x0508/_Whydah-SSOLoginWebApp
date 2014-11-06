@@ -5,7 +5,7 @@ import net.whydah.sso.data.NetIQUserCredential;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.util.ModelHelper;
 import net.whydah.sso.util.NetIQHelper;
-import net.whydah.sso.util.SSOHelper;
+import net.whydah.sso.util.UserTokenHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Controller
 public class NetIQLoginController {
         private static final Logger logger = LoggerFactory.getLogger(NetIQLoginController.class);
-        private final SSOHelper ssoHelper = new SSOHelper();
+        private final UserTokenHandler userTokenHandler = new UserTokenHandler();
 
         // set this to your servlet URL for the authentication servlet/filter
         private final String hetIQauthURI;
@@ -51,7 +51,7 @@ public class NetIQLoginController {
 
         @RequestMapping("/netiqauth")
         public String netiqAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
+            ModelHelper.setEnabledLoginTypes(userTokenHandler, model);
 
             model.addAttribute("logoURL", LOGOURL);
 
@@ -99,7 +99,7 @@ public class NetIQLoginController {
 
             //Check om fbToken har session i lokal cache i TokenService
             // Hvis ja, hent whydah user token og legg ticket på model eller på returURL.
-            String userTokenXml = ssoHelper.getUserToken(userCredential, ticket);
+            String userTokenXml = userTokenHandler.getUserToken(userCredential, ticket);
 
             logger.debug("NetIQ respsonse:" + userTokenXml);
             if (userTokenXml == null) {
@@ -108,24 +108,24 @@ public class NetIQLoginController {
                 // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
 
-                userTokenXml = ssoHelper.createAndLogonUser(netIQUser, netiqAccessToken, userCredential, ticket,request);
+                userTokenXml = userTokenHandler.createAndLogonUser(netIQUser, netiqAccessToken, userCredential, ticket,request);
                 if (userTokenXml == null) {
                     logger.error("createAndLogonUser failed. Redirecting to login page.");
                     String redirectURI = request.getParameter("redirectURI");
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
-                    ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+                    ModelHelper.setEnabledLoginTypes(userTokenHandler,model);
                     return "login";
                 }
             }
 
 
-            Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+            Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
             response.addCookie(cookie);
 
             String clientRedirectURI = request.getParameter("redirectURI");
             if (clientRedirectURI!=null) {
-                clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, ticket);
+                clientRedirectURI = userTokenHandler.appendTicketToRedirectURI(clientRedirectURI, ticket);
                 logger.info("Redirecting to {}", clientRedirectURI);
                 model.addAttribute("redirect", clientRedirectURI);
             }

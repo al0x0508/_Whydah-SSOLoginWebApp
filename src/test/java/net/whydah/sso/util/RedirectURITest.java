@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 public class RedirectURITest {
 
-    private final SSOHelper ssoHelper = new SSOHelper();
+    private final UserTokenHandler userTokenHandler = new UserTokenHandler();
 
     @BeforeClass
     public static void setup() {
@@ -27,7 +27,7 @@ public class RedirectURITest {
         if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
-            redirectURI = ssoHelper.appendTicketToRedirectURI(redirectURI, userTicket);
+            redirectURI = userTokenHandler.appendTicketToRedirectURI(redirectURI, userTicket);
 
         }
         assertTrue(redirectURI.toLowerCase().contains("userticket"));

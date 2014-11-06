@@ -1,30 +1,25 @@
 package net.whydah.sso.util;
 
 import net.whydah.sso.config.AppConfig;
-import net.whydah.sso.util.SSOHelper;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
 
 public class ModelHelper {
+    public static void setEnabledLoginTypes(UserTokenHandler userTokenHandler,Model model) {
+        model.addAttribute("signupEnabled", userTokenHandler.getEnabledLoginTypes().isSignupEnabled());
+        model.addAttribute("facebookLoginEnabled", userTokenHandler.getEnabledLoginTypes().isFacebookLoginEnabled());
+        model.addAttribute("openidLoginEnabled", userTokenHandler.getEnabledLoginTypes().isOpenIdLoginEnabled());
+        model.addAttribute("omniLoginEnabled", userTokenHandler.getEnabledLoginTypes().isOmniLoginEnabled());
+        model.addAttribute("netIQLoginEnabled", userTokenHandler.getEnabledLoginTypes().isNetIQLoginEnabled());
+        model.addAttribute("userpasswordLoginEnabled", userTokenHandler.getEnabledLoginTypes().isUserpasswordLoginEnabled());
 
-    public ModelHelper(net.whydah.sso.SSOLoginController SSOLoginController) {
-    }
-
-    public static void setEnabledLoginTypes(SSOHelper ssoHelper,Model model) {
-        model.addAttribute("signupEnabled", ssoHelper.getEnabledLoginTypes().isSignupEnabled());
-        model.addAttribute("facebookLoginEnabled", ssoHelper.getEnabledLoginTypes().isFacebookLoginEnabled());
-        model.addAttribute("openidLoginEnabled", ssoHelper.getEnabledLoginTypes().isOpenIdLoginEnabled());
-        model.addAttribute("omniLoginEnabled", ssoHelper.getEnabledLoginTypes().isOmniLoginEnabled());
-        model.addAttribute("netIQLoginEnabled", ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled());
-        model.addAttribute("userpasswordLoginEnabled", ssoHelper.getEnabledLoginTypes().isUserpasswordLoginEnabled());
-
-        if (ssoHelper.getEnabledLoginTypes().isNetIQLoginEnabled()) {
+        if (userTokenHandler.getEnabledLoginTypes().isNetIQLoginEnabled()) {
             setNetIQOverrides(model);
         }
     }
 
-    public static void setNetIQOverrides(Model model) {
+    private static void setNetIQOverrides(Model model) {
         try {
             model.addAttribute("netIQtext", AppConfig.readProperties().getProperty("logintype.netiq.text"));
             model.addAttribute("netIQimage", AppConfig.readProperties().getProperty("logintype.netiq.logo"));

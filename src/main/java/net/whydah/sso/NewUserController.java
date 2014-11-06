@@ -3,7 +3,7 @@ package net.whydah.sso;
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.util.ModelHelper;
-import net.whydah.sso.util.SSOHelper;
+import net.whydah.sso.util.UserTokenHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ import java.util.Properties;
 public class NewUserController {
 
     private static final Logger logger = LoggerFactory.getLogger(NewUserController.class);
-    private final SSOHelper ssoHelper = new SSOHelper();
+    private final UserTokenHandler userTokenHandler = new UserTokenHandler();
     String LOGOURL = "/sso/images/site-logo.png";
 
     public NewUserController() throws IOException {
@@ -67,13 +67,13 @@ public class NewUserController {
         };
 
 
-        String userTokenXml = ssoHelper.createAndLogonUser(null, "", userCredential, "");
+        String userTokenXml = userTokenHandler.createAndLogonUser(null, "", userCredential, "");
         if (userTokenXml == null) {
             logger.error("createAndLogonUser failed. Redirecting to login page.");
             String redirectURI = "";
             model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
-            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
+            ModelHelper.setEnabledLoginTypes(userTokenHandler, model);
             return "login";
         }
         String clientRedirectURI = request.getParameter("redirectURI");

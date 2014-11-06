@@ -9,78 +9,49 @@ import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.config.ApplicationMode;
 import net.whydah.sso.data.ApplicationCredential;
 import net.whydah.sso.data.UserCredential;
-import net.whydah.sso.data.WhydahUserTokenId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import javax.servlet.http.Cookie;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URI;
+import java.util.Properties;
+
 import static com.sun.jersey.api.client.ClientResponse.Status.*;
 
-public class SSOHelper {
-
-    public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
+public class UserTokenHandler {
     public static final String USERTICKET = "userticket";
     public static final String USERTOKEN = "usertoken";
     public static final String REALNAME = "realname";
     public static final String USER_TOKEN_ID = "usertokenid";
-    private static final Logger logger = LoggerFactory.getLogger(SSOHelper.class);
-    private static String cookiedomain = ".whydah.net";
+
+    private static final Logger logger = LoggerFactory.getLogger(UserTokenHandler.class);
 
     private final Client tokenServiceClient = Client.create();
     private final URI tokenServiceUri;
-    private String myAppTokenXml;
-    private String myAppTokenId;
     private final String applicationid;
     private final String applicationsecret;
-
-
-    public String getMyAppTokenID(){
-        if (myAppTokenId==null){
-            logonApplication();
-        }
-        return myAppTokenId;
-    }
     private final LoginTypes enabledLoginTypes;
-    
-    public SSOHelper() {
+
+    private String myAppTokenXml;
+    private String myAppTokenId;
+
+    public UserTokenHandler() {
         try {
-            tokenServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("securitytokenservice")).build();
-            this.enabledLoginTypes = new LoginTypes(AppConfig.readProperties());
-            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
-            applicationid = AppConfig.readProperties().getProperty("applicationid");
-            applicationsecret= AppConfig.readProperties().getProperty("applicationsecret");
+            Properties properties = AppConfig.readProperties();
+            this.tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
+            this.enabledLoginTypes = new LoginTypes(properties);
+            this.applicationid = properties.getProperty("applicationid");
+            this.applicationsecret= properties.getProperty("applicationsecret");
         } catch (IOException e) {
-            throw new IllegalArgumentException(e.getLocalizedMessage(), e);
+            throw new IllegalArgumentException("Error constructing SSOHelper.", e);
         }
     }
 
-    public Cookie createUserTokenCookie(String userTokenXml) {
-        String usertokenID = XpathHelper.getUserTokenId(userTokenXml);
-        Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, usertokenID);
-        //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
-        // cookie.setMaxAge(maxAge);
-        cookie.setMaxAge(365 * 24 * 60 * 60);
-        cookie.setPath("/");
-        cookie.setDomain(cookiedomain);
-        cookie.setValue(usertokenID);
-        // cookie.setSecure(true);
-        logger.debug("Created cookie with name=" + cookie.getName() + ", usertokenID=" + cookie.getValue() + ", maxAge=" + cookie.getMaxAge()+", domain"+cookiedomain);
-        return cookie;
-    }
+    /*
     private int calculateTokenRemainingLifetime(String userxml) {
         int tokenLifespan = Integer.parseInt(XpathHelper.getLifespan(userxml));
         long tokenTimestamp = Long.parseLong(XpathHelper.getTimestamp(userxml));
@@ -88,52 +59,13 @@ public class SSOHelper {
         long remainingLife_ms = endOfTokenLife - System.currentTimeMillis();
         return (int)remainingLife_ms/1000;
     }
+    */
 
 
     public String appendTicketToRedirectURI(String redirectURI, String userticket) {
         char paramSep = redirectURI.contains("?") ? '&' : '?';
-        redirectURI += paramSep + SSOHelper.USERTICKET + '=' + userticket;
+        redirectURI += paramSep + UserTokenHandler.USERTICKET + '=' + userticket;
         return redirectURI;
-    }
-
-    public WhydahUserTokenId getUserTokenIdFromCookie(HttpServletRequest request,HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        boolean found = false;
-        WhydahUserTokenId foundTokenId = WhydahUserTokenId.fromTokenId("");
-        if (cookies != null) {
-            logger.trace("getUserTokenIdFromCookie - Found {} cookie(s)", cookies.length);
-            for (Cookie cookie : cookies) {
-                logger.trace("getUserTokenIdFromCookie - Checking cookie:"+cookie.getName());
-                if (!SSOHelper.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
-                    continue;
-                }
-
-                String usertokenId = cookie.getValue();
-                logger.trace("getUserTokenIdFromCookie - Found whydahusertoken cookie, usertokenid={}", usertokenId);
-                if ("logout".equalsIgnoreCase(usertokenId)) {
-
-                    // TODO: should probably clear the logout cookie here?
-
-                    return WhydahUserTokenId.invalidTokenId();
-                }
-                if (verifyUserTokenId(usertokenId)) {
-                    logger.trace("getUserTokenIdFromCookie - usertokenid ok");
-                    foundTokenId = WhydahUserTokenId.fromTokenId(usertokenId);
-                    found = true;
-                } else {
-                    cookie.setMaxAge(0);
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    logger.trace("Cleared cookie with invalid usertokenid");
-                    response.addCookie(cookie);
-                }
-            }
-        }
-        if (found) {
-            return foundTokenId;
-        }
-        logger.debug("getUserTokenIdFromCookie - Found no cookies with usertokenid");
-        return WhydahUserTokenId.invalidTokenId();
     }
 
 
@@ -150,7 +82,7 @@ public class SSOHelper {
         ClientResponse response;
         try {
             response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             logger.error("logonApplication - Problem connecting to {}", logonResource.toString());
             throw(e);
         }
@@ -197,9 +129,9 @@ public class SSOHelper {
             String responseXML = response.getEntity(String.class);
             logger.debug("getUserToken - Log on OK with response {}", responseXML);
             return responseXML;
-        }else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
+        } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
             logger.error(printableUrlErrorMessage("getUserToken - Auth failed - Problems connecting with TokenService", getUserToken, response));
-        }else {
+        } else {
             logger.info(printableUrlErrorMessage("getUserToken - User authentication failed", getUserToken, response));
         }
         return null;
@@ -302,14 +234,13 @@ public class SSOHelper {
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
-        if(response.getStatus() != OK.getStatusCode()) {
+        if (response.getStatus() != OK.getStatusCode()) {
             logger.warn("releaseUserToken failed: {}", response);
         }
         logger.trace("releaseUserToken - released usertokenid={}",userTokenId);
     }
 
     public boolean verifyUserTokenId(String usertokenid) {
-
         // If we get strange values...  return false
         if (usertokenid == null || usertokenid.length() < 4) {
             logger.trace("verifyUserTokenId - Called with bogus usertokenid {} return false",usertokenid);
@@ -318,7 +249,7 @@ public class SSOHelper {
         logonApplication();
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
-        if(response.getStatus() == OK.getStatusCode()) {
+        if (response.getStatus() == OK.getStatusCode()) {
             logger.debug("verifyUserTokenId - usertokenid validated OK");
             return true;
         }
@@ -461,12 +392,6 @@ public class SSOHelper {
 
     }
 
-    public static String getCookieDomain() {
-
-        logger.info("CookieDomain: " + cookiedomain);
-        return cookiedomain;
-    }
-
     private String printableUrlErrorMessage(String errorMessage, WebResource request, ClientResponse response) {
         StringBuilder sb = new StringBuilder();
         sb.append(errorMessage);
@@ -479,6 +404,13 @@ public class SSOHelper {
             sb.append(request.toString());
         }
         return sb.toString();
+    }
+
+    public String getMyAppTokenID(){
+        if (myAppTokenId==null){
+            logonApplication();
+        }
+        return myAppTokenId;
     }
 }
 

@@ -6,7 +6,7 @@ import net.whydah.sso.data.FacebookUserCredential;
 import net.whydah.sso.data.UserCredential;
 import net.whydah.sso.util.FacebookHelper;
 import net.whydah.sso.util.ModelHelper;
-import net.whydah.sso.util.SSOHelper;
+import net.whydah.sso.util.UserTokenHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,7 @@ import java.util.UUID;
 @Controller
 public class FacebookLoginController {
     private static final Logger logger = LoggerFactory.getLogger(FacebookLoginController.class);
-    private final SSOHelper ssoHelper = new SSOHelper();
+    private final UserTokenHandler userTokenHandler = new UserTokenHandler();
 
     // set this to your servlet URL for the authentication servlet/filter
     private final String fbauthURI;
@@ -70,7 +70,7 @@ public class FacebookLoginController {
         if (pair == null) {
             logger.error("Could not fetch facebok user.");
             //TODO Do we need to add client redirect URI here?
-            ModelHelper.setEnabledLoginTypes(ssoHelper, model);
+            ModelHelper.setEnabledLoginTypes(userTokenHandler, model);
             return "login";
         }
         String fbAccessToken = pair.getKey();
@@ -84,7 +84,7 @@ public class FacebookLoginController {
 
         }
         model.addAttribute("logoURL", LOGOURL);
-        ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+        ModelHelper.setEnabledLoginTypes(userTokenHandler,model);
 
 
         String userticket = UUID.randomUUID().toString();
@@ -114,30 +114,30 @@ public class FacebookLoginController {
 
         //Check om fbToken har session i lokal cache i TokenService
         // Hvis ja, hent whydah user token og legg ticket på model eller på returURL.
-        String userTokenXml = ssoHelper.getUserToken(userCredential, userticket);
+        String userTokenXml = userTokenHandler.getUserToken(userCredential, userticket);
         if (userTokenXml == null) {
             logger.warn("getUserToken failed. Try to create new user using facebook credentials.");
             // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
             // Success etter ny bruker er laget = token. Alltid ticket id som skal sendes.
 
 
-            userTokenXml = ssoHelper.createAndLogonUser(fbUser, fbAccessToken, userCredential, userticket);
+            userTokenXml = userTokenHandler.createAndLogonUser(fbUser, fbAccessToken, userCredential, userticket);
             if (userTokenXml == null) {
                 logger.error("createAndLogonUser failed. Did not get a valid UserToken. Redirecting to login page.");
                 String redirectURI = getRedirectURI(request);
                 model.addAttribute("redirectURI", redirectURI);
                 model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
-                ModelHelper.setEnabledLoginTypes(ssoHelper,model);
+                ModelHelper.setEnabledLoginTypes(userTokenHandler,model);
                 return "login";
             }
         }
 
 
-        Cookie cookie = ssoHelper.createUserTokenCookie(userTokenXml);
+        Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
         response.addCookie(cookie);
 
         String clientRedirectURI = request.getParameter("state");
-        clientRedirectURI = ssoHelper.appendTicketToRedirectURI(clientRedirectURI, userticket);
+        clientRedirectURI = userTokenHandler.appendTicketToRedirectURI(clientRedirectURI, userticket);
         logger.info("Redirecting to {}", clientRedirectURI);
         model.addAttribute("redirect", clientRedirectURI);
         return "action";

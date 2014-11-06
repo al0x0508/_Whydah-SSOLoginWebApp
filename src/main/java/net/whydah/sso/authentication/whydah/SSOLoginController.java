@@ -4,7 +4,7 @@ import net.whydah.sso.authentication.ModelHelper;
 import net.whydah.sso.authentication.UserCredential;
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.config.ApplicationMode;
-import net.whydah.sso.usertoken.UserTokenHandler;
+import net.whydah.sso.usertoken.TokenServiceClient;
 import net.whydah.sso.usertoken.UserTokenXpathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class SSOLoginController {
     public static final String DEFAULT_REDIRECT = "welcome";
 
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
-    private final UserTokenHandler userTokenHandler;
+    private final TokenServiceClient tokenServiceClient;
     private final CookieManager cookieManager;
     private String LOGOURL = "/sso/images/site-logo.png";
 
@@ -36,8 +36,8 @@ public class SSOLoginController {
         //String MY_APP_URI = properties.getProperty("myuri");
         LOGOURL = properties.getProperty("logourl");
 
-        this.userTokenHandler = new UserTokenHandler();
-        this.cookieManager = new CookieManager(userTokenHandler, properties.getProperty("cookiedomain"));
+        this.tokenServiceClient = new TokenServiceClient();
+        this.cookieManager = new CookieManager(tokenServiceClient, properties.getProperty("cookiedomain"));
     }
 
 
@@ -61,9 +61,9 @@ public class SSOLoginController {
 
             }
             String userTicket = UUID.randomUUID().toString();
-            if (userTokenHandler.createTicketForUserTokenID(userTicket, usertokenId.toString())){
+            if (tokenServiceClient.createTicketForUserTokenID(userTicket, usertokenId.toString())){
                 logger.info("login - created new userticket={} for usertokenid={}",userTicket, usertokenId);
-                redirectURI = userTokenHandler.appendTicketToRedirectURI(redirectURI, userTicket);
+                redirectURI = tokenServiceClient.appendTicketToRedirectURI(redirectURI, userTicket);
 
                 // Action use redirect - not redirectURI
                 model.addAttribute(SessionHelper.REDIRECT, redirectURI);
@@ -72,7 +72,7 @@ public class SSOLoginController {
             }
 
         }
-        ModelHelper.setEnabledLoginTypes(userTokenHandler, model);
+        ModelHelper.setEnabledLoginTypes(model);
         return "login";
     }
 
@@ -80,26 +80,26 @@ public class SSOLoginController {
 
     @RequestMapping("/welcome")
     public String welcome(HttpServletRequest request, HttpServletResponse response,Model model) {
-        String userTicket = request.getParameter(UserTokenHandler.USERTICKET);
+        String userTicket = request.getParameter(TokenServiceClient.USERTICKET);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.IAM_MODE, ApplicationMode.getApplicationMode());
         if (userTicket != null && userTicket.length() > 3) {
             logger.trace("welcome - Using userticket");
-            model.addAttribute(UserTokenHandler.USERTICKET, userTicket);
-            String userToken= userTokenHandler.getUserTokenByUserTicket(userTicket);
-            model.addAttribute(UserTokenHandler.USERTOKEN, userToken);
-            model.addAttribute(UserTokenHandler.REALNAME, UserTokenXpathHelper.getRealName(userToken));
-            model.addAttribute(UserTokenHandler.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken) );
+            model.addAttribute(TokenServiceClient.USERTICKET, userTicket);
+            String userToken= tokenServiceClient.getUserTokenByUserTicket(userTicket);
+            model.addAttribute(TokenServiceClient.USERTOKEN, userToken);
+            model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
+            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken) );
             return "welcome";
         }
         String userTokenId = cookieManager.getUserTokenIdFromCookie(request,response).toString();
         if (userTokenId != null && userTokenId.length() > 3) {
             logger.trace("welcome - No userticket, using usertokenID from cookie");
-            model.addAttribute(UserTokenHandler.USERTICKET, "No userticket, using usertokenID");
-            model.addAttribute(UserTokenHandler.USER_TOKEN_ID, userTokenId);
-            String userToken= userTokenHandler.getUserTokenByUserTokenID(userTokenId);
-            model.addAttribute(UserTokenHandler.REALNAME, UserTokenXpathHelper.getRealName(userToken));
-            model.addAttribute(UserTokenHandler.USERTOKEN,userToken );
+            model.addAttribute(TokenServiceClient.USERTICKET, "No userticket, using usertokenID");
+            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, userTokenId);
+            String userToken= tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
+            model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
+            model.addAttribute(TokenServiceClient.USERTOKEN,userToken );
             return "welcome";
         } else {
             throw new UnauthorizedException();
@@ -113,12 +113,12 @@ public class SSOLoginController {
         logger.info("action - Found redirect:", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         String userTicket = UUID.randomUUID().toString();
-        String userTokenXml = userTokenHandler.getUserToken(user, userTicket);
+        String userTokenXml = tokenServiceClient.getUserToken(user, userTicket);
 
         if (userTokenXml == null) {
             logger.warn("action - getUserToken failed. Redirecting to login.");
             model.addAttribute(SessionHelper.LOGIN_ERROR, "Could not log in.");
-            ModelHelper.setEnabledLoginTypes(userTokenHandler,model);
+            ModelHelper.setEnabledLoginTypes(model);
             model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
             return "login";
         }
@@ -129,7 +129,7 @@ public class SSOLoginController {
         if (redirectURI.toLowerCase().contains(SessionHelper.USERTICKET)) {
             // Do not overwrite ticket
         } else {
-            redirectURI = userTokenHandler.appendTicketToRedirectURI(redirectURI, userTicket);
+            redirectURI = tokenServiceClient.appendTicketToRedirectURI(redirectURI, userTicket);
         }
         // Action use redirect...
         model.addAttribute(SessionHelper.REDIRECT, redirectURI);

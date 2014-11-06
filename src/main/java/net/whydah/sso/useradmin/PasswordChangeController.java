@@ -4,7 +4,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import net.whydah.sso.config.AppConfig;
-import net.whydah.sso.usertoken.UserTokenHandler;
+import net.whydah.sso.usertoken.TokenServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class PasswordChangeController {
     private static final Logger log = LoggerFactory.getLogger(PasswordChangeController.class);
     private static final Client uibClient = Client.create();
     private URI uibServiceUri;
-    private final UserTokenHandler userTokenHandler = new UserTokenHandler();
+    private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
     String LOGOURL = "/sso/images/site-logo.png";
     String MY_APP_URI = "";
 
@@ -55,7 +55,7 @@ public class PasswordChangeController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ userTokenHandler.getMyAppTokenID()+"/reset/username/" + user);
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + user);
 //        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
@@ -89,7 +89,7 @@ public class PasswordChangeController {
         model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ userTokenHandler.getMyAppTokenID()+"/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
         log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");

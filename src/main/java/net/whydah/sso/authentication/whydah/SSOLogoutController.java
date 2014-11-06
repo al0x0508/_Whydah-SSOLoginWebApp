@@ -1,7 +1,7 @@
 package net.whydah.sso.authentication.whydah;
 
 import net.whydah.sso.config.AppConfig;
-import net.whydah.sso.usertoken.UserTokenHandler;
+import net.whydah.sso.usertoken.TokenServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -17,19 +17,19 @@ import java.util.Properties;
 @Controller
 public class SSOLogoutController {
     private static final Logger logger = LoggerFactory.getLogger(SSOLogoutController.class);
-    private final UserTokenHandler userTokenHandler;
+    private final TokenServiceClient tokenServiceClient;
     private final CookieManager cookieManager;
 
 
     public SSOLogoutController() {
-        this.userTokenHandler = new UserTokenHandler();
+        this.tokenServiceClient = new TokenServiceClient();
         String cookiedomain = null;
         try {
             cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
         } catch (IOException e) {
             logger.warn("Could not load cookiedomain property. Using default value.");
         }
-        this.cookieManager = new CookieManager(userTokenHandler, cookiedomain);
+        this.cookieManager = new CookieManager(tokenServiceClient, cookiedomain);
 
     }
 
@@ -68,11 +68,11 @@ public class SSOLogoutController {
 
         if (usertokenid != null && usertokenid.length() > 1) {
             logger.info("logoutAction - releasing usertokenid={}",usertokenid);
-            userTokenHandler.releaseUserToken(usertokenid);
+            tokenServiceClient.releaseUserToken(usertokenid);
         }
         String usertokenidfromcookie = cookieManager.getUserTokenIdFromCookie(request,response).getUsertokenid();
         logger.info("logoutAction - releasing usertokenid={} found in cookie", usertokenidfromcookie);
-        userTokenHandler.releaseUserToken(usertokenidfromcookie);
+        tokenServiceClient.releaseUserToken(usertokenidfromcookie);
 
         clearAllWhydahCookies(request, response);
 
@@ -102,7 +102,7 @@ public class SSOLogoutController {
 
 
                 String usertokenid = cookie.getValue();
-                userTokenHandler.releaseUserToken(usertokenid);
+                tokenServiceClient.releaseUserToken(usertokenid);
                 logger.trace("clearAllWhydahCookies - releaseUserToken  usertokenid: {}  ",usertokenid);
                 cookie.setValue("logout");
                 response.addCookie(cookie);

@@ -1,7 +1,7 @@
 package net.whydah.sso.core;
 
 import net.whydah.sso.config.ApplicationMode;
-import net.whydah.sso.usertoken.UserTokenHandler;
+import net.whydah.sso.usertoken.TokenServiceClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertTrue;
 
 public class RedirectURITest {
-    private final UserTokenHandler userTokenHandler = new UserTokenHandler();
+    private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
 
     @BeforeClass
     public static void setup() {
@@ -26,7 +26,7 @@ public class RedirectURITest {
         if (redirectURI.toLowerCase().contains("userticket")) {
             // Do not overwrite ticket
         } else {
-            redirectURI = userTokenHandler.appendTicketToRedirectURI(redirectURI, userTicket);
+            redirectURI = tokenServiceClient.appendTicketToRedirectURI(redirectURI, userTicket);
 
         }
         assertTrue(redirectURI.toLowerCase().contains("userticket"));

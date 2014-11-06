@@ -1,6 +1,6 @@
 package net.whydah.sso.authentication.whydah;
 
-import net.whydah.sso.usertoken.UserTokenHandler;
+import net.whydah.sso.usertoken.TokenServiceClient;
 import net.whydah.sso.usertoken.UserTokenXpathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +17,11 @@ public class CookieManager {
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
 
-    private final UserTokenHandler userTokenHandler;
+    private final TokenServiceClient tokenServiceClient;
 
 
-    public CookieManager(UserTokenHandler userTokenHandler, String cookiedomain) {
-        this.userTokenHandler = userTokenHandler;
+    public CookieManager(TokenServiceClient tokenServiceClient, String cookiedomain) {
+        this.tokenServiceClient = tokenServiceClient;
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             CookieManager.cookiedomain = cookiedomain;
         }
@@ -69,7 +69,7 @@ public class CookieManager {
 
                     return WhydahUserTokenId.invalidTokenId();
                 }
-                if (userTokenHandler.verifyUserTokenId(usertokenId)) {
+                if (tokenServiceClient.verifyUserTokenId(usertokenId)) {
                     logger.trace("getUserTokenIdFromCookie - usertokenid ok");
                     foundTokenId = WhydahUserTokenId.fromTokenId(usertokenId);
                     found = true;

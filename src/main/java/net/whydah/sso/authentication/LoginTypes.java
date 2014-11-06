@@ -1,4 +1,4 @@
-package net.whydah.sso.usertoken;
+package net.whydah.sso.authentication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

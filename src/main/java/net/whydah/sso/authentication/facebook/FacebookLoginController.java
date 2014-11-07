@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -135,8 +134,7 @@ public class FacebookLoginController {
 
 
         String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
-        Cookie cookie = CookieManager.createUserTokenCookie(userTokenId);
-        response.addCookie(cookie);
+        CookieManager.createAndSetUserTokenCookie(userTokenId, response);
 
         String clientRedirectURI = request.getParameter("state");
         clientRedirectURI = tokenServiceClient.appendTicketToRedirectURI(clientRedirectURI, userticket);

@@ -10,26 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Properties;
 
 @Controller
 public class SSOLogoutController {
     private static final Logger logger = LoggerFactory.getLogger(SSOLogoutController.class);
     private final TokenServiceClient tokenServiceClient;
-    private final CookieManager cookieManager;
 
 
     public SSOLogoutController() {
         this.tokenServiceClient = new TokenServiceClient();
-        String cookiedomain = null;
-        try {
-            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
-        } catch (IOException e) {
-            logger.warn("Could not load cookiedomain property. Using default value.");
-        }
-        this.cookieManager = new CookieManager(cookiedomain);
-
     }
 
     @RequestMapping("/logout")
@@ -49,9 +39,9 @@ public class SSOLogoutController {
             model.addAttribute("redirect", "login");
         }
 
-        String usertoken = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
-        if (usertoken != null && usertoken.length() > 3) {
-            model.addAttribute("TokenID", usertoken);
+        String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
+        if (userTokenId != null && userTokenId.length() > 3) {
+            model.addAttribute("TokenID", userTokenId);
             return "logout";
         } else {
             return "action";
@@ -62,12 +52,12 @@ public class SSOLogoutController {
     @RequestMapping("/logoutaction")
     public String logoutAction(HttpServletRequest request, HttpServletResponse response, Model model) {
         //model.
-        String usertokenid = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
+        String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
         String redirectURI = request.getParameter("redirectURI");
 
-        if (usertokenid != null && usertokenid.length() > 1) {
-            logger.info("logoutAction - releasing usertokenid={}",usertokenid);
-            tokenServiceClient.releaseUserToken(usertokenid);
+        if (userTokenId != null && userTokenId.length() > 1) {
+            logger.info("logoutAction - releasing usertokenid={}",userTokenId);
+            tokenServiceClient.releaseUserToken(userTokenId);
         }
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);

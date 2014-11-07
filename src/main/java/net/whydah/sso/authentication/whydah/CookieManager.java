@@ -1,11 +1,13 @@
 package net.whydah.sso.authentication.whydah;
 
+import net.whydah.sso.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 public class CookieManager {
@@ -13,16 +15,21 @@ public class CookieManager {
     private static final String LOGOUT_COOKIE_VALUE = "logout";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
-    public static String cookiedomain = ".whydah.net";
+    private static String cookiedomain;
 
-    public CookieManager(String cookiedomain) {
-        if (cookiedomain != null && !cookiedomain.isEmpty()) {
-            CookieManager.cookiedomain = cookiedomain;
-        }
-
+    private CookieManager() {
     }
 
-    public static Cookie createUserTokenCookie(String userTokenId) {
+    static {
+        try {
+            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
+        } catch (IOException e) {
+            cookiedomain = ".whydah.net";
+            logger.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
+        }
+    }
+
+    public static void createAndSetUserTokenCookie(String userTokenId, HttpServletResponse response) {
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, userTokenId);
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         // cookie.setMaxAge(maxAge);
@@ -31,11 +38,51 @@ public class CookieManager {
         cookie.setDomain(cookiedomain);
         cookie.setValue(userTokenId);
         // cookie.setSecure(true);
-        logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}", cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
-        return cookie;
+        logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}",
+                cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
+
+        response.addCookie(cookie);
     }
 
-    /*
+    public static String getUserTokenIdFromCookie(HttpServletRequest request) {
+        Cookie userTokenCookie = getUserTokenCookie(request);
+        return (userTokenCookie != null ? userTokenCookie.getValue() : null);
+    }
+
+    public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = getUserTokenCookie(request);
+        if (cookie != null) {
+            logger.trace("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            cookie.setValue("");
+            response.addCookie(cookie);
+        }
+    }
+
+    public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+        Cookie userTokenCookie = getUserTokenCookie(request);
+        if (userTokenCookie != null) {
+            userTokenCookie.setValue(LOGOUT_COOKIE_VALUE);
+            response.addCookie(userTokenCookie);
+        }
+    }
+
+    private static Cookie getUserTokenCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName()) && cookiedomain.equalsIgnoreCase(cookie.getDomain())) {
+                return cookie;
+            }
+        }
+        return null;
+    }
+
+
+     /*
     public static String getCookieDomain() {
         logger.info("CookieDomain: " + cookiedomain);
         return cookiedomain;
@@ -83,48 +130,4 @@ public class CookieManager {
         return WhydahUserTokenId.invalidTokenId();
     }
     */
-
-    public static String getUserTokenIdFromCookie(HttpServletRequest request) {
-        Cookie userTokenCookie = getUserTokenCookie(request);
-        return (userTokenCookie != null ? userTokenCookie.getValue() : null);
-    }
-    private static Cookie getUserTokenCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (CookieManager.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
-                return cookie;
-            }
-        }
-        return null;
-    }
-
-
-    public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
-                logger.trace("Cleared cookie with name={}", cookie.getName());
-                cookie.setMaxAge(0);
-                cookie.setPath("/");
-                cookie.setValue("");
-                response.addCookie(cookie);
-            }
-        }
-    }
-
-    public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
-        Cookie userTokenCookie = getUserTokenCookie(request);
-        if (userTokenCookie == null) {
-            return;
-        }
-        userTokenCookie.setValue(LOGOUT_COOKIE_VALUE);
-        response.addCookie(userTokenCookie);
-    }
 }

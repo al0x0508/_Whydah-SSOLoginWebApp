@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,7 +24,6 @@ public class SSOLoginController {
 
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     private final TokenServiceClient tokenServiceClient;
-    private final CookieManager cookieManager;
     private String LOGOURL = "/sso/images/site-logo.png";
 
     //private final int MIN_REDIRECT_SIZE=4;
@@ -38,7 +36,6 @@ public class SSOLoginController {
         LOGOURL = properties.getProperty("logourl");
 
         this.tokenServiceClient = new TokenServiceClient();
-        this.cookieManager = new CookieManager(properties.getProperty("cookiedomain"));
     }
 
 
@@ -51,7 +48,7 @@ public class SSOLoginController {
 
 
         //usertokenId = cookieManager.getUserTokenIdFromCookie(request, response);
-        String userTokenIdFromCookie = cookieManager.getUserTokenIdFromCookie(request);
+        String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         WhydahUserTokenId whydahUserTokenId = WhydahUserTokenId.invalidTokenId();
         if ("logout".equalsIgnoreCase(userTokenIdFromCookie)) {
             //TODO
@@ -107,7 +104,7 @@ public class SSOLoginController {
             model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken) );
             return "welcome";
         }
-        String userTokenId = cookieManager.getUserTokenIdFromCookie(request);
+        String userTokenId = CookieManager.getUserTokenIdFromCookie(request);
         if (userTokenId != null && userTokenId.length() > 3) {
             logger.trace("welcome - No userticket, using usertokenID from cookie");
             model.addAttribute(TokenServiceClient.USERTICKET, "No userticket, using usertokenID");
@@ -139,8 +136,7 @@ public class SSOLoginController {
         }
 
         String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
-        Cookie userTokenCookie = CookieManager.createUserTokenCookie(userTokenId);
-        response.addCookie(userTokenCookie);
+        CookieManager.createAndSetUserTokenCookie(userTokenId, response);
 
         // ticket on redirect
         if (redirectURI.toLowerCase().contains(SessionHelper.USERTICKET)) {

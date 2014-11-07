@@ -1,18 +1,18 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Whydah Log out</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Whydah Logout</title>
+    <meta charset="utf-8"/>
     <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
 </head>
 <body>
 logout
 
-<FORM name="releaseusertoken" action="logoutaction" method="post">
+<form name="releaseusertoken" action="logoutaction" method="post">
     <input TYPE="hidden" name="usertoken" value="${TokenID!}" /><br/>
     <input type="hidden" name = "redirectURI" value = "${redirectURI!}"/>
     <input type="submit" />
-</FORM>
+</form>
 
 </body>
 </html>

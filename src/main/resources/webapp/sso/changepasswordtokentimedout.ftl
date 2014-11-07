@@ -12,7 +12,7 @@
             <img src="${logoURL}" alt="Whydah sign on"/>
             <h2>Oops, a timeout has occurred</h2>
         </div>
-        <div class="signup-box">
+        <div class="login-box">
             URL for password reset is no longer valid.<br/><br/>Please <a href="../resetpassword">reset password</a> and try again.
         </div>
     </div>

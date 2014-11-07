@@ -24,7 +24,7 @@
                 <h2>Whydah SSO login</h2>
             </div>
             <#if loginError??>
-                <div id="errordiv"><p id="error">${loginError!}</p></div>
+                <p class="error">${loginError!}</p>
             </#if>
             
         <#if userpasswordLoginEnabled == true>
@@ -33,15 +33,11 @@
                     <div id="normal-login">
                         <h4><label for="user_session_login">Username</label></h4>
                         <input id="user_session_login" name="user" type="text" placeholder="Username" autofocus>
-                        <br/><br/>
                         <h4><label for="user_session_password">Password</label></h4>
                         <input id="user_session_password" name="password" type="password" autocomplete="off" placeholder="Password">
                         <input type="hidden" name="redirectURI" value="${redirectURI!"welcome"}">
-                        <br/>
-                        <br/>
-                        <input class="button button-login" name="commit" type="submit" value="Login">
+                        <input class="button button-login" name="commit" type="submit" value="Login"/>
                     </div>
-                    <br/>
                     <p style="float: left">
                         <input name="user_session[remember_me]" type="hidden" value="0"/>
                         <input checked="checked" id="user_session_remember_me" name="user_session[remember_me]" type="checkbox" value="1"/>
@@ -94,17 +90,16 @@
                     <div id="openid-login" >
                         <p>
                             <label for="user_session_openid_identifier">openID URL</label>
-                            <br/>
                             <input id="user_session_openid_identifier" name="user_session[openid_identifier]" size="30" type="text"/>
+                            <input class="button button-login" name="commit" type="submit" value="Login"/>
                         </p>
                     </div>
-                    <p id="remember" style="display: block;">
+                    <p id="remember" style="float: left;">
                         <input name="user_session[remember_me]" type="hidden" value="0"/>
                         <input checked="checked" id="user_session_remember_me" name="user_session[remember_me]" type="checkbox" value="1"/>
                         <label for="user_session_remember_me">Remember me</label>
                     </p>
-                    <p>
-                        <input class="button" name="commit" type="submit" value="Login"/>
+                    <p style="float:right">
                         <a href="resetpassword" class="new_password">Forgot password</a>
                     </p>
                 </form>

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Whydah Login</title>
@@ -12,7 +12,7 @@
             <img src="${logoURL}" alt="SSO Login"/>
             <h2>Password changed</h2>
         </div>
-        <div class="signup-box">
+        <div class="login-box">
             <h4>Username:  ${username} </h4>
             <br/><br/>
             Close this window and log in with the new password.

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Whydah Login</title>
@@ -12,10 +12,10 @@
             <img src="${logoURL}" alt="Whydah Sign on"/>
             <h2>New password</h2>
         </div>
-    <#if error??>
-        <div id="errordiv"><p id="error">${error!}</p></div>
-    </#if>
-        <div id="signup-box">
+        <div class="login-box">
+            <#if error??>
+                <p class="error">${error!}</p>
+            </#if>
             <form action="../dochangepassword/${token}" method="POST" class="new_user_session">
                 <div style="margin:0;padding:0;display:inline"></div>
                 <h4><label for="password">New password for ${username}</label></h4>

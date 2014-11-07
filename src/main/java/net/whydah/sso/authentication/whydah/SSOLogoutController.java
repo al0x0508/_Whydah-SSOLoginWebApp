@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -70,11 +69,12 @@ public class SSOLogoutController {
             logger.info("logoutAction - releasing usertokenid={}",usertokenid);
             tokenServiceClient.releaseUserToken(usertokenid);
         }
-        String userTokenIdFromCookie = cookieManager.getUserTokenIdFromCookie(request);
+        String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);
         tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
 
-        clearAllWhydahCookies(request, response);
+        CookieManager.setLogoutUserTokenCookie(request, response);
+
 
         String LOGOURL="/sso/images/site-logo.png";
         try {
@@ -89,26 +89,4 @@ public class SSOLogoutController {
         model.addAttribute("redirect", redirectURI);
         return "action";
     }
-
-    private void clearAllWhydahCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            logger.trace("clearAllWhydahCookies - Found {} cookie(s)", cookies.length);
-            for (Cookie cookie : cookies) {
-                logger.trace("clearAllWhydahCookies - Checking cookie:" + cookie.getName());
-                if (!CookieManager.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
-                    continue;
-                }
-
-
-                String usertokenid = cookie.getValue();
-                tokenServiceClient.releaseUserToken(usertokenid);
-                logger.trace("clearAllWhydahCookies - releaseUserToken  usertokenid: {}  ",usertokenid);
-                cookie.setValue("logout");
-                response.addCookie(cookie);
-                logger.trace("clearAllWhydahCookies - Reset cookie.  usertokenid: {}  Cookie: {}",usertokenid, cookie);
-            }
-        }
-    }
-
 }

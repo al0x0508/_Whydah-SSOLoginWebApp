@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CookieManager {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
-    public static String cookiedomain = ".whydah.net";
-
+    private static final String LOGOUT_COOKIE_VALUE = "logout";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
+    public static String cookiedomain = ".whydah.net";
 
     public CookieManager(String cookiedomain) {
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
@@ -84,11 +84,11 @@ public class CookieManager {
     }
     */
 
-    public String getUserTokenIdFromCookie(HttpServletRequest request) {
+    public static String getUserTokenIdFromCookie(HttpServletRequest request) {
         Cookie userTokenCookie = getUserTokenCookie(request);
         return (userTokenCookie != null ? userTokenCookie.getValue() : null);
     }
-    private Cookie getUserTokenCookie(HttpServletRequest request) {
+    private static Cookie getUserTokenCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
@@ -112,11 +112,19 @@ public class CookieManager {
             if (cookie.getName().equalsIgnoreCase(USER_TOKEN_REFERENCE_NAME)) {
                 logger.trace("Cleared cookie with name={}", cookie.getName());
                 cookie.setMaxAge(0);
-                cookie.setPath("/"); // SSOLoginWebapp userTokenCookie.setPath("/");
+                cookie.setPath("/");
                 cookie.setValue("");
                 response.addCookie(cookie);
             }
         }
     }
 
+    public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+        Cookie userTokenCookie = getUserTokenCookie(request);
+        if (userTokenCookie == null) {
+            return;
+        }
+        userTokenCookie.setValue(LOGOUT_COOKIE_VALUE);
+        response.addCookie(userTokenCookie);
+    }
 }

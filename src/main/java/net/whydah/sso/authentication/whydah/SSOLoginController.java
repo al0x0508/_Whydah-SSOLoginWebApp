@@ -24,7 +24,6 @@ public class SSOLoginController {
 
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     private final TokenServiceClient tokenServiceClient;
-    private final CookieManager cookieManager;
     private String LOGOURL = "/sso/images/site-logo.png";
 
     //private final int MIN_REDIRECT_SIZE=4;
@@ -37,7 +36,6 @@ public class SSOLoginController {
         LOGOURL = properties.getProperty("logourl");
 
         this.tokenServiceClient = new TokenServiceClient();
-        this.cookieManager = new CookieManager(tokenServiceClient, properties.getProperty("cookiedomain"));
     }
 
 
@@ -48,10 +46,24 @@ public class SSOLoginController {
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
-        WhydahUserTokenId usertokenId = cookieManager.getUserTokenIdFromCookie(request, response);
-        logger.trace("login - Found usertokenid={} from whydah cookie", usertokenId);
-        if (usertokenId.isValid()) {
-            logger.trace("login - Found usertokenid={} is valid", usertokenId);
+
+        //usertokenId = cookieManager.getUserTokenIdFromCookie(request, response);
+        String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
+        WhydahUserTokenId whydahUserTokenId = WhydahUserTokenId.invalidTokenId();
+        if ("logout".equalsIgnoreCase(userTokenIdFromCookie)) {
+            //TODO
+            logger.trace("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
+            //usertokenId = WhydahUserTokenId.invalidTokenId();
+        } else if (tokenServiceClient.verifyUserTokenId(userTokenIdFromCookie)) {
+            logger.trace("userTokenId={} from cookie verified OK.", userTokenIdFromCookie);
+            whydahUserTokenId = WhydahUserTokenId.fromTokenId(userTokenIdFromCookie);
+        } else {
+            CookieManager.clearUserTokenCookies(request, response);
+        }
+
+        logger.trace("login - Found usertokenid={} from whydah cookie", whydahUserTokenId);
+        if (whydahUserTokenId.isValid()) {
+            logger.trace("login - Found usertokenid={} is valid", whydahUserTokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
                 logger.trace("login - Did not find any sensible redirectURI, using /welcome");
@@ -61,8 +73,8 @@ public class SSOLoginController {
 
             }
             String userTicket = UUID.randomUUID().toString();
-            if (tokenServiceClient.createTicketForUserTokenID(userTicket, usertokenId.toString())){
-                logger.info("login - created new userticket={} for usertokenid={}",userTicket, usertokenId);
+            if (tokenServiceClient.createTicketForUserTokenID(userTicket, whydahUserTokenId.toString())){
+                logger.info("login - created new userticket={} for usertokenid={}",userTicket, whydahUserTokenId);
                 redirectURI = tokenServiceClient.appendTicketToRedirectURI(redirectURI, userTicket);
 
                 // Action use redirect - not redirectURI
@@ -92,7 +104,7 @@ public class SSOLoginController {
             model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken) );
             return "welcome";
         }
-        String userTokenId = cookieManager.getUserTokenIdFromCookie(request,response).toString();
+        String userTokenId = CookieManager.getUserTokenIdFromCookie(request);
         if (userTokenId != null && userTokenId.length() > 3) {
             logger.trace("welcome - No userticket, using usertokenID from cookie");
             model.addAttribute(TokenServiceClient.USERTICKET, "No userticket, using usertokenID");
@@ -123,7 +135,8 @@ public class SSOLoginController {
             return "login";
         }
 
-        response.addCookie(CookieManager.createUserTokenCookie(userTokenXml));
+        String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
+        CookieManager.createAndSetUserTokenCookie(userTokenId, response);
 
         // ticket on redirect
         if (redirectURI.toLowerCase().contains(SessionHelper.USERTICKET)) {

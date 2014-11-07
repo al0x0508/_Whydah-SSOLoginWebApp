@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,19 +17,10 @@ import java.util.Properties;
 public class SSOLogoutController {
     private static final Logger logger = LoggerFactory.getLogger(SSOLogoutController.class);
     private final TokenServiceClient tokenServiceClient;
-    private final CookieManager cookieManager;
 
 
     public SSOLogoutController() {
         this.tokenServiceClient = new TokenServiceClient();
-        String cookiedomain = null;
-        try {
-            cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
-        } catch (IOException e) {
-            logger.warn("Could not load cookiedomain property. Using default value.");
-        }
-        this.cookieManager = new CookieManager(tokenServiceClient, cookiedomain);
-
     }
 
     @RequestMapping("/logout")
@@ -50,9 +40,9 @@ public class SSOLogoutController {
             model.addAttribute("redirect", "login");
         }
 
-        String usertoken = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
-        if (usertoken != null && usertoken.length() > 3) {
-            model.addAttribute("TokenID", usertoken);
+        String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
+        if (userTokenId != null && userTokenId.length() > 3) {
+            model.addAttribute("TokenID", userTokenId);
             return "logout";
         } else {
             return "action";
@@ -62,53 +52,35 @@ public class SSOLogoutController {
 
     @RequestMapping("/logoutaction")
     public String logoutAction(HttpServletRequest request, HttpServletResponse response, Model model) {
-        //model.
-        String usertokenid = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
-        String redirectURI = request.getParameter("redirectURI");
+        String userTokenIdFromRequest = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
 
-        if (usertokenid != null && usertokenid.length() > 1) {
-            logger.info("logoutAction - releasing usertokenid={}",usertokenid);
-            tokenServiceClient.releaseUserToken(usertokenid);
+        if (userTokenIdFromRequest != null && userTokenIdFromRequest.length() > 1) {
+            logger.debug("logoutAction - releasing userTokenIdFromRequest={} from", userTokenIdFromRequest);
+            tokenServiceClient.releaseUserToken(userTokenIdFromRequest);
+        } else {
+            String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
+            if (userTokenIdFromCookie != null && userTokenIdFromCookie.length() > 1) {
+                logger.debug("logoutAction - releasing userTokenIdFromCookie={}", userTokenIdFromCookie);
+                tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
+            } else {
+                logger.warn("logoutAction - tokenServiceClient.releaseUserToken was not called because no userTokenId was found in request or cookie.");
+            }
         }
-        String usertokenidfromcookie = cookieManager.getUserTokenIdFromCookie(request,response).getUsertokenid();
-        logger.info("logoutAction - releasing usertokenid={} found in cookie", usertokenidfromcookie);
-        tokenServiceClient.releaseUserToken(usertokenidfromcookie);
 
-        clearAllWhydahCookies(request, response);
 
-        String LOGOURL="/sso/images/site-logo.png";
+        CookieManager.setLogoutUserTokenCookie(request, response);
+
+        String LOGOURL;
         try {
             Properties properties = AppConfig.readProperties();
             LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e){
-
+        } catch (IOException e){
+            LOGOURL = "/sso/images/site-logo.png";
         }
         model.addAttribute("logoURL", LOGOURL);
 
+        String redirectURI = request.getParameter("redirectURI");
         model.addAttribute("redirect", redirectURI);
         return "action";
     }
-
-    private void clearAllWhydahCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            logger.trace("clearAllWhydahCookies - Found {} cookie(s)", cookies.length);
-            for (Cookie cookie : cookies) {
-                logger.trace("clearAllWhydahCookies - Checking cookie:" + cookie.getName());
-                if (!CookieManager.USER_TOKEN_REFERENCE_NAME.equals(cookie.getName())) {
-                    continue;
-                }
-
-
-                String usertokenid = cookie.getValue();
-                tokenServiceClient.releaseUserToken(usertokenid);
-                logger.trace("clearAllWhydahCookies - releaseUserToken  usertokenid: {}  ",usertokenid);
-                cookie.setValue("logout");
-                response.addCookie(cookie);
-                logger.trace("clearAllWhydahCookies - Reset cookie.  usertokenid: {}  Cookie: {}",usertokenid, cookie);
-            }
-        }
-    }
-
 }

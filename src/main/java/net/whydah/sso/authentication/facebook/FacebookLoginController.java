@@ -7,13 +7,13 @@ import net.whydah.sso.authentication.whydah.CookieManager;
 import net.whydah.sso.authentication.whydah.SSOLoginController;
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.usertoken.TokenServiceClient;
+import net.whydah.sso.usertoken.UserTokenXpathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -133,8 +133,8 @@ public class FacebookLoginController {
         }
 
 
-        Cookie cookie = CookieManager.createUserTokenCookie(userTokenXml);
-        response.addCookie(cookie);
+        String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
+        CookieManager.createAndSetUserTokenCookie(userTokenId, response);
 
         String clientRedirectURI = request.getParameter("state");
         clientRedirectURI = tokenServiceClient.appendTicketToRedirectURI(clientRedirectURI, userticket);

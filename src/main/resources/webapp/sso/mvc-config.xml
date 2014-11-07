@@ -9,7 +9,6 @@
     <mvc:default-servlet-handler default-servlet-name="org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler"/>
 
     <mvc:resources mapping="/images/**" location="classpath:/images/" />
-    <mvc:resources mapping="/favicon.ico" location="classpath:/images/favicon.ico" />
     <mvc:resources mapping="/css/**" location="classpath:/css/" />
     <mvc:resources mapping="/js/**" location="classpath:/js/" />
 

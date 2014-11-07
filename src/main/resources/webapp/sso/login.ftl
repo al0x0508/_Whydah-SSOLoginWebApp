@@ -1,12 +1,12 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Whydah Login</title>
-    <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=320, initial-scale=1, maximum-scale=1"/>
-        
-    
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="css/whydah.css" type="text/css"/>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
     <div style="display:none;">
@@ -40,9 +40,6 @@
                         <br/>
                         <br/>
                         <input class="button button-login" name="commit" type="submit" value="Login">
-                        <#if redirectURI??>
-                            <input type="hidden" name="redirectURI" value="${redirectURI}"/>
-                        </#if>
                     </div>
                     <br/>
                     <p style="float: left">

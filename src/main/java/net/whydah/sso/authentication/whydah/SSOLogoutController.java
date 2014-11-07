@@ -55,13 +55,19 @@ public class SSOLogoutController {
         String userTokenIdFromRequest = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
 
         if (userTokenIdFromRequest != null && userTokenIdFromRequest.length() > 1) {
-            logger.info("logoutAction - releasing userTokenIdFromRequest={} ", userTokenIdFromRequest);
+            logger.debug("logoutAction - releasing userTokenIdFromRequest={} from", userTokenIdFromRequest);
             tokenServiceClient.releaseUserToken(userTokenIdFromRequest);
         } else {
             String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
-            logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);
-            tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
+            if (userTokenIdFromCookie != null && userTokenIdFromCookie.length() > 1) {
+                logger.debug("logoutAction - releasing userTokenIdFromCookie={}", userTokenIdFromCookie);
+                tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
+            } else {
+                logger.warn("logoutAction - tokenServiceClient.releaseUserToken was not called because no userTokenId was found in request or cookie.");
+            }
         }
+
+
         CookieManager.setLogoutUserTokenCookie(request, response);
 
         String LOGOURL;

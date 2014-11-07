@@ -179,22 +179,22 @@ public class TokenServiceClient {
     }
 
     public void releaseUserToken(String userTokenId) {
-        logger.trace("releaseUserToken - releasing usertokenid={}",userTokenId);
+        logger.trace("Releasing userTokenId={}", userTokenId);
         logonApplication();
         WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/release_usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() != OK.getStatusCode()) {
-            logger.warn("releaseUserToken failed: {}", response);
+            logger.warn("releaseUserToken failed for userTokenId={}: {}", userTokenId, response);
         }
-        logger.trace("releaseUserToken - released usertokenid={}",userTokenId);
+        logger.trace("Released userTokenId={}", userTokenId);
     }
 
     public boolean verifyUserTokenId(String usertokenid) {
         // If we get strange values...  return false
         if (usertokenid == null || usertokenid.length() < 4) {
-            logger.trace("verifyUserTokenId - Called with bogus usertokenid {} return false",usertokenid);
+            logger.trace("verifyUserTokenId - Called with bogus usertokenid={}. return false",usertokenid);
             return false;
         }
         logonApplication();

@@ -39,7 +39,7 @@ public class CookieManager {
         }
         cookie.setValue(userTokenId);
         // cookie.setSecure(true);
-        logger.trace("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}",
+        logger.debug("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}",
                 cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
 
         response.addCookie(cookie);
@@ -53,7 +53,7 @@ public class CookieManager {
     public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getUserTokenCookie(request);
         if (cookie != null) {
-            logger.trace("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
+            logger.debug("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
             cookie.setMaxAge(0);
             cookie.setPath("/");
             cookie.setValue("");
@@ -78,6 +78,7 @@ public class CookieManager {
     public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie userTokenCookie = getUserTokenCookie(request);
         if (userTokenCookie != null) {
+            logger.debug("Setting logout value on userToken cookie.");
             userTokenCookie.setValue(LOGOUT_COOKIE_VALUE);
             response.addCookie(userTokenCookie);
         }

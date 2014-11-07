@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Properties;
 
 @Controller
@@ -51,31 +52,28 @@ public class SSOLogoutController {
 
     @RequestMapping("/logoutaction")
     public String logoutAction(HttpServletRequest request, HttpServletResponse response, Model model) {
-        //model.
-        String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
-        String redirectURI = request.getParameter("redirectURI");
+        String userTokenIdFromRequest = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
 
-        if (userTokenId != null && userTokenId.length() > 1) {
-            logger.info("logoutAction - releasing usertokenid={}",userTokenId);
-            tokenServiceClient.releaseUserToken(userTokenId);
+        if (userTokenIdFromRequest != null && userTokenIdFromRequest.length() > 1) {
+            logger.info("logoutAction - releasing userTokenIdFromRequest={} ", userTokenIdFromRequest);
+            tokenServiceClient.releaseUserToken(userTokenIdFromRequest);
+        } else {
+            String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
+            logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);
+            tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
         }
-        String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
-        logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);
-        tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
-
         CookieManager.setLogoutUserTokenCookie(request, response);
 
-
-        String LOGOURL="/sso/images/site-logo.png";
+        String LOGOURL;
         try {
             Properties properties = AppConfig.readProperties();
             LOGOURL = properties.getProperty("logourl");
-
-        } catch (Exception e){
-
+        } catch (IOException e){
+            LOGOURL = "/sso/images/site-logo.png";
         }
         model.addAttribute("logoURL", LOGOURL);
 
+        String redirectURI = request.getParameter("redirectURI");
         model.addAttribute("redirect", redirectURI);
         return "action";
     }

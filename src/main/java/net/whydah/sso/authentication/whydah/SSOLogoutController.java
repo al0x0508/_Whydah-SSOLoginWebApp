@@ -29,7 +29,7 @@ public class SSOLogoutController {
         } catch (IOException e) {
             logger.warn("Could not load cookiedomain property. Using default value.");
         }
-        this.cookieManager = new CookieManager(tokenServiceClient, cookiedomain);
+        this.cookieManager = new CookieManager(cookiedomain);
 
     }
 
@@ -70,9 +70,9 @@ public class SSOLogoutController {
             logger.info("logoutAction - releasing usertokenid={}",usertokenid);
             tokenServiceClient.releaseUserToken(usertokenid);
         }
-        String usertokenidfromcookie = cookieManager.getUserTokenIdFromCookie(request,response).getUsertokenid();
-        logger.info("logoutAction - releasing usertokenid={} found in cookie", usertokenidfromcookie);
-        tokenServiceClient.releaseUserToken(usertokenidfromcookie);
+        String userTokenIdFromCookie = cookieManager.getUserTokenIdFromCookie(request);
+        logger.info("logoutAction - releasing usertokenid={} found in cookie", userTokenIdFromCookie);
+        tokenServiceClient.releaseUserToken(userTokenIdFromCookie);
 
         clearAllWhydahCookies(request, response);
 

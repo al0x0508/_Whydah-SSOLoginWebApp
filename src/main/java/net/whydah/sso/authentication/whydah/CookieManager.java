@@ -14,7 +14,7 @@ public class CookieManager {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     //private static final String LOGOUT_COOKIE_VALUE = "logout";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
-    public static final int DEFAULT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
+    private static final int DEFAULT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 
     private static String cookiedomain = null;
 
@@ -36,8 +36,8 @@ public class CookieManager {
         if (tokenRemainingLifetimeSeconds == null) {
             tokenRemainingLifetimeSeconds = DEFAULT_COOKIE_MAX_AGE;
         }
-
         cookie.setMaxAge(tokenRemainingLifetimeSeconds);
+
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             cookie.setDomain(cookiedomain);
         }

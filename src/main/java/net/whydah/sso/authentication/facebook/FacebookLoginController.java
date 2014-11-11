@@ -134,7 +134,8 @@ public class FacebookLoginController {
 
 
         String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
-        CookieManager.createAndSetUserTokenCookie(userTokenId, response);
+        Integer tokenRemainingLifetimeSeconds = TokenServiceClient.calculateTokenRemainingLifetimeInSeconds(userTokenXml);
+        CookieManager.createAndSetUserTokenCookie(userTokenId, tokenRemainingLifetimeSeconds, response);
 
         String clientRedirectURI = request.getParameter("state");
         clientRedirectURI = tokenServiceClient.appendTicketToRedirectURI(clientRedirectURI, userticket);

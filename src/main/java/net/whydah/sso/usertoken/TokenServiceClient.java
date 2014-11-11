@@ -388,15 +388,19 @@ public class TokenServiceClient {
         return myAppTokenId;
     }
 
-     /*
-    private int calculateTokenRemainingLifetime(String userxml) {
-        int tokenLifespan = Integer.parseInt(XpathHelper.getLifespan(userxml));
-        long tokenTimestamp = Long.parseLong(XpathHelper.getTimestamp(userxml));
-        long endOfTokenLife = tokenTimestamp + tokenLifespan;
-        long remainingLife_ms = endOfTokenLife - System.currentTimeMillis();
-        return (int)remainingLife_ms/1000;
+
+    public static Integer calculateTokenRemainingLifetimeInSeconds(String userTokenXml) {
+        Integer tokenLifespanMs = UserTokenXpathHelper.getLifespan(userTokenXml);
+        Long tokenTimestampMsSinceEpoch = UserTokenXpathHelper.getTimestamp(userTokenXml);
+
+        if (tokenLifespanMs == null || tokenTimestampMsSinceEpoch == null) {
+            return null;
+        }
+
+        long endOfTokenLifeMs = tokenTimestampMsSinceEpoch + tokenLifespanMs;
+        long remainingLifeMs = endOfTokenLifeMs - System.currentTimeMillis();
+        return (int) (remainingLifeMs / 1000);
     }
-    */
 
 
     public String appendTicketToRedirectURI(String redirectURI, String userticket) {

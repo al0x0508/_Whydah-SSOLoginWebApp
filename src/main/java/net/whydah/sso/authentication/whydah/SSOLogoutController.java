@@ -36,21 +36,30 @@ public class SSOLogoutController {
         }
     }
 
+    /**
+     * This is the endpoint clients should use.
+     */
     @RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
         model.addAttribute("logoURL", getLogoUrl());
         String redirectUriFromClient = getRedirectUri(request);
         //model.addAttribute(SessionHelper.REDIRECT_URI, redirectUri);
-        String userTokenIdFromRequest = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
-        logger.trace("logout was called. userTokenIdFromRequest={}, redirectUriFromClient={}", userTokenIdFromRequest, redirectUriFromClient);
+        String userTokenId = CookieManager.getUserTokenId(request);
+        logger.trace("logout was called. userTokenId={}, redirectUriFromClient={}", userTokenId, redirectUriFromClient);
 
-        if (userTokenIdFromRequest != null && userTokenIdFromRequest.length() > 3) {
-            model.addAttribute("TokenID", userTokenIdFromRequest);
+        if (userTokenId != null && userTokenId.length() > 3) {
+            //Have userTokenId and can perform logout
+            //model.addAttribute("TokenID", userTokenId);
             //ED: I think this is never called. Unkown what/when it should be used.
-            logger.info("logout was called. userTokenIdFromRequest={}, redirectUri={}. TALK TO Erik if you see this log statement!", userTokenIdFromRequest, redirectUriFromClient);
-            return "logout";
+            //logger.info("logout was called. userTokenIdFromRequest={}, redirectUri={}. TALK TO Erik if you see this log statement!", userTokenId, redirectUriFromClient);
+            tokenServiceClient.releaseUserToken(userTokenId);
+            CookieManager.clearUserTokenCookies(request, response);
+            String loginRedirectUri = LOGIN_URI + "?" + SessionHelper.REDIRECT_URI + "=" + redirectUriFromClient;
+            model.addAttribute(SessionHelper.REDIRECT, loginRedirectUri);
+            logger.info("logout - Redirecting to loginRedirectUri={}", loginRedirectUri);
+            return "action";
         } else {
-            //Redirect to logoutaction to ensure browser sets the expected cookie on the request.
+            //No userTokenId, so not possible to perform logout.  Redirect to logoutaction to ensure browser sets the expected cookie on the request to obtian the userTokenId.
             String logout_action_redirect_uri = LOGOUT_ACTION_URI + "?" + SessionHelper.REDIRECT_URI + "=" + redirectUriFromClient;
             model.addAttribute(SessionHelper.REDIRECT, logout_action_redirect_uri);
             //model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
@@ -59,6 +68,9 @@ public class SSOLogoutController {
         }
     }
 
+    /**
+     * This endpoint is only used for performing a redirect to fetch the usertoken cookie.
+     */
     @RequestMapping("/logoutaction")
     public String logoutAction(HttpServletRequest request, HttpServletResponse response, Model model) {
         String userTokenId = CookieManager.getUserTokenId(request);
@@ -75,7 +87,6 @@ public class SSOLogoutController {
         //CookieManager.setLogoutUserTokenCookie(request, response);
 
         model.addAttribute("logoURL", getLogoUrl());
-        //model.addAttribute(SessionHelper.REDIRECT_URI, redirectUri);
         String loginRedirectUri = LOGIN_URI + "?" + SessionHelper.REDIRECT_URI + "=" + redirectUri;
         model.addAttribute(SessionHelper.REDIRECT, loginRedirectUri);
         logger.info("logoutaction - Redirecting to loginRedirectUri={}", loginRedirectUri);

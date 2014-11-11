@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class CookieManager {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
-    private static final String LOGOUT_COOKIE_VALUE = "logout";
+    //private static final String LOGOUT_COOKIE_VALUE = "logout";
     private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
 
     private static String cookiedomain = null;
@@ -35,11 +35,11 @@ public class CookieManager {
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         // cookie.setMaxAge(maxAge);
         cookie.setMaxAge(365 * 24 * 60 * 60);
-        cookie.setPath("/");
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             cookie.setDomain(cookiedomain);
         }
-        // cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
         logger.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                 cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);
@@ -48,11 +48,16 @@ public class CookieManager {
     public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getUserTokenCookie(request);
         if (cookie != null) {
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
             cookie.setValue("");
+            cookie.setMaxAge(0);
+            if (cookiedomain != null && !cookiedomain.isEmpty()) {
+                cookie.setDomain(cookiedomain);
+            }
+            cookie.setPath("/");
+            cookie.setSecure(true);
             response.addCookie(cookie);
-            logger.debug("Cleared cookie with name={}", cookie.getName());
+            logger.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+                    cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         }
     }
 
@@ -86,7 +91,7 @@ public class CookieManager {
         return null;
     }
 
-
+    /*
     public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie userTokenCookie = getUserTokenCookie(request);
         if (userTokenCookie != null) {
@@ -95,4 +100,5 @@ public class CookieManager {
             response.addCookie(userTokenCookie);
         }
     }
+    */
 }

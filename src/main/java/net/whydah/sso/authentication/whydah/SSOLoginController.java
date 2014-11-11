@@ -42,16 +42,18 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response,Model model) {
         String redirectURI = getRedirectURI(request);
-        logger.trace("login: redirectURI: {}", redirectURI);
+
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
 
         //usertokenId = cookieManager.getUserTokenIdFromCookie(request, response);
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
+        logger.trace("login: redirectURI={}, userTokenIdFromCookie={}", redirectURI, userTokenIdFromCookie);
+
         WhydahUserTokenId whydahUserTokenId = WhydahUserTokenId.invalidTokenId();
         if ("logout".equalsIgnoreCase(userTokenIdFromCookie)) {
-            //TODO ED: Needs to be reviewed/changed
+            //TODO ED: Needs to be reviewed/changed - will never happend AFAIK
             logger.info("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
             CookieManager.clearUserTokenCookies(request, response);
             //usertokenId = WhydahUserTokenId.invalidTokenId();
@@ -62,9 +64,8 @@ public class SSOLoginController {
             CookieManager.clearUserTokenCookies(request, response);
         }
 
-        logger.trace("login - Found whydahUserTokenId={} from whydah cookie", whydahUserTokenId);
         if (whydahUserTokenId.isValid()) {
-            logger.trace("login - Found whydahUserTokenId={} is valid", whydahUserTokenId);
+            logger.trace("login - whydahUserTokenId={} is valid", whydahUserTokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
                 logger.trace("login - Did not find any sensible redirectURI, using /welcome");
@@ -83,7 +84,6 @@ public class SSOLoginController {
                 logger.info("login - Redirecting to {}", redirectURI);
                 return "action";
             }
-
         }
         ModelHelper.setEnabledLoginTypes(model);
         return "login";

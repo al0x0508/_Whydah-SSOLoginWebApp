@@ -22,6 +22,9 @@
 
     <logger name="org.eclipse.jetty" level="WARN" />
 
+
+    net.whydah.sso.usertoken
+    <logger name="net.whydah.sso.usertoken.UserTokenXpathHelper" level="INFO" />
     <logger name="net.whydah.sso" level="TRACE" />
 
     <root level="INFO">

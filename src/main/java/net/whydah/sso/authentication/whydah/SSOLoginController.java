@@ -42,7 +42,7 @@ public class SSOLoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response,Model model) {
         String redirectURI = getRedirectURI(request);
-        logger.trace("login - Found redirectURI: {}", redirectURI);
+        logger.trace("login: redirectURI: {}", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
@@ -51,19 +51,20 @@ public class SSOLoginController {
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
         WhydahUserTokenId whydahUserTokenId = WhydahUserTokenId.invalidTokenId();
         if ("logout".equalsIgnoreCase(userTokenIdFromCookie)) {
-            //TODO
-            logger.trace("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
+            //TODO ED: Needs to be reviewed/changed
+            logger.info("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
+            CookieManager.clearUserTokenCookies(request, response);
             //usertokenId = WhydahUserTokenId.invalidTokenId();
-        } else if (tokenServiceClient.verifyUserTokenId(userTokenIdFromCookie)) {
+        } else if (userTokenIdFromCookie != null && tokenServiceClient.verifyUserTokenId(userTokenIdFromCookie)) {
             logger.trace("userTokenId={} from cookie verified OK.", userTokenIdFromCookie);
             whydahUserTokenId = WhydahUserTokenId.fromTokenId(userTokenIdFromCookie);
         } else {
             CookieManager.clearUserTokenCookies(request, response);
         }
 
-        logger.trace("login - Found usertokenid={} from whydah cookie", whydahUserTokenId);
+        logger.trace("login - Found whydahUserTokenId={} from whydah cookie", whydahUserTokenId);
         if (whydahUserTokenId.isValid()) {
-            logger.trace("login - Found usertokenid={} is valid", whydahUserTokenId);
+            logger.trace("login - Found whydahUserTokenId={} is valid", whydahUserTokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
                 logger.trace("login - Did not find any sensible redirectURI, using /welcome");
@@ -122,7 +123,7 @@ public class SSOLoginController {
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter(SessionHelper.USER), request.getParameter(SessionHelper.PASSWORD));
         String redirectURI = getRedirectURI(request);
-        logger.info("action - Found redirect:", redirectURI);
+        logger.trace("action: redirectURI: {}", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         String userTicket = UUID.randomUUID().toString();
         String userTokenXml = tokenServiceClient.getUserToken(user, userTicket);
@@ -155,7 +156,7 @@ public class SSOLoginController {
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter(SessionHelper.REDIRECT_URI);
-        logger.trace("getRedirectURI - redirectURI from request: {}", redirectURI);
+        //logger.trace("getRedirectURI - redirectURI from request: {}", redirectURI);
         if (redirectURI == null || redirectURI.length() < 1) {
             logger.trace("getRedirectURI - No redirectURI found, setting to {}", DEFAULT_REDIRECT);
             return DEFAULT_REDIRECT;

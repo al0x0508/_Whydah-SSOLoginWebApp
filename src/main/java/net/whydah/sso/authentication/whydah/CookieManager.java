@@ -30,6 +30,8 @@ public class CookieManager {
 
     public static void createAndSetUserTokenCookie(String userTokenId, HttpServletResponse response) {
         Cookie cookie = new Cookie(USER_TOKEN_REFERENCE_NAME, userTokenId);
+        cookie.setValue(userTokenId);
+
         //int maxAge = calculateTokenRemainingLifetime(userTokenXml);
         // cookie.setMaxAge(maxAge);
         cookie.setMaxAge(365 * 24 * 60 * 60);
@@ -37,28 +39,37 @@ public class CookieManager {
         if (cookiedomain != null && !cookiedomain.isEmpty()) {
             cookie.setDomain(cookiedomain);
         }
-        cookie.setValue(userTokenId);
         // cookie.setSecure(true);
-        logger.debug("Created cookie with name={}, domain={}, value/userTokenId={}, maxAge={}, secure={}",
-                cookie.getName(), cookie.getDomain(), userTokenId, cookie.getMaxAge(), cookie.getSecure());
-
+        logger.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+                cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);
-    }
-
-    public static String getUserTokenIdFromCookie(HttpServletRequest request) {
-        Cookie userTokenCookie = getUserTokenCookie(request);
-        return (userTokenCookie != null ? userTokenCookie.getValue() : null);
     }
 
     public static void clearUserTokenCookies(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getUserTokenCookie(request);
         if (cookie != null) {
-            logger.debug("Cleared cookie with name={}, domain={}", cookie.getName(), cookie.getDomain());
             cookie.setMaxAge(0);
             cookie.setPath("/");
             cookie.setValue("");
             response.addCookie(cookie);
+            logger.debug("Cleared cookie with name={}", cookie.getName());
         }
+    }
+
+    public static String getUserTokenId(HttpServletRequest request) {
+        String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
+        if (userTokenId != null && userTokenId.length() > 1) {
+            logger.debug("getUserTokenId: userTokenIdFromRequest={}", userTokenId);
+        } else {
+            userTokenId = CookieManager.getUserTokenIdFromCookie(request);
+            logger.debug("getUserTokenId: userTokenIdFromCookie={}", userTokenId);
+        }
+        return userTokenId;
+    }
+
+    public static String getUserTokenIdFromCookie(HttpServletRequest request) {
+        Cookie userTokenCookie = getUserTokenCookie(request);
+        return (userTokenCookie != null ? userTokenCookie.getValue() : null);
     }
 
     private static Cookie getUserTokenCookie(HttpServletRequest request) {
@@ -67,7 +78,8 @@ public class CookieManager {
             return null;
         }
         for (Cookie cookie : cookies) {
-            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName()) && cookiedomain.equalsIgnoreCase(cookie.getDomain())) {
+            logger.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath());
+            if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }
         }

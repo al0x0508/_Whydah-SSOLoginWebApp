@@ -55,9 +55,8 @@ public class TokenServiceClient {
             return getDummyToken();
         }
         logonApplication();
-        logger.debug("getUserToken - apptokenid: {}", myAppTokenId);
+        logger.debug("getUserToken - Application logon OK. applicationTokenId={}. Log on with user credentials {}.", myAppTokenId, user.toString());
 
-        logger.debug("getUserToken - Log on with user credentials {}", user.toString());
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/" + userticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
@@ -205,7 +204,7 @@ public class TokenServiceClient {
             return true;
         }
         if(response.getStatus() == CONFLICT.getStatusCode()) {
-            logger.debug("verifyUserTokenId - usertokenid not ok: {}" + response);
+            logger.debug("verifyUserTokenId - usertokenid not ok: {}", response);
             return false;
         }
         //retry

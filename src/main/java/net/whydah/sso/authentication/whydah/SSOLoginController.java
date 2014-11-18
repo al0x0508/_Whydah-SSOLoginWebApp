@@ -135,6 +135,13 @@ public class SSOLoginController {
             model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
             return "login";
         }
+        if (redirectURI.contains(TokenServiceClient.USERTICKET)) {
+            logger.warn("action - redirectURI contain ticket. Redirecting to login.");
+            model.addAttribute(SessionHelper.LOGIN_ERROR, "Could not redirect back, redirect loop detected.");
+            ModelHelper.setEnabledLoginTypes(model);
+            model.addAttribute(SessionHelper.REDIRECT_URI, "");
+            return "welcome";
+        }
 
         String userTokenId = UserTokenXpathHelper.getUserTokenId(userTokenXml);
         Integer tokenRemainingLifetimeSeconds = TokenServiceClient.calculateTokenRemainingLifetimeInSeconds(userTokenXml);

@@ -1,6 +1,7 @@
 package net.whydah.sso.authentication.whydah;
 
 import net.whydah.sso.config.AppConfig;
+import net.whydah.sso.config.ApplicationMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,9 @@ public class CookieManager {
             cookie.setDomain(cookiedomain);
         }
         cookie.setPath("/");
-        cookie.setSecure(true);
+        if (!ApplicationMode.getApplicationMode().equals(ApplicationMode.TEST_L)) {
+            cookie.setSecure(true);
+        }
         logger.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                 cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);

@@ -1,14 +1,20 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
+    <title>Whydah Redirection</title>
     <meta http-equiv="refresh" content="0;url=${redirect!"/sso/login"}">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
-    <title>Redirecting action, Whydah SSO</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="css/whydah.css" type="text/css"/>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 </head>
 <body>
-Redirecting to application ${redirect!"/sso/login"}<br>
-<br>
-<img src="images/redirect_ad.jpg">
+    <div id="page-content">
+        <div id="logo">
+            <img src="${logoURL}" alt="Site logo"/>
+            <h2>Redirecting to ${redirect!"/sso/login"}</h2>
+        </div>
+    </div>
 </body>
 </html>

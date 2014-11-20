@@ -18,14 +18,13 @@
     </div>
     
     <div id="page-content">
-        <div id="login-page">
-            <div id="logo">
-                <img src="${logoURL!}" alt="Site logo"/><br>
-                <h2>Whydah SSO login</h2>
-            </div>
-            <#if loginError??>
-                <p class="error">${loginError!}</p>
-            </#if>
+        <div id="logo">
+            <img src="${logoURL!}" alt="Site logo"/><br>
+            <h2>Whydah SSO login</h2>
+        </div>
+        <#if loginError??>
+            <p class="error">${loginError!}</p>
+        </#if>
             
         <#if userpasswordLoginEnabled == true>
             <div class="login-box">
@@ -51,37 +50,37 @@
         </#if>
     
         <#if facebookLoginEnabled == true || netIQLoginEnabled == true || omniLoginEnabled == true>
-        <div class="login-box">
-            <h4>Log in with</h4>
-            <#if facebookLoginEnabled == true>
-                    <form action="fblogin" class="new_user_session" name="fbgetusertoken" method="post">
-                        <#if redirectURI??>
-                            <input type="hidden" name="redirectURI" value="${redirectURI}"/>
-                        </#if>
-                        <input name="commit" type="submit" value="Facebook" class="button button-login"/>
-                    </form>
-            </#if>
-            <#if netIQLoginEnabled == true>
-                <div class="login-page-type" data-title="NetIQ login" id="ssoLoginNetIQ">
-                    <form action="netiqlogin" class="new_user_session" name="netiqgetusertoken" method="post">
-                        <#if redirectURI??>
-                            <input type="hidden" name="redirectURI" value="${redirectURI}"/>
-                        </#if>
-		                <input name="commit" type="submit" value="${netIQtext!NetIQ}" class="button button-login"/>
-                    </form>
-                </div>
-            </#if>
-            <#if omniLoginEnabled == true>
-                <div class="login-page-type" data-title="BankID / minID login" id="ssoLoginOmni">
-                    <div style="display: block;">
-                        <p>
-                            <a href=" "><img alt="Log in with minID" src="images/MinID.png"/></a>
-                            <a href=" k"><img alt="Log in with BankID" src="images/BankID.png"/></a>
-                        </p>
+            <div class="login-box">
+                <h4>Log in with</h4>
+                <#if facebookLoginEnabled == true>
+                        <form action="fblogin" class="new_user_session" name="fbgetusertoken" method="post">
+                            <#if redirectURI??>
+                                <input type="hidden" name="redirectURI" value="${redirectURI}"/>
+                            </#if>
+                            <input name="commit" type="submit" value="Facebook" class="button button-login"/>
+                        </form>
+                </#if>
+                <#if netIQLoginEnabled == true>
+                    <div class="login-page-type" data-title="NetIQ login" id="ssoLoginNetIQ">
+                        <form action="netiqlogin" class="new_user_session" name="netiqgetusertoken" method="post">
+                            <#if redirectURI??>
+                                <input type="hidden" name="redirectURI" value="${redirectURI}"/>
+                            </#if>
+                            <input name="commit" type="submit" value="${netIQtext!NetIQ}" class="button button-login"/>
+                        </form>
                     </div>
-                </div>
-            </#if> 
-        </div>
+                </#if>
+                <#if omniLoginEnabled == true>
+                    <div class="login-page-type" data-title="BankID / minID login" id="ssoLoginOmni">
+                        <div style="display: block;">
+                            <p>
+                                <a href=" "><img alt="Log in with minID" src="images/MinID.png"/></a>
+                                <a href=" k"><img alt="Log in with BankID" src="images/BankID.png"/></a>
+                            </p>
+                        </div>
+                    </div>
+                </#if>
+            </div>
         </#if>
     
         <#if openidLoginEnabled == true>
@@ -110,7 +109,6 @@
              <p id="signup">Not registered? <a href="signup">Register here!</a></p>
         </#if>
 
-        </div>
     </div>
 </body>
 </html>

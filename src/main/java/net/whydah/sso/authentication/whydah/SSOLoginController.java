@@ -94,29 +94,26 @@ public class SSOLoginController {
     @RequestMapping("/welcome")
     public String welcome(HttpServletRequest request, HttpServletResponse response,Model model) {
         String userTicket = request.getParameter(TokenServiceClient.USERTICKET);
+        String userTokenId = CookieManager.getUserTokenIdFromCookie(request);
+        String userToken;
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.IAM_MODE, ApplicationMode.getApplicationMode());
         if (userTicket != null && userTicket.length() > 3) {
-            logger.trace("welcome - Using userticket");
+            logger.trace("Welcome - Using userTicket");
+            userToken = tokenServiceClient.getUserTokenByUserTicket(userTicket);
             model.addAttribute(TokenServiceClient.USERTICKET, userTicket);
-            String userToken= tokenServiceClient.getUserTokenByUserTicket(userTicket);
-            model.addAttribute(TokenServiceClient.USERTOKEN, userToken);
-            model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
-            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken) );
-            return "welcome";
-        }
-        String userTokenId = CookieManager.getUserTokenIdFromCookie(request);
-        if (userTokenId != null && userTokenId.length() > 3) {
-            logger.trace("welcome - No userticket, using usertokenID from cookie");
-            model.addAttribute(TokenServiceClient.USERTICKET, "No userticket, using usertokenID");
+            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken));
+        } else if (userTokenId != null && userTokenId.length() > 3) {
+            logger.trace("Welcome - No userTicket, using userTokenID from cookie");
+            userToken = tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
+            model.addAttribute(TokenServiceClient.USERTICKET, "No userTicket, using userTokenID");
             model.addAttribute(TokenServiceClient.USER_TOKEN_ID, userTokenId);
-            String userToken= tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
-            model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
-            model.addAttribute(TokenServiceClient.USERTOKEN,userToken );
-            return "welcome";
         } else {
             throw new UnauthorizedException();
         }
+        model.addAttribute(TokenServiceClient.USERTOKEN, userToken);
+        model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
+        return "welcome";
     }
 
     @RequestMapping("/action")

@@ -1,40 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Whydah Login</title>
+    <title>Whydah</title>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="css/whydah.css" TYPE="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="stylesheet" href="css/whydah.css" type="text/css"/>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+    <script src="js/jquery-1.11.1.min.js"></script>
 </head>
 <body>
 
-<div id="page-content">
-	<div id="welcome-page">
+    <div id="page-content">
+
         <div id="logo">
-            <img src="${logoURL}" alt="Site logo"/><br>
-            <h2>Login successful</h2>
-            <br/>
-            However, you came here with no application redirect URL. <br/>
-            Close this window and revisit the application you were trying to reach.
+            <img src="${logoURL}" alt="Site logo"/>
+            <h2>Welcome, ${realname!"Whydah user"}</h2>
         </div>
-        <#if iammode != "PROD">
-        <div id="welcome-box">
-			<h4>UserTicket</h4>
-			${userticket!"No userticket set"}
-			<br/>
-			<br/>
-			<h4>UserTokenID</h4>
-			${usertokenid!"No usertokenid set"}
-			<br/>
-			<br/>
-		</div>
-		<div>	
-			<h4>UserToken</h4>
-			<pre>
-			${usertoken?html!"No usertoken set"}
-			</pre>
-		</div>
-		</#if>
-	</div>
-</div>
+
+        <div class="wide-box">
+            <h3>Your roles</h3>
+            <table id="roles">
+                <thead>
+                    <tr>
+                        <th>Application</th>
+                        <th>Organization</th>
+                        <th>Role</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <p><a href="logout">Logout<br>
+                <small>Affects all Whydah-connected services</small></a></p>
+        </div>
+
+    </div>
+
+    <script>
+        var userTokenXml = '${usertoken?replace("(\r\n)+", "",'r')}';
+        var $userToken = $( $.parseXML(userTokenXml) );
+        var apps = $userToken.find('application');
+        var roleTableContent = '';
+        $.each(apps, function(index, app){
+            var $app = $(app);
+            var a = {};
+            a.applicationName = $app.find('applicationName').text();
+            a.organizationName = $app.find('organizationName').text();
+            a.roleName = $app.find('role').attr('name');
+            a.roleValue = $app.find('role').attr('value');
+            roleTableContent += '<tr><td data-th="Application">'+a.applicationName
+                +'</td><td data-th="Organization">'+a.organizationName
+                +'</td><td data-th="Role">'+a.roleName
+                +'</td><td data-th="Value">'+a.roleValue+'</td></tr>';
+        });
+        roleTableContent = roleTableContent || '<tr><td colspan="4">No roles found.</td></tr>';
+        $('#roles tbody').html(roleTableContent);
+    </script>
+
 </body>
 </html>

@@ -31,10 +31,36 @@ h2 { font-weight: normal; }
 h4 { margin-top: 1em; }
 
 #page-content {
-    padding: 2em;
     margin: 30px auto;
+    padding: 1em;
     max-width: 800px;
 	text-align: center;
+}
+
+/* LOGIN */
+.wide-box, .login-box {
+    margin: .5em auto;
+    padding: 2em;
+    background-color: #fff;
+    border-radius: 2px;
+    box-sizing: border-box;
+    min-width: 300px;
+}
+
+.login-box {
+    width: 45%;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.wide-box {
+    width: 100%;
+    text-align: left;
+}
+
+#logo img {
+    max-width: 100%;
 }
 
 a {
@@ -65,20 +91,6 @@ a:hover {
 
 .button-login {
     width: 100%;
-}
-
-/* LOGIN */
-.login-box {
-    width: 45%;
-    min-width: 300px;
-    max-width: 100%;
-    padding: 2em;
-    display: inline-block;
-    vertical-align: top;
-    margin: .5em;
-    background-color: #fff;
-    border-radius: 2px;
-    box-sizing: border-box;
 }
 
 p {
@@ -121,4 +133,24 @@ pre{
   border-radius: 3px;
   overflow: auto;
   text-align: left;
+}
+
+#roles { table-layout: fixed; width: 100%; margin: 1em 0;}
+tr { border-bottom: 1px solid #ddd; }
+td, th { padding: .5em; padding-left: 0; overflow: hidden; text-overflow: ellipsis; }
+th { font-weight: bold; }
+
+th {display: none;}
+td {display: block;}
+
+td:before {
+    content: attr(data-th)": ";
+    font-weight: bold;
+    width: 7.5em;
+    display: inline-block;
+}
+
+@media (min-width: 640px) {
+    td, th { display: table-cell; }
+    td:before { display: none; }
 }

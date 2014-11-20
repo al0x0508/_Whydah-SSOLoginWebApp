@@ -114,6 +114,7 @@ public class SSOLoginController {
             }
         } catch (Exception e){
             logger.warn("welcome redirect - SecurityTokenException exception: ",e);
+            ModelHelper.setEnabledLoginTypes(model);
             return "login";
         }
         model.addAttribute(TokenServiceClient.USERTOKEN, userToken);

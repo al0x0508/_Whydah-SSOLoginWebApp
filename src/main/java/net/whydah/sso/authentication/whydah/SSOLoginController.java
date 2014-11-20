@@ -98,18 +98,23 @@ public class SSOLoginController {
         String userToken;
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.IAM_MODE, ApplicationMode.getApplicationMode());
-        if (userTicket != null && userTicket.length() > 3) {
-            logger.trace("Welcome - Using userTicket");
-            userToken = tokenServiceClient.getUserTokenByUserTicket(userTicket);
-            model.addAttribute(TokenServiceClient.USERTICKET, userTicket);
-            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken));
-        } else if (userTokenId != null && userTokenId.length() > 3) {
-            logger.trace("Welcome - No userTicket, using userTokenID from cookie");
-            userToken = tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
-            model.addAttribute(TokenServiceClient.USERTICKET, "No userTicket, using userTokenID");
-            model.addAttribute(TokenServiceClient.USER_TOKEN_ID, userTokenId);
-        } else {
-            throw new UnauthorizedException();
+        try {
+            if (userTicket != null && userTicket.length() > 3) {
+                logger.trace("Welcome - Using userTicket");
+                userToken = tokenServiceClient.getUserTokenByUserTicket(userTicket);
+                model.addAttribute(TokenServiceClient.USERTICKET, userTicket);
+                model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken));
+            } else if (userTokenId != null && userTokenId.length() > 3) {
+                logger.trace("Welcome - No userTicket, using userTokenID from cookie");
+                userToken = tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
+                model.addAttribute(TokenServiceClient.USERTICKET, "No userTicket, using userTokenID");
+                model.addAttribute(TokenServiceClient.USER_TOKEN_ID, userTokenId);
+            } else {
+                throw new UnauthorizedException();
+            }
+        } catch (Exception e){
+            logger.warn("welcome redirect - SecurityTokenException exception: ",e);
+            return "login";
         }
         model.addAttribute(TokenServiceClient.USERTOKEN, userToken);
         model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));

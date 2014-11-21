@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -117,7 +119,7 @@ public class SSOLoginController {
             ModelHelper.setEnabledLoginTypes(model);
             return "login";
         }
-        model.addAttribute(TokenServiceClient.USERTOKEN, userToken);
+        model.addAttribute(TokenServiceClient.USERTOKEN, trim(userToken));
         model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
         return "welcome";
     }
@@ -175,6 +177,19 @@ public class SSOLoginController {
         return redirectURI;
     }
 
+
+    public static String trim(String input) {
+        BufferedReader reader = new BufferedReader(new StringReader(input));
+        StringBuffer result = new StringBuffer();
+        try {
+            String line;
+            while ( (line = reader.readLine() ) != null)
+                result.append(line.trim());
+            return result.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
 

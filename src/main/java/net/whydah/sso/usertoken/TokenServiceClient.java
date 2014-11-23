@@ -10,6 +10,7 @@ import net.whydah.sso.authentication.facebook.FacebookHelper;
 import net.whydah.sso.authentication.netiq.NetIQHelper;
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.config.ApplicationMode;
+import net.whydah.sso.config.SSLTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,7 @@ public class TokenServiceClient {
     private String myAppTokenId;
 
     public TokenServiceClient() {
+        SSLTool.disableCertificateValidation();
         try {
             Properties properties = AppConfig.readProperties();
             this.tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();

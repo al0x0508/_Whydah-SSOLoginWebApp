@@ -141,7 +141,7 @@ public class SSOLoginController {
             return "login";
         }
         if (redirectURI.contains(TokenServiceClient.USERTICKET)) {
-            logger.warn("action - redirectURI contain ticket. Redirecting to login.");
+            logger.warn("action - redirectURI contain ticket. Redirecting to welcome.");
             model.addAttribute(SessionHelper.LOGIN_ERROR, "Could not redirect back, redirect loop detected.");
             ModelHelper.setEnabledLoginTypes(model);
             model.addAttribute(SessionHelper.REDIRECT_URI, "");

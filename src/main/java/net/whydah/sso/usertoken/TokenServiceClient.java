@@ -41,9 +41,15 @@ public class TokenServiceClient {
     private String myAppTokenId;
 
     public TokenServiceClient() {
-        SSLTool.disableCertificateValidation();
+
         try {
             Properties properties = AppConfig.readProperties();
+
+            // Property-overwrite of SSL verification to support weak ssl certificates
+            if ("disabled".equalsIgnoreCase(properties.getProperty("sslverification"))) {
+                SSLTool.disableCertificateValidation();
+
+            }
             this.tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
             this.applicationid = properties.getProperty("applicationid");
             this.applicationsecret= properties.getProperty("applicationsecret");

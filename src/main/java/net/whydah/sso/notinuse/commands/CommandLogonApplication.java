@@ -26,27 +26,21 @@ public class CommandLogonApplication extends HystrixCommand<String> {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandLogonApplication.class);
 
+    private URI tokenServiceUri ;
+    private String applicationid ;
+    private String applicationsecret;
 
 
-    private final String name;
 
-    public CommandLogonApplication(String name) {
-        super(HystrixCommandGroupKey.Factory.asKey("SSOAuthGroup"));
-        this.name = name;
+    public CommandLogonApplication(URI tokenServiceUri,String applicationid,String applicationsecret) {
+        super(HystrixCommandGroupKey.Factory.asKey("SSOApplicationAuthGroup"));
+        this.tokenServiceUri = tokenServiceUri;
+        this.applicationid=applicationid;
+        this.applicationsecret=applicationsecret;
     }
 
     @Override
     protected String run() {
-
-        Properties properties=null;
-        try {
-            properties = AppConfig.readProperties();
-        } catch (IOException ioe){
-            logger.warn("CommandLogonApplication - unable to read configuration.",ioe);
-        }
-        URI tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
-        String applicationid = properties.getProperty("applicationid");
-        String applicationsecret= properties.getProperty("applicationsecret");
 
         Client tokenServiceClient = Client.create();
         WebResource logonResource = tokenServiceClient.resource(tokenServiceUri).path("logon");
@@ -74,5 +68,10 @@ public class CommandLogonApplication extends HystrixCommand<String> {
         logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
         logger.debug("myAppTokenId: {}", myAppTokenId);
         return myAppTokenId;
+    }
+
+    @Override
+    protected String getFallback() {
+        return "FallbackApplicationTokenID";
     }
 }

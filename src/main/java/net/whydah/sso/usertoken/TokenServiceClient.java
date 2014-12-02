@@ -375,7 +375,7 @@ public class TokenServiceClient {
 
     }
 
-    private String printableUrlErrorMessage(String errorMessage, WebResource request, ClientResponse response) {
+    public static  String printableUrlErrorMessage(String errorMessage, WebResource request, ClientResponse response) {
         StringBuilder sb = new StringBuilder();
         sb.append(errorMessage);
         sb.append(" Code: ");

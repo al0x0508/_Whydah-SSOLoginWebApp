@@ -6,7 +6,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.usertoken.ApplicationCredential;
 import net.whydah.sso.usertoken.UserTokenXpathHelper;
 import org.slf4j.Logger;
@@ -14,13 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
 import java.net.URI;
-import java.util.Properties;
 
 /**
  * Created by totto on 12/1/14.
+ *
+ * Log on an application given supplied application credentials and return an applicationTokenID which is
+ * an application session key.
+ *
  */
 public class CommandLogonApplication extends HystrixCommand<String> {
 
@@ -55,18 +55,18 @@ public class CommandLogonApplication extends HystrixCommand<String> {
         try {
             response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         } catch (RuntimeException e) {
-            logger.error("logonApplication - Problem connecting to {}", logonResource.toString());
+            logger.error("CommandLogonApplication - logonApplication - Problem connecting to {}", logonResource.toString());
             throw(e);
         }
         //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
         if (response.getStatus() != 200) {
-            logger.error("Application authentication failed with statuscode {}", response.getStatus());
-            throw new RuntimeException("Application authentication failed");
+            logger.error("CommandLogonApplication - Application authentication failed with statuscode {}", response.getStatus());
+            throw new RuntimeException("CommandLogonApplication - Application authentication failed");
         }
         String myAppTokenXml = response.getEntity(String.class);
         String myAppTokenId = UserTokenXpathHelper.getAppTokenIdFromAppToken(myAppTokenXml);
-        logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
-        logger.debug("myAppTokenId: {}", myAppTokenId);
+        logger.debug("CommandLogonApplication - Applogon ok: apptokenxml: {}", myAppTokenXml);
+        logger.debug("CommandLogonApplication - myAppTokenId: {}", myAppTokenId);
         return myAppTokenId;
     }
 

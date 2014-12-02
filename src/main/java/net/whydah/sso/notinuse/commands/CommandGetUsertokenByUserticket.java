@@ -50,7 +50,7 @@ public class CommandGetUsertokenByUserticket extends HystrixCommand<String> {
 
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_userticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
-        logger.trace("getUserTokenByUserTicket - ticket: {} apptoken: {}",userticket,myAppTokenXml);
+        logger.trace("CommandGetUsertokenByUserticket - getUserTokenByUserTicket - ticket: {} apptoken: {}",userticket,myAppTokenXml);
         formData.add("apptoken", myAppTokenXml);
         formData.add("userticket", userticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
@@ -60,14 +60,14 @@ public class CommandGetUsertokenByUserticket extends HystrixCommand<String> {
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            logger.debug("CommandGetUsertokenByUserticket - Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            logger.debug("CommandGetUsertokenByUserticket - Response OK with XML: {}", responseXML);
             return responseXML;
         }
         String authenticationFailedMessage = TokenServiceClient.printableUrlErrorMessage("User authentication failed", userTokenResource, response);
@@ -77,6 +77,6 @@ public class CommandGetUsertokenByUserticket extends HystrixCommand<String> {
 
     @Override
     protected String getFallback() {
-        return "FallbackApplicationTokenID";
+        return TokenServiceClient.getDummyToken();
     }
 }

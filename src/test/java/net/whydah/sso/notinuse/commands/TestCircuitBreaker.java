@@ -23,31 +23,14 @@ public class TestCircuitBreaker {
 
 
     @Test
-    public void testDummyCommand() {
+    public void testDummyCommand() throws Exception {
         String s = new CommandLogonUser("Bob").execute();
+        assertEquals("Hello Bob!",s);
         Future<String> s2 = new CommandLogonUser("Bob").queue();
+        assertEquals("Hello Bob!",s2.get());
         Observable<String> s3 = new CommandLogonUser("Bob").observe();
+        assertEquals("Hello Bob!",s3.toBlocking().single());
     }
 
 
-    @Test
-    public void testApplicationLoginCommand() throws Exception {
-
-        Properties properties = AppConfig.readProperties();
-        URI tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
-        String applicationid = properties.getProperty("applicationid");
-        String applicationsecret = properties.getProperty("applicationsecret");
-
-        String myApplicationTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).execute();
-        System.out.println("ApplicationTokenID=" + myApplicationTokenID);
-        assertEquals("FallbackApplicationTokenID", myApplicationTokenID);
-
-        Future<String> fAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).queue();
-        assertEquals("FallbackApplicationTokenID", fAppTokenID.get());
-
-
-        Observable<String> oAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).observe();
-        // blocking
-        assertEquals("FallbackApplicationTokenID", oAppTokenID.toBlockingObservable().single());
-    }
 }

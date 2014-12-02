@@ -5,6 +5,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.whydah.sso.application.ApplicationCredential;
 import net.whydah.sso.authentication.UserCredential;
 import net.whydah.sso.authentication.facebook.FacebookHelper;
 import net.whydah.sso.authentication.netiq.NetIQHelper;
@@ -315,7 +316,7 @@ public class TokenServiceClient {
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         ApplicationCredential appCredential = new ApplicationCredential();
         appCredential.setApplicationID(applicationid);
-        appCredential.setApplicationPassord(applicationsecret);
+        appCredential.setApplicationSecret(applicationsecret);
 
 
         formData.add("applicationcredential", appCredential.toXML());

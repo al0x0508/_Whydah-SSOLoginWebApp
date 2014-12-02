@@ -1,4 +1,4 @@
-package net.whydah.sso.notinuse.commands;
+package net.whydah.sso.commands;
 
 import net.whydah.sso.config.AppConfig;
 import net.whydah.sso.config.ApplicationMode;

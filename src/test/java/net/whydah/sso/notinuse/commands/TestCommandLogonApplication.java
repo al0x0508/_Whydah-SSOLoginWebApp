@@ -19,56 +19,52 @@ import static org.junit.Assert.assertTrue;
  */
 public class TestCommandLogonApplication {
 
-
-        @BeforeClass
-        public static void setup() {
-            System.setProperty(ApplicationMode.IAM_MODE_KEY, ApplicationMode.TEST);
-        }
+    private static Properties properties;
+    private static URI tokenServiceUri;
+    private static String applicationid;
 
 
+    @BeforeClass
+    public static void setup() throws Exception {
+        System.setProperty(ApplicationMode.IAM_MODE_KEY, ApplicationMode.TEST);
+        properties = AppConfig.readProperties();
+        tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
+        applicationid = properties.getProperty("applicationid");
 
-        @Test
-        public void testApplicationLoginCommandFallback() throws Exception {
-
-            Properties properties = AppConfig.readProperties();
-            URI tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
-            String applicationid = properties.getProperty("applicationid");
-            String applicationsecret = "false secret";
-
-            String myApplicationTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).execute();
-            System.out.println("ApplicationTokenID=" + myApplicationTokenID);
-            assertEquals("FallbackApplicationTokenID", myApplicationTokenID);
-
-            Future<String> fAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).queue();
-            assertEquals("FallbackApplicationTokenID", fAppTokenID.get());
+    }
 
 
-            Observable<String> oAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).observe();
-            // blocking
-            assertEquals("FallbackApplicationTokenID", oAppTokenID.toBlocking().single());
-        }
+    @Test
+    public void testApplicationLoginCommandFallback() throws Exception {
+
+        String applicationsecret = "false secret";
+
+        String myApplicationTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).execute();
+        // System.out.println("ApplicationTokenID=" + myApplicationTokenID);
+        assertEquals("FallbackApplicationTokenID", myApplicationTokenID);
+
+        Future<String> fAppTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).queue();
+        assertEquals("FallbackApplicationTokenID", fAppTokenID.get());
+
+
+        Observable<String> oAppTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).observe();
+        // blocking
+        assertEquals("FallbackApplicationTokenID", oAppTokenID.toBlocking().single());
+    }
 
     @Test
     public void testApplicationLoginCommand() throws Exception {
 
-        Properties properties = AppConfig.readProperties();
-        URI tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();
-        String applicationid = properties.getProperty("applicationid");
         String applicationsecret = properties.getProperty("applicationsecret");
+        String myApplicationTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).execute();
+        // System.out.println("ApplicationTokenID=" + myApplicationTokenID);
+        assertTrue(myApplicationTokenID.length() > 6);
 
-        String myApplicationTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).execute();
-        System.out.println("ApplicationTokenID=" + myApplicationTokenID);
-        //assertEquals("FallbackApplicationTokenID", myApplicationTokenID);
-        assertTrue(myApplicationTokenID.length()>6);
-
-        Future<String> fAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).queue();
-        //assertEquals("FallbackApplicationTokenID", fAppTokenID.get());
+        Future<String> fAppTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).queue();
         assertTrue(fAppTokenID.get().length() > 6);
 
-
-        Observable<String> oAppTokenID = new CommandLogonApplication(tokenServiceUri,applicationid,applicationsecret).observe();
+        Observable<String> oAppTokenID = new CommandLogonApplication(tokenServiceUri, applicationid, applicationsecret).observe();
         // blocking
-        //assertEquals("FallbackApplicationTokenID", oAppTokenID.toBlocking().single());
         assertTrue(oAppTokenID.toBlocking().single().length() > 6);
     }
 

@@ -28,7 +28,7 @@ public class TestCommandLogonApplication {
 
 
         @Test
-        public void testApplicationLoginCommandCircuitBreaker() throws Exception {
+        public void testApplicationLoginCommandFallback() throws Exception {
 
             Properties properties = AppConfig.readProperties();
             URI tokenServiceUri = UriBuilder.fromUri(properties.getProperty("securitytokenservice")).build();

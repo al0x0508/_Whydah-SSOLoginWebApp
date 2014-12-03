@@ -23,6 +23,10 @@
                 <input id="user_session_password" name="newpassword" size="30" type="password"/>
                 <br/><br/>
                 <input class="button" name="commit" type="submit" value="Change password"/>
+                <br/><br/>
+                Note: Use of the 1000 most common passwords are prohibited for you own safety. Please create
+                a safe password. The longer the password the more safe it is. Passwords with
+                12-20 characters are considered good passwords in 2014.
             </form>
         </div>
     </div>

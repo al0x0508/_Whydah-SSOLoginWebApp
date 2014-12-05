@@ -20,7 +20,7 @@ public class ServerRunner {
 
     private Server server;
     private ServletContextHandler context;
-    private static String version;
+    public static String version;
     //private static Properties appConfig;
 
     public static void main(String[] arguments) throws Exception {

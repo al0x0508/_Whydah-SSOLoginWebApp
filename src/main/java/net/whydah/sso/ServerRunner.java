@@ -20,27 +20,24 @@ public class ServerRunner {
 
     private Server server;
     private ServletContextHandler context;
+    private static String version;
     //private static Properties appConfig;
 
     public static void main(String[] arguments) throws Exception {
         ServerRunner serverRunner = new ServerRunner();
         serverRunner.start();
 
+
         int port = serverRunner.server.getConnectors()[0].getLocalPort();
-        log.info("SSOLoginWebapp started OK. IAM_MODE = {}, url: http://localhost:{}{}/login",
-                ApplicationMode.getApplicationMode(), String.valueOf(port), CONTEXT);
-        /*
-        log.info("Jetty server started - " + serverRunner.server.getConnectors()[0].getHost() + " : " + serverRunner.server.getConnectors()[0].getLocalPort());
-        log.info("IAM_MODE = {}", ApplicationMode.getApplicationMode());
-        log.info("Status: http://localhost:{}{}/", port, CONTEXT);
-        log.info("WADL:   http://localhost:{}{}/application.wadl", port, CONTEXT);
-        */
+        log.info("SSOLoginWebApp started OK. Version = {},IAM_MODE = {}, url: http://localhost:{}{}/login",
+                version, ApplicationMode.getApplicationMode(), String.valueOf(port), CONTEXT);
         serverRunner.join();
     }
 
     public ServerRunner() throws IOException {
         server = new Server(PORT_NO);
         context = new ServletContextHandler(server, CONTEXT);
+        version = this.getClass().getPackage().getImplementationVersion();
 
         DispatcherServlet dispatcherServlet = new DispatcherServlet();
         dispatcherServlet.setContextConfigLocation("classpath:webapp/sso/mvc-config.xml");

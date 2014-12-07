@@ -33,9 +33,12 @@
 
                 </tbody>
             </table>
-            <p><a href="logout">Logout<br>
-                <small>Affects all Whydah-connected services</small></a></p>
-                Whydah, version: ${version!"Whydah user"}
+            <p><a href="logout"><img src="images/logout.jpg"></a><br>
+                <small>Logout affects all Whydah-connected services</small></p>
+
+            <br/><br/>
+
+            <small>Whydah, SSO WebApp version: ${version!"Unknown"} </small>
         </div>
 
     </div>

@@ -35,6 +35,7 @@
             </table>
             <p><a href="logout">Logout<br>
                 <small>Affects all Whydah-connected services</small></a></p>
+                Whydah, version: ${version!"Whydah user"}
         </div>
 
     </div>

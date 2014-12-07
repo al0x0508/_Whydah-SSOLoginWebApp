@@ -1,5 +1,6 @@
 package net.whydah.sso.authentication.whydah;
 
+import net.whydah.sso.ServerRunner;
 import net.whydah.sso.authentication.ModelHelper;
 import net.whydah.sso.authentication.UserCredential;
 import net.whydah.sso.config.AppConfig;
@@ -27,6 +28,7 @@ public class SSOLoginController {
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     private final TokenServiceClient tokenServiceClient;
     private String LOGOURL = "/sso/images/site-logo.png";
+    private String whydahVersion = ServerRunner.version;
 
     //private final int MIN_REDIRECT_SIZE=4;
     //private final ModelHelper modelHelper = new ModelHelper(this);
@@ -46,6 +48,7 @@ public class SSOLoginController {
         String redirectURI = getRedirectURI(request);
 
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
+        model.addAttribute(SessionHelper.WHYDAH_VERSION,whydahVersion);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
 
 
@@ -100,6 +103,7 @@ public class SSOLoginController {
         String userToken;
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.IAM_MODE, ApplicationMode.getApplicationMode());
+        model.addAttribute(SessionHelper.WHYDAH_VERSION,whydahVersion);
         try {
             if (userTicket != null && userTicket.length() > 3) {
                 logger.trace("Welcome - Using userTicket");
@@ -130,6 +134,7 @@ public class SSOLoginController {
         String redirectURI = getRedirectURI(request);
         logger.trace("action: redirectURI: {}", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
+        model.addAttribute(SessionHelper.WHYDAH_VERSION,whydahVersion);
         String userTicket = UUID.randomUUID().toString();
         String userTokenXml = tokenServiceClient.getUserToken(user, userTicket);
 

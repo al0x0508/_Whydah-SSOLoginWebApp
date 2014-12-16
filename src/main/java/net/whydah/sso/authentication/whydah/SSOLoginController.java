@@ -39,7 +39,7 @@ public class SSOLoginController {
         Properties properties = AppConfig.readProperties();
         //String MY_APP_URI = properties.getProperty("myuri");
         LOGOURL = properties.getProperty("logourl");
-        APP_LINKS = properties.getProperty("appLinks");
+        APP_LINKS = properties.getProperty("applinks");
 
         this.tokenServiceClient = new TokenServiceClient();
     }

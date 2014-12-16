@@ -71,7 +71,6 @@ public class PasswordChangeController {
     public String changePasswordFromLink(HttpServletRequest request, Model model) {
         log.trace("changePasswordFromLink was called");
         model.addAttribute("logoURL", LOGOURL);
-        model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         model.addAttribute("username", passwordChangeToken.getUser());
         model.addAttribute("token", passwordChangeToken.getToken());
@@ -98,7 +97,11 @@ public class PasswordChangeController {
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
-            model.addAttribute("error", error+"\nusername:"+passwordChangeToken.getUser());
+            if(response.getStatus() == ClientResponse.Status.NOT_ACCEPTABLE.getStatusCode()) {
+                model.addAttribute("error", "The password you entered was too weak, please try another password.");
+            } else {
+                model.addAttribute("error", error+"\nusername:"+passwordChangeToken.getUser());
+            }
             model.addAttribute("token", passwordChangeToken.getToken());
             return "changepassword";
         }

@@ -86,7 +86,8 @@ a:hover {
 }
 
 .button:hover {
-    background: #5B605D;
+    background: #1f547a;
+    color: #fff;
 }
 
 .button-login {

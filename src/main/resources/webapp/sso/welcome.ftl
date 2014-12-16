@@ -4,7 +4,7 @@
     <title>Whydah</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-    <link rel="stylesheet" href="css/whydah.css" type="text/css"/>
+    <link rel="stylesheet" href="css/whydah.css?20141216" type="text/css"/>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
     <script src="js/jquery-1.11.1.min.js"></script>
@@ -33,17 +33,18 @@
 
                 </tbody>
             </table>
-            <p><a href="logout"><img src="images/logout.jpg"></a><br>
-                <small>Logout affects all Whydah-connected services</small></p>
+            <p><a href="logout" class="button">Log out</a></p>
+            <p><small>Logout affects all Whydah-connected services</small></p>
 
             <br/><br/>
 
-            <small>Whydah, SSO WebApp version: ${version!"Unknown"} </small>
+            <small>Whydah, SSO WebApp version: ${version!"<i>Unknown</i>"} </small>
         </div>
 
     </div>
 
     <script>
+        var appLinks = ${appLinks};
         var userTokenXml = '${usertoken?replace("(\r\n)+", "",'r')}';
         var $userToken = $( $.parseXML(userTokenXml) );
         var apps = $userToken.find('application');
@@ -52,6 +53,7 @@
             var $app = $(app);
             var a = {};
             a.applicationName = $app.find('applicationName').text();
+            if(appLinks[a.applicationName]) a.applicationName = '<a href="'+appLinks[a.applicationName]+'">'+a.applicationName+'</a>';
             a.organizationName = $app.find('organizationName').text();
             a.roleName = $app.find('role').attr('name');
             a.roleValue = $app.find('role').attr('value');

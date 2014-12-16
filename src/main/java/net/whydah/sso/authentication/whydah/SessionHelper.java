@@ -8,6 +8,7 @@ public class SessionHelper {
     public static final String REDIRECT = "redirect";
     public static final String REDIRECT_URI = "redirectURI";
     public static final String LOGO_URL = "logoURL";
+    public static final String APP_LINKS = "appLinks";
     public static final String LOGIN_ERROR = "loginError";
     public static final String IAM_MODE = "iammode";
     public static final String USER = "user";

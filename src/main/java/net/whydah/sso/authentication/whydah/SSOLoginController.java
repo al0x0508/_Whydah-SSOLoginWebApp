@@ -28,6 +28,7 @@ public class SSOLoginController {
     private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
     private final TokenServiceClient tokenServiceClient;
     private String LOGOURL = "/sso/images/site-logo.png";
+    private String APP_LINKS = "{}";
     private String whydahVersion = ServerRunner.version;
 
     //private final int MIN_REDIRECT_SIZE=4;
@@ -38,6 +39,7 @@ public class SSOLoginController {
         Properties properties = AppConfig.readProperties();
         //String MY_APP_URI = properties.getProperty("myuri");
         LOGOURL = properties.getProperty("logourl");
+        APP_LINKS = properties.getProperty("appLinks");
 
         this.tokenServiceClient = new TokenServiceClient();
     }
@@ -124,6 +126,7 @@ public class SSOLoginController {
             return "login";
         }
         model.addAttribute(TokenServiceClient.USERTOKEN, trim(userToken));
+        model.addAttribute(SessionHelper.APP_LINKS, APP_LINKS);
         model.addAttribute(TokenServiceClient.REALNAME, UserTokenXpathHelper.getRealName(userToken));
         return "welcome";
     }

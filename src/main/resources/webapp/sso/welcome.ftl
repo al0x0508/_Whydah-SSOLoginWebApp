@@ -44,7 +44,7 @@
     </div>
 
     <script>
-        var appLinks = ${appLinks};
+        var appLinks = ${appLinks!"{}"};
         var userTokenXml = '${usertoken?replace("(\r\n)+", "",'r')}';
         var $userToken = $( $.parseXML(userTokenXml) );
         var apps = $userToken.find('application');

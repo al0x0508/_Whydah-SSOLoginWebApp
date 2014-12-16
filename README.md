@@ -84,7 +84,10 @@ signupEnabled=false
 
 netIQauthURL=https://netiq.novel.com/
 
-logourl=http://stocklogos.com/sites/default/files/styles/logo-medium/public/logos/image/dc5f9f951e37c6ebb2ebecb619fe7555.png```
+logourl=http://stocklogos.com/sites/default/files/styles/logo-medium/public/logos/image/dc5f9f951e37c6ebb2ebecb619fe7555.png
+
+appLinks={'appName':'appUrl','appName2':'appUrl2'}
+```
 ```
 
 

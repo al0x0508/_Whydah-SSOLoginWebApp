@@ -7,16 +7,21 @@ import com.restfb.Parameter;
 import com.restfb.types.User;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author <a href="mailto:erik.drolshammer@altran.com">Erik Drolshammer</a>
  * @since 10/15/12
  */
 public class FacebookHelperTest {
+    private static final Logger log = LoggerFactory.getLogger(FacebookHelperTest.class);
 
 
     /**
@@ -56,6 +61,17 @@ public class FacebookHelperTest {
         Connection<User> friendsConnection = facebookClient.fetchConnection("me/friends", User.class, Parameter.with("fields", "id, name, birthday"));
         @SuppressWarnings("unused")
 		List<User> users = friendsConnection.getData();
+    }
+
+    @Test
+    public void testGetFacebookUserAsXml() {
+
+        String fbAssessToken = "accessMe1234567";
+        User fbUser = mock(User.class);
+        String fbUserXml = FacebookHelper.getFacebookUserAsXml(fbUser,fbAssessToken);
+        log.debug("fbUserXml: {}" , fbUserXml);
+        assertNotNull(fbUserXml);
+
     }
 
 }

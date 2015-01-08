@@ -26,6 +26,7 @@ public class PasswordChangeController {
     private static final Logger log = LoggerFactory.getLogger(PasswordChangeController.class);
     private static final Client uibClient = Client.create();
     private URI uibServiceUri;
+    private URI uasServiceUri;
     private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
     String LOGOURL = "/sso/images/site-logo.png";
     String MY_APP_URI = "";
@@ -34,6 +35,7 @@ public class PasswordChangeController {
     //TODO Should go via UAS.
     public PasswordChangeController() throws IOException {
         uibServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useridentitybackend")).build();
+        uasServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useradminservice")).build();
         Properties properties = AppConfig.readProperties();
         String MY_APP_URI = properties.getProperty("myuri");
         LOGOURL = properties.getProperty("logourl");
@@ -55,7 +57,8 @@ public class PasswordChangeController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + user);
+//        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + user);
+        WebResource uibWR = uibClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + user);
 //        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
@@ -88,7 +91,8 @@ public class PasswordChangeController {
         model.addAttribute("logoURL", LOGOURL);
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
-        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+//        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/" + tokenServiceClient.getMyAppTokenID() + "/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        WebResource uibWR = uibClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
         log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
 
         ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");

@@ -50,30 +50,30 @@ public class NewUserController {
         String cellPhone = request.getParameter("cellphone");
         if (email != null && username != null) {
             logger.info("Requested signup - email: " + email + "  username: " + username + "  firstname: " + firstName + "  lastname: " + lastName + "  cellphone: " + cellPhone + " ");
-            String userJson = "{\"username\":\""+username+
-                    "\", \"firstName\":\""+firstName+
-                    "\", \"lastName\":\""+lastName+
-                    "\", \"personRef\":\"\", \"email\":\""+email+
-                    "\", \"cellPhone\":\""+cellPhone+"\"}";
+            String userJson = "{\"username\":\"" + username +
+                    "\", \"firstName\":\"" + firstName +
+                    "\", \"lastName\":\"" + lastName +
+                    "\", \"personRef\":\"\", \"email\":\"" + email +
+                    "\", \"cellPhone\":\"" + cellPhone + "\"}";
 
             ;
             try {
                 WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()).path("userTokenId").path("user");
                 logger.trace("doChangePasswordFromLink was called. Calling UAS with url " + uasWR.getURI());
 
-                ClientResponse uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,userJson);
+                ClientResponse uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, userJson);
                 if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                     String error = uasResponse.getEntity(String.class);
                     logger.error(error);
                     model.addAttribute("error", "We were unable to create the requested user at this time. Try different data or try again later.");
                 } else {
-                    uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + username);
-                     uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
+                    uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID() + "/auth/password/reset/username/" + username);
+                    uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
                     if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                         String error = uasResponse.getEntity(String.class);
                         logger.error(error);
-                        model.addAttribute("Unable to send user creation mail to user for username="+username);
-                        return "resetpassword";
+                        model.addAttribute("Unable to send user creation mail to user for username=" + username);
+                        return "newuser";
                     }
 
                 }

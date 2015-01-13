@@ -90,7 +90,7 @@ public class NewUserController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-        return "welcome";
+        return "newuser";
     }
 
     @RequestMapping("/createnewuser")

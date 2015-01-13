@@ -24,8 +24,7 @@ import java.util.Properties;
 @Controller
 public class PasswordChangeController {
     private static final Logger log = LoggerFactory.getLogger(PasswordChangeController.class);
-    private static final Client uibClient = Client.create();
-    private URI uibServiceUri;
+    private static final Client uasClient = Client.create();
     private URI uasServiceUri;
     private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
     String LOGOURL = "/sso/images/site-logo.png";
@@ -34,7 +33,6 @@ public class PasswordChangeController {
 
     //TODO Should go via UAS.
     public PasswordChangeController() throws IOException {
-        uibServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useridentitybackend")).build();
         uasServiceUri = UriBuilder.fromUri(AppConfig.readProperties().getProperty("useradminservice")).build();
         Properties properties = AppConfig.readProperties();
         String MY_APP_URI = properties.getProperty("myuri");
@@ -57,10 +55,8 @@ public class PasswordChangeController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-//        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/"+ tokenServiceClient.getMyAppTokenID()+"/reset/username/" + user);
-        WebResource uibWR = uibClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + user);
-//        WebResource uibWR = uibClient.resource(uibServiceUri).path("/users/" + user + "/resetpassword");
-        ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
+        WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + user);
+        ClientResponse response = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
@@ -92,17 +88,17 @@ public class PasswordChangeController {
         PasswordChangeToken passwordChangeToken = getTokenFromPath(request);
         String newpassword = request.getParameter("newpassword");
 //        WebResource uibWR = uibClient.resource(uibServiceUri).path("/password/" + tokenServiceClient.getMyAppTokenID() + "/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
-        WebResource uibWR = uibClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
-        log.trace("doChangePasswordFromLink was called. Calling UIB with url " + uibWR.getURI());
+        WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + passwordChangeToken.getUser() + "/newpassword/" + passwordChangeToken.getToken());
+        log.trace("doChangePasswordFromLink was called. Calling UAS with url " + uasWR.getURI());
 
-        ClientResponse response = uibWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");
+        ClientResponse response = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"newpassword\":\"" + newpassword + "\"}");
         model.addAttribute("logoURL", LOGOURL);
         model.addAttribute("username", passwordChangeToken.getUser());
         if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
             String error = response.getEntity(String.class);
             log.error(error);
             if(response.getStatus() == ClientResponse.Status.NOT_ACCEPTABLE.getStatusCode()) {
-                model.addAttribute("error", "The password you entered was too weak, please try another password.");
+                model.addAttribute("error", "The password you entered was found to be too weak, please try another password.");
             } else {
                 model.addAttribute("error", error+"\nusername:"+passwordChangeToken.getUser());
             }

@@ -68,7 +68,17 @@ public class NewUserController {
                 if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                     String error = uasResponse.getEntity(String.class);
                     logger.error(error);
-                    model.addAttribute("error", "We were unable to create the requested user at this time. Try different data or later.");
+                    model.addAttribute("error", "We were unable to create the requested user at this time. Try different data or try again later.");
+                } else {
+                    uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()+"/auth/password/reset/username/" + username);
+                     uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
+                    if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+                        String error = uasResponse.getEntity(String.class);
+                        logger.error(error);
+                        model.addAttribute("Unable to send user creation mail to user for username="+username);
+                        return "resetpassword";
+                    }
+
                 }
 
             } catch (IllegalStateException ise) {
@@ -80,7 +90,7 @@ public class NewUserController {
         }
 
         model.addAttribute("logoURL", LOGOURL);
-        return "newuser";
+        return "welcome";
     }
 
     @RequestMapping("/createnewuser")

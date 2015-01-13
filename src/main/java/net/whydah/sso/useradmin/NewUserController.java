@@ -55,13 +55,13 @@ public class NewUserController {
                     "\", \"lastName\":\""+lastName+
                     "\", \"personRef\":\"\", \"email\":\""+email+
                     "\", \"cellPhone\":\""+cellPhone+"\"}";
-                    
+
             ;
             try {
                 WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()).path("userTokenId").path("user");
                 logger.trace("doChangePasswordFromLink was called. Calling UAS with url " + uasWR.getURI());
 
-                ClientResponse uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, "{\"userXml\":\"" + userJson + "\"}");
+                ClientResponse uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,userJson);
                 if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                     String error = uasResponse.getEntity(String.class);
                     logger.error(error);

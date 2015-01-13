@@ -50,15 +50,12 @@ public class NewUserController {
         String cellPhone = request.getParameter("cellphone");
         if (email != null && username != null) {
             logger.info("Requested signup - email: " + email + "  username: " + username + "  firstname: " + firstName + "  lastname: " + lastName + "  cellphone: " + cellPhone + " ");
-            String userJson = "UserIdentity{" +
-                    "uid='" + username + '\'' +
-                    ", username='" + username + '\'' +
-                    ", firstName='" + firstName + '\'' +
-                    ", lastName='" + lastName + '\'' +
-                    ", personRef='" + "" + '\'' +
-                    ", email='" + email + '\'' +
-                    ", cellPhone='" + cellPhone + '\'' +
-                    '}';
+            String userJson = "{\"username\":\""+username+
+                    "\", \"firstName\":\""+firstName+
+                    "\", \"lastName\":\""+lastName+
+                    "\", \"personRef\":\"\", \"email\":\""+email+
+                    "\", \"cellPhone\":\""+cellPhone+"\"}";
+                    
             ;
             try {
                 WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()).path("userTokenId").path("user");

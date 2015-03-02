@@ -15,7 +15,7 @@
         <div class="login-box">
             <h4>Username:  ${username} </h4>
             <br/><br/>
-            Close this window and log in with the new password.
+            <a href="/sso/welcome">Log in.</a>
         </div>
     </div>
 </div>

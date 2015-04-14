@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 #  If IAM_MODE not set, use PROD
 if [ -z "$IAM_MODE" ]; then
   IAM_MODE=PROD

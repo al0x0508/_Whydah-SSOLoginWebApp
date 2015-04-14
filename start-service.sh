@@ -5,10 +5,6 @@ if [ -z "$IAM_MODE" ]; then
   IAM_MODE=PROD
 fi
 
-# If IAM_CONFOG not set, use PROD properties from local directory
-if [ -z "$IAM_CONFIG" ]; then
-  IAM_CONFIG=ssologinservice.PROD.properties
-fi
 
 # If Version is from source, find the artifact
 if [ "$Version" = "FROM_SOURCE" ]; then 
@@ -18,5 +14,10 @@ else
     Version=SSOLoginWebApp.jar
 fi
 
+# If IAM_CONFIG not set, use embedded
+if [ -z "$IAM_CONFIG" ]; then
+  nohup /usr/bin/java -DIAM_MODE=$IAM_MODE  -jar  $Version &
+else  
+  nohup /usr/bin/java -DIAM_MODE=$IAM_MODE -DIAM_CONFIG=$IAM_CONFIG -jar  $Version &
+fi
 
-nohup /usr/bin/java -DIAM_MODE=$IAM_MODE -DIAM_CONFIG=$IAM_CONFIG -jar  $Version &

@@ -23,7 +23,7 @@
     <properties>
         <service.name>Whydah-SSOLoginWebApp</service.name>
         <jersey.version>1.6</jersey.version>
-        <spring.version>3.0.7.RELEASE</spring.version>
+        <spring.version>3.0.8.RELEASE</spring.version>
         <jetty.version>7.3.0.v20110203</jetty.version>
     </properties>
 

@@ -1,12 +1,16 @@
 package net.whydah.sso.authentication.facebook;
 
+import net.whydah.sso.config.ApplicationMode;
+
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.types.User;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +27,11 @@ import static org.mockito.Mockito.mock;
 public class FacebookHelperTest {
     private static final Logger log = LoggerFactory.getLogger(FacebookHelperTest.class);
 
+    @Before
+    public void initialize() {
+      System.setProperty(ApplicationMode.IAM_MODE_KEY, ApplicationMode.DEV);
+
+    }
 
     /**
      * Manual test.

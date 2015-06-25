@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class AppConfig {
     public final static String IAM_CONFIG_KEY = "IAM_CONFIG";
-    private final static Logger logger = LoggerFactory.getLogger(AppConfig.class);
+    private final static Logger log = LoggerFactory.getLogger(AppConfig.class);
 
     public static Properties readProperties() throws IOException {
         String appMode = ApplicationMode.getApplicationMode();
@@ -30,10 +30,10 @@ public class AppConfig {
     private static Properties loadFromClasspath(String appMode) throws IOException {
         Properties properties = new Properties();
         String propertyfile = String.format("ssologinwebapp.%s.properties", appMode);
-        //logger.info("Loading properties from classpath: {}", propertyfile);
+        //log.info("Loading properties from classpath: {}", propertyfile);
         InputStream is = AppConfig.class.getClassLoader().getResourceAsStream(propertyfile);
         if(is == null) {
-            logger.error("Error reading {} from classpath.", propertyfile);
+            log.error("Error reading {} from classpath.", propertyfile);
             System.exit(3);
         }
         properties.load(is);
@@ -42,11 +42,11 @@ public class AppConfig {
 
     private static void loadFromFile(Properties properties, String configfilename) throws IOException {
         File file = new File(configfilename);
-        //logger.info("Overriding defaults from property file {}", file.getAbsolutePath());
+        //log.info("Overriding defaults from property file {}", file.getAbsolutePath());
         if(file.exists()) {
             properties.load(new FileInputStream(file));
         } else {
-            logger.error("Config file {} specified by System property {} not found.", configfilename, IAM_CONFIG_KEY);
+            log.error("Config file {} specified by System property {} not found.", configfilename, IAM_CONFIG_KEY);
             System.exit(3);
         }
     }

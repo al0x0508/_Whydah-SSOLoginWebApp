@@ -14,7 +14,7 @@ import java.io.IOException;
 public class CookieManager {
     public static final String USER_TOKEN_REFERENCE_NAME = "whydahusertoken_sso";
     //private static final String LOGOUT_COOKIE_VALUE = "logout";
-    private static final Logger logger = LoggerFactory.getLogger(CookieManager.class);
+    private static final Logger log = LoggerFactory.getLogger(CookieManager.class);
     private static final int DEFAULT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 
     private static String cookiedomain = null;
@@ -26,7 +26,7 @@ public class CookieManager {
         try {
             cookiedomain = AppConfig.readProperties().getProperty("cookiedomain");
         } catch (IOException e) {
-            logger.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
+            log.warn("AppConfig.readProperties failed. cookiedomain was set to {}", cookiedomain, e);
         }
     }
 
@@ -46,7 +46,7 @@ public class CookieManager {
         if (!ApplicationMode.getApplicationMode().equals(ApplicationMode.TEST_L)) {
             cookie.setSecure(true);
         }
-        logger.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+        log.debug("Created cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                 cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         response.addCookie(cookie);
     }
@@ -62,7 +62,7 @@ public class CookieManager {
             cookie.setPath("/");
             cookie.setSecure(true);
             response.addCookie(cookie);
-            logger.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
+            log.trace("Cleared cookie with name={}, value/userTokenId={}, domain={}, path={}, maxAge={}, secure={}",
                     cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getMaxAge(), cookie.getSecure());
         }
     }
@@ -70,10 +70,10 @@ public class CookieManager {
     public static String getUserTokenId(HttpServletRequest request) {
         String userTokenId = request.getParameter(CookieManager.USER_TOKEN_REFERENCE_NAME);
         if (userTokenId != null && userTokenId.length() > 1) {
-            logger.debug("getUserTokenId: userTokenIdFromRequest={}", userTokenId);
+            log.debug("getUserTokenId: userTokenIdFromRequest={}", userTokenId);
         } else {
             userTokenId = CookieManager.getUserTokenIdFromCookie(request);
-            logger.debug("getUserTokenId: userTokenIdFromCookie={}", userTokenId);
+            log.debug("getUserTokenId: userTokenIdFromCookie={}", userTokenId);
         }
         return userTokenId;
     }
@@ -89,7 +89,7 @@ public class CookieManager {
             return null;
         }
         for (Cookie cookie : cookies) {
-            logger.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath());
+            log.debug("getUserTokenCookie: cookie with name={}, value={}", cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath());
             if (USER_TOKEN_REFERENCE_NAME.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }
@@ -101,7 +101,7 @@ public class CookieManager {
     public static void setLogoutUserTokenCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie userTokenCookie = getUserTokenCookie(request);
         if (userTokenCookie != null) {
-            logger.debug("Setting logout value on userToken cookie.");
+            log.debug("Setting logout value on userToken cookie.");
             userTokenCookie.setValue(LOGOUT_COOKIE_VALUE);
             response.addCookie(userTokenCookie);
         }

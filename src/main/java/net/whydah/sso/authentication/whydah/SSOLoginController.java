@@ -25,7 +25,7 @@ import java.util.UUID;
 public class SSOLoginController {
     public static final String DEFAULT_REDIRECT = "welcome";
 
-    private final static Logger logger = LoggerFactory.getLogger(SSOLoginController.class);
+    private final static Logger log = LoggerFactory.getLogger(SSOLoginController.class);
     private final TokenServiceClient tokenServiceClient;
     private String LOGOURL = "/sso/images/site-logo.png";
     private String APP_LINKS = "{}";
@@ -56,39 +56,39 @@ public class SSOLoginController {
 
         //usertokenId = cookieManager.getUserTokenIdFromCookie(request, response);
         String userTokenIdFromCookie = CookieManager.getUserTokenIdFromCookie(request);
-        logger.trace("login: redirectURI={}, userTokenIdFromCookie={}", redirectURI, userTokenIdFromCookie);
+        log.trace("login: redirectURI={}, userTokenIdFromCookie={}", redirectURI, userTokenIdFromCookie);
 
         WhydahUserTokenId whydahUserTokenId = WhydahUserTokenId.invalidTokenId();
         if ("logout".equalsIgnoreCase(userTokenIdFromCookie)) {
             //TODO ED: Needs to be reviewed/changed - will never happend AFAIK
-            logger.info("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
+            log.info("userTokenId={} from cookie. TODO: should probably clear the logout cookie here?", userTokenIdFromCookie);
             CookieManager.clearUserTokenCookies(request, response);
             //usertokenId = WhydahUserTokenId.invalidTokenId();
         } else if (userTokenIdFromCookie != null && tokenServiceClient.verifyUserTokenId(userTokenIdFromCookie)) {
-            logger.trace("userTokenId={} from cookie verified OK.", userTokenIdFromCookie);
+            log.trace("userTokenId={} from cookie verified OK.", userTokenIdFromCookie);
             whydahUserTokenId = WhydahUserTokenId.fromTokenId(userTokenIdFromCookie);
         } else {
             CookieManager.clearUserTokenCookies(request, response);
         }
 
         if (whydahUserTokenId.isValid()) {
-            logger.trace("login - whydahUserTokenId={} is valid", whydahUserTokenId);
+            log.trace("login - whydahUserTokenId={} is valid", whydahUserTokenId);
 
             if (DEFAULT_REDIRECT.equalsIgnoreCase(redirectURI)){
-                logger.trace("login - Did not find any sensible redirectURI, using /welcome");
+                log.trace("login - Did not find any sensible redirectURI, using /welcome");
                 model.addAttribute(SessionHelper.REDIRECT, redirectURI);
-                logger.info("login - Redirecting to {}", redirectURI);
+                log.info("login - Redirecting to {}", redirectURI);
                 return "action";
 
             }
             String userTicket = UUID.randomUUID().toString();
             if (tokenServiceClient.createTicketForUserTokenID(userTicket, whydahUserTokenId.toString())){
-                logger.info("login - created new userticket={} for usertokenid={}",userTicket, whydahUserTokenId);
+                log.info("login - created new userticket={} for usertokenid={}",userTicket, whydahUserTokenId);
                 redirectURI = tokenServiceClient.appendTicketToRedirectURI(redirectURI, userTicket);
 
                 // Action use redirect - not redirectURI
                 model.addAttribute(SessionHelper.REDIRECT, redirectURI);
-                logger.info("login - Redirecting to {}", redirectURI);
+                log.info("login - Redirecting to {}", redirectURI);
                 return "action";
             }
         }
@@ -108,12 +108,12 @@ public class SSOLoginController {
         model.addAttribute(SessionHelper.WHYDAH_VERSION,whydahVersion);
         try {
             if (userTicket != null && userTicket.length() > 3) {
-                logger.trace("Welcome - Using userTicket");
+                log.trace("Welcome - Using userTicket");
                 userToken = tokenServiceClient.getUserTokenByUserTicket(userTicket);
                 model.addAttribute(TokenServiceClient.USERTICKET, userTicket);
                 model.addAttribute(TokenServiceClient.USER_TOKEN_ID, UserTokenXpathHelper.getUserTokenId(userToken));
             } else if (userTokenId != null && userTokenId.length() > 3) {
-                logger.trace("Welcome - No userTicket, using userTokenID from cookie");
+                log.trace("Welcome - No userTicket, using userTokenID from cookie");
                 userToken = tokenServiceClient.getUserTokenByUserTokenID(userTokenId);
                 model.addAttribute(TokenServiceClient.USERTICKET, "No userTicket, using userTokenID");
                 model.addAttribute(TokenServiceClient.USER_TOKEN_ID, userTokenId);
@@ -121,7 +121,7 @@ public class SSOLoginController {
                 throw new UnauthorizedException();
             }
         } catch (Exception e){
-            logger.warn("welcome redirect - SecurityTokenException exception: ",e);
+            log.warn("welcome redirect - SecurityTokenException exception: ",e);
             ModelHelper.setEnabledLoginTypes(model);
             return "login";
         }
@@ -135,21 +135,21 @@ public class SSOLoginController {
     public String action(HttpServletRequest request, HttpServletResponse response, Model model) {
         UserCredential user = new UserNameAndPasswordCredential(request.getParameter(SessionHelper.USER), request.getParameter(SessionHelper.PASSWORD));
         String redirectURI = getRedirectURI(request);
-        logger.trace("action: redirectURI: {}", redirectURI);
+        log.trace("action: redirectURI: {}", redirectURI);
         model.addAttribute(SessionHelper.LOGO_URL, LOGOURL);
         model.addAttribute(SessionHelper.WHYDAH_VERSION,whydahVersion);
         String userTicket = UUID.randomUUID().toString();
         String userTokenXml = tokenServiceClient.getUserToken(user, userTicket);
 
         if (userTokenXml == null) {
-            logger.warn("action - getUserToken failed. Redirecting to login.");
+            log.warn("action - getUserToken failed. Redirecting to login.");
             model.addAttribute(SessionHelper.LOGIN_ERROR, "Could not log in.");
             ModelHelper.setEnabledLoginTypes(model);
             model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
             return "login";
         }
         if (redirectURI.contains(TokenServiceClient.USERTICKET)) {
-            logger.warn("action - redirectURI contain ticket. Redirecting to welcome.");
+            log.warn("action - redirectURI contain ticket. Redirecting to welcome.");
             model.addAttribute(SessionHelper.LOGIN_ERROR, "Could not redirect back, redirect loop detected.");
             ModelHelper.setEnabledLoginTypes(model);
             model.addAttribute(SessionHelper.REDIRECT_URI, "");
@@ -169,7 +169,7 @@ public class SSOLoginController {
         // Action use redirect...
         model.addAttribute(SessionHelper.REDIRECT, redirectURI);
         model.addAttribute(SessionHelper.REDIRECT_URI, redirectURI);
-        logger.info("action - Redirecting to {}", redirectURI);
+        log.info("action - Redirecting to {}", redirectURI);
         return "action";
     }
 
@@ -177,9 +177,9 @@ public class SSOLoginController {
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter(SessionHelper.REDIRECT_URI);
-        //logger.trace("getRedirectURI - redirectURI from request: {}", redirectURI);
+        //log.trace("getRedirectURI - redirectURI from request: {}", redirectURI);
         if (redirectURI == null || redirectURI.length() < 1) {
-            logger.trace("getRedirectURI - No redirectURI found, setting to {}", DEFAULT_REDIRECT);
+            log.trace("getRedirectURI - No redirectURI found, setting to {}", DEFAULT_REDIRECT);
             return DEFAULT_REDIRECT;
         }
         return redirectURI;

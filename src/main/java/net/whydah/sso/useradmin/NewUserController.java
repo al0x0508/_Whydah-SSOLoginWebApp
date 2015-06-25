@@ -25,7 +25,7 @@ import java.util.Properties;
 @Controller
 public class NewUserController {
 
-    private static final Logger logger = LoggerFactory.getLogger(NewUserController.class);
+    private static final Logger log = LoggerFactory.getLogger(NewUserController.class);
     private static final Client uasClient = Client.create();
     private URI uasServiceUri;
 
@@ -42,14 +42,14 @@ public class NewUserController {
 
     @RequestMapping("/signup")
     public String newUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-        logger.trace("/signup entry");
+        log.trace("/signup entry");
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String cellPhone = request.getParameter("cellphone");
         if (email != null && username != null) {
-            logger.info("Requested signup - email: " + email + "  username: " + username + "  firstname: " + firstName + "  lastname: " + lastName + "  cellphone: " + cellPhone + " ");
+            log.info("Requested signup - email: " + email + "  username: " + username + "  firstname: " + firstName + "  lastname: " + lastName + "  cellphone: " + cellPhone + " ");
             String userJson = "{\"username\":\"" + username +
                     "\", \"firstName\":\"" + firstName +
                     "\", \"lastName\":\"" + lastName +
@@ -59,19 +59,19 @@ public class NewUserController {
             ;
             try {
                 WebResource uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID()).path("userTokenId").path("user");
-                logger.trace("doChangePasswordFromLink was called. Calling UAS with url " + uasWR.getURI());
+                log.trace("doChangePasswordFromLink was called. Calling UAS with url " + uasWR.getURI());
 
                 ClientResponse uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, userJson);
                 if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                     String error = uasResponse.getEntity(String.class);
-                    logger.error(error);
+                    log.error(error);
                     model.addAttribute("error", "We were unable to create the requested user at this time. Try different data or try again later.");
                 } else {
                     uasWR = uasClient.resource(uasServiceUri).path(tokenServiceClient.getMyAppTokenID() + "/auth/password/reset/username/" + username);
                     uasResponse = uasWR.type(MediaType.APPLICATION_JSON).post(ClientResponse.class);
                     if (uasResponse.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                         String error = uasResponse.getEntity(String.class);
-                        logger.error(error);
+                        log.error(error);
                         model.addAttribute("Unable to send user creation mail to user for username=" + username);
                         return "newuser";
                     }
@@ -79,9 +79,9 @@ public class NewUserController {
                 }
 
             } catch (IllegalStateException ise) {
-                logger.info(ise.getMessage());
+                log.info(ise.getMessage());
             } catch (RuntimeException e) {
-                logger.error("Unkonwn error.", e);
+                log.error("Unkonwn error.", e);
             }
 
         }
@@ -92,7 +92,7 @@ public class NewUserController {
 
     @RequestMapping("/createnewuser")
     public String createNewUser(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
-        logger.trace("/createnewuser entry");
+        log.trace("/createnewuser entry");
         model.addAttribute("logoURL", LOGOURL);
         //String fbId = "";
         //String username = "user";
@@ -112,7 +112,7 @@ public class NewUserController {
 
         String userTokenXml = tokenServiceClient.createAndLogonUser(null, "", userCredential, "");
         if (userTokenXml == null) {
-            logger.error("createAndLogonUser failed. Redirecting to login page.");
+            log.error("createAndLogonUser failed. Redirecting to login page.");
             String redirectURI = "";
             model.addAttribute("redirectURI", redirectURI);
             model.addAttribute("loginError", "Login error: Could not create or authenticate user.");

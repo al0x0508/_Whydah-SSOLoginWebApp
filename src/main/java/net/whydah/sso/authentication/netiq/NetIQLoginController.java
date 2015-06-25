@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Controller
 public class NetIQLoginController {
-        private static final Logger logger = LoggerFactory.getLogger(NetIQLoginController.class);
+        private static final Logger log = LoggerFactory.getLogger(NetIQLoginController.class);
         private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
 
         // set this to your servlet URL for the authentication servlet/filter
@@ -44,7 +44,7 @@ public class NetIQLoginController {
             model.addAttribute("logoURL", LOGOURL);
 
             model.addAttribute("redirect", hetIQauthURI+"?redirectURI="+clientRedirectURI);
-            logger.info("Redirecting to {}", hetIQauthURI+"?redirectURI="+clientRedirectURI);
+            log.info("Redirecting to {}", hetIQauthURI+"?redirectURI="+clientRedirectURI);
             return "action";
         }
 
@@ -65,7 +65,7 @@ public class NetIQLoginController {
             Enumeration headerNames = request.getHeaderNames();
             while(headerNames.hasMoreElements()) {
                 String headerName = (String)headerNames.nextElement();
-                logger.trace("HTTP header - Name:{}  Header: {}",headerName,request.getHeader(headerName));
+                log.trace("HTTP header - Name:{}  Header: {}",headerName,request.getHeader(headerName));
                 if (!NetIQHelper.verifyNetIQHeader(headerName,request.getHeader(headerName))){
                     model.addAttribute("loginError", "Could not log in because NetIQ redirect verification failure.");
 
@@ -73,10 +73,10 @@ public class NetIQLoginController {
                 }
             }
             NetIQHelper helper = new NetIQHelper();
-            logger.info(helper.getNetIQUserAsXml(request));
+            log.info(helper.getNetIQUserAsXml(request));
             Map.Entry<String, String> pair = helper.findNetIQUserFromRequest(request);
             if (pair == null) {
-                logger.error("Could not find NetIQ user.");
+                log.error("Could not find NetIQ user.");
                 //TODO Do we need to add client redirect URI here?
                 model.addAttribute("loginError", "Could not find NetIQ user.");
                 return "login";
@@ -88,7 +88,7 @@ public class NetIQLoginController {
             try {
                 userCredential = new NetIQUserCredential(netiqAccessToken, netIQUser);
             } catch(IllegalArgumentException iae) {
-                logger.error(iae.getLocalizedMessage());
+                log.error(iae.getLocalizedMessage());
                 //TODO Do we need to add client redirect URI here?
                 model.addAttribute("loginError", "Illegal userdata from netIQ.");
                 return "login";
@@ -100,16 +100,16 @@ public class NetIQLoginController {
             // Hvis ja, hent whydah user usertoken og legg ticket på model eller på returURL.
             String userTokenXml = tokenServiceClient.getUserToken(userCredential, ticket);
 
-            logger.debug("NetIQ respsonse:" + userTokenXml);
+            log.debug("NetIQ respsonse:" + userTokenXml);
             if (userTokenXml == null) {
-                logger.info("getUserToken failed. Try to create new user using netiq credentials.");
+                log.info("getUserToken failed. Try to create new user using netiq credentials.");
                 // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
                 // Success etter ny bruker er laget = usertoken. Alltid ticket id som skal sendes.
 
 
                 userTokenXml = tokenServiceClient.createAndLogonUser(netIQUser, netiqAccessToken, userCredential, ticket,request);
                 if (userTokenXml == null) {
-                    logger.error("createAndLogonUser failed. Redirecting to login page.");
+                    log.error("createAndLogonUser failed. Redirecting to login page.");
                     String redirectURI = request.getParameter("redirectURI");
                     model.addAttribute("redirectURI", redirectURI);
                     model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
@@ -126,7 +126,7 @@ public class NetIQLoginController {
             String clientRedirectURI = request.getParameter("redirectURI");
             if (clientRedirectURI!=null) {
                 clientRedirectURI = tokenServiceClient.appendTicketToRedirectURI(clientRedirectURI, ticket);
-                logger.info("Redirecting to {}", clientRedirectURI);
+                log.info("Redirecting to {}", clientRedirectURI);
                 model.addAttribute("redirect", clientRedirectURI);
             }
             return "action";

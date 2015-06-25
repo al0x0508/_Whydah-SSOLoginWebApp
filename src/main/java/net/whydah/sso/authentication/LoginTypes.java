@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 public class LoginTypes {
-	private final static Logger logger = LoggerFactory.getLogger(LoginTypes.class);
+	private final static Logger log = LoggerFactory.getLogger(LoginTypes.class);
 	
 	private static final String ENABLED = "enabled";
     private static final String TRUE = "true";
@@ -26,7 +26,7 @@ public class LoginTypes {
 		userpasswordLoginEnabled = ENABLED.equalsIgnoreCase(properties.getProperty("logintype.userpassword"));
         signupEnabled = TRUE.equalsIgnoreCase(properties.getProperty("signupEnabled"));
 
-        logger.debug(String.format("Signup is %6s, Facebook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."
+        log.debug(String.format("Signup is %6s, Facebook Sign on is %1s, OpenId Sign on is %2s, Omni Sign on is %3s, netIQ Sign on is %4s, User/Password Sign on is %5s."
                 , properties.getProperty("logintype.facebook")
 									, properties.getProperty("logintype.openid")
 									, properties.getProperty("logintype.omni")

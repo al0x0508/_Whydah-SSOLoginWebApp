@@ -28,7 +28,7 @@ import java.util.UUID;
  */
 @Controller
 public class FacebookLoginController {
-    private static final Logger logger = LoggerFactory.getLogger(FacebookLoginController.class);
+    private static final Logger log = LoggerFactory.getLogger(FacebookLoginController.class);
     private final TokenServiceClient tokenServiceClient = new TokenServiceClient();
 
     // set this to your servlet URL for the authentication servlet/filter
@@ -56,7 +56,7 @@ public class FacebookLoginController {
         model.addAttribute("logoURL", LOGOURL);
 
         model.addAttribute("redirect", facebookLoginUrl);
-        logger.info("Redirecting to {}", facebookLoginUrl);
+        log.info("Redirecting to {}", facebookLoginUrl);
         return "action";
     }
 
@@ -64,11 +64,11 @@ public class FacebookLoginController {
     public String facebookAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws MalformedURLException {
         String code = request.getParameter("code");
 
-        logger.trace("fbauth got code: {}",code);
-        logger.trace("fbauth - got state: {}",request.getParameter("state"));
+        log.trace("fbauth got code: {}",code);
+        log.trace("fbauth - got state: {}",request.getParameter("state"));
         Map.Entry<String, User> pair = FacebookHelper.loginAndCreateFacebookUser(code, fbauthURI);
         if (pair == null) {
-            logger.error("Could not fetch facebok user.");
+            log.error("Could not fetch facebok user.");
             //TODO Do we need to add client redirect URI here?
             ModelHelper.setEnabledLoginTypes(model);
             return "login";
@@ -95,18 +95,18 @@ public class FacebookLoginController {
             if (username==null || username.length()<6){
                 if (fbUser.getEmail()==null || fbUser.getEmail().length()<6){
                     username=fbUser.getId();
-                    logger.trace("facebook returned username, email=null, using facebook id as username instead");
+                    log.trace("facebook returned username, email=null, using facebook id as username instead");
 
                 } else {
                     username=fbUser.getEmail();
-                    logger.trace("facebook returned username=null, using facebook email as username instead");
+                    log.trace("facebook returned username=null, using facebook email as username instead");
 
                 }
             }
-            logger.trace("new FacebookUserCredential(fbUser.getId({}),  getUsername({})",fbUser.getId(), username);
+            log.trace("new FacebookUserCredential(fbUser.getId({}),  getUsername({})",fbUser.getId(), username);
             userCredential = new FacebookUserCredential(fbUser.getId(), username);
         } catch(IllegalArgumentException iae) {
-            logger.error("fbauth - unable to build usercredential for facebook token.",iae.getLocalizedMessage());
+            log.error("fbauth - unable to build usercredential for facebook token.",iae.getLocalizedMessage());
             //TODO Do we need to add client redirect URI here?
             return "login";
         }
@@ -116,14 +116,14 @@ public class FacebookLoginController {
         // Hvis ja, hent whydah user usertoken og legg ticket på model eller på returURL.
         String userTokenXml = tokenServiceClient.getUserToken(userCredential, userticket);
         if (userTokenXml == null) {
-            logger.warn("getUserToken failed. Try to create new user using facebook credentials.");
+            log.warn("getUserToken failed. Try to create new user using facebook credentials.");
             // Hvis nei, hent brukerinfo fra FB, kall tokenService. med user credentials for ny bruker (lag tjenesten i TokenService).
             // Success etter ny bruker er laget = usertoken. Alltid ticket id som skal sendes.
 
 
             userTokenXml = tokenServiceClient.createAndLogonUser(fbUser, fbAccessToken, userCredential, userticket);
             if (userTokenXml == null) {
-                logger.error("createAndLogonUser failed. Did not get a valid UserToken. Redirecting to login page.");
+                log.error("createAndLogonUser failed. Did not get a valid UserToken. Redirecting to login page.");
                 String redirectURI = getRedirectURI(request);
                 model.addAttribute("redirectURI", redirectURI);
                 model.addAttribute("loginError", "Login error: Could not create or authenticate user.");
@@ -139,16 +139,16 @@ public class FacebookLoginController {
 
         String clientRedirectURI = request.getParameter("state");
         clientRedirectURI = tokenServiceClient.appendTicketToRedirectURI(clientRedirectURI, userticket);
-        logger.info("Redirecting to {}", clientRedirectURI);
+        log.info("Redirecting to {}", clientRedirectURI);
         model.addAttribute("redirect", clientRedirectURI);
         return "action";
     }
 
     private String getRedirectURI(HttpServletRequest request) {
         String redirectURI = request.getParameter("fbauthURI");
-        logger.debug("fbauthURI from request: {}", redirectURI);
+        log.debug("fbauthURI from request: {}", redirectURI);
         if (redirectURI == null || redirectURI.length() < 4) {
-            logger.warn("No fbauthURI found, setting to {}", SSOLoginController.DEFAULT_REDIRECT);
+            log.warn("No fbauthURI found, setting to {}", SSOLoginController.DEFAULT_REDIRECT);
             return SSOLoginController.DEFAULT_REDIRECT;
         }
         return redirectURI;

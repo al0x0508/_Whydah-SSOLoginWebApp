@@ -31,7 +31,7 @@ public class TokenServiceClient {
     public static final String REALNAME = "realname";
     public static final String USER_TOKEN_ID = "usertokenid";
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenServiceClient.class);
+    private static final Logger log = LoggerFactory.getLogger(TokenServiceClient.class);
 
     private final Client tokenServiceClient = Client.create();
     private final URI tokenServiceUri;
@@ -64,7 +64,7 @@ public class TokenServiceClient {
             return getDummyToken();
         }
         logonApplication();
-        logger.debug("getUserToken - Application logon OK. applicationTokenId={}. Log on with user credentials {}.", myAppTokenId, user.toString());
+        log.debug("getUserToken - Application logon OK. applicationTokenId={}. Log on with user credentials {}.", myAppTokenId, user.toString());
 
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/" + userticket + "/usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -72,13 +72,13 @@ public class TokenServiceClient {
         formData.add("usercredential", user.toXML());
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
-            logger.info("getUserToken - User authentication failed with status code " + response.getStatus());
+            log.info("getUserToken - User authentication failed with status code " + response.getStatus());
             return null;
             //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("getUserToken - Log on OK with response {}", responseXML);
+            log.debug("getUserToken - Log on OK with response {}", responseXML);
             return responseXML;
         }
 
@@ -86,12 +86,12 @@ public class TokenServiceClient {
         response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("getUserToken - Log on OK with response {}", responseXML);
+            log.debug("getUserToken - Log on OK with response {}", responseXML);
             return responseXML;
         } else if (response.getStatus() == NOT_FOUND.getStatusCode()) {
-            logger.error(printableUrlErrorMessage("getUserToken - Auth failed - Problems connecting with TokenService", getUserToken, response));
+            log.error(printableUrlErrorMessage("getUserToken - Auth failed - Problems connecting with TokenService", getUserToken, response));
         } else {
-            logger.info(printableUrlErrorMessage("getUserToken - User authentication failed", getUserToken, response));
+            log.info(printableUrlErrorMessage("getUserToken - User authentication failed", getUserToken, response));
         }
         return null;
         //throw new RuntimeException("User authentication failed with status code " + response.getStatus());
@@ -99,8 +99,8 @@ public class TokenServiceClient {
 
     public boolean createTicketForUserTokenID(String userticket, String userTokenID){
         logonApplication();
-        logger.debug("createTicketForUserTokenID - apptokenid: {}", myAppTokenId);
-        logger.debug("createTicketForUserTokenID - userticket: {} userTokenID: {}", userticket, userTokenID);
+        log.debug("createTicketForUserTokenID - apptokenid: {}", myAppTokenId);
+        log.debug("createTicketForUserTokenID - userticket: {} userTokenID: {}", userticket, userTokenID);
 
         WebResource getUserToken = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId  + "/create_userticket_by_usertokenid");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -109,16 +109,16 @@ public class TokenServiceClient {
         formData.add("usertokenid", userTokenID);
         ClientResponse response = getUserToken.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
-            logger.info("createTicketForUserTokenID - failed with status code " + response.getStatus());
+            log.info("createTicketForUserTokenID - failed with status code " + response.getStatus());
             //throw new IllegalArgumentException("Log on failed. " + ClientResponse.Status.FORBIDDEN);
             return false;
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createTicketForUserTokenID - OK with response {}", responseXML);
+            log.debug("createTicketForUserTokenID - OK with response {}", responseXML);
             return true;
         }
-        logger.warn("createTicketForUserTokenID - unable to create ticket for usertokenid. Response={}",response.getStatus());
+        log.warn("createTicketForUserTokenID - unable to create ticket for usertokenid. Response={}",response.getStatus());
         return false;
 
     }
@@ -130,28 +130,28 @@ public class TokenServiceClient {
 
         WebResource userTokenResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/get_usertoken_by_userticket");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
-        logger.trace("getUserTokenByUserTicket - ticket: {} apptoken: {}",userticket,myAppTokenXml);
+        log.trace("getUserTokenByUserTicket - ticket: {} apptoken: {}",userticket,myAppTokenXml);
         formData.add("apptoken", myAppTokenXml);
         formData.add("userticket", userticket);
         ClientResponse response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
-            logger.warn("getUserTokenByUserTicket failed");
+            log.warn("getUserTokenByUserTicket failed");
             throw new IllegalArgumentException("getUserTokenByUserTicket failed.");
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            log.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            log.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         String authenticationFailedMessage = printableUrlErrorMessage("User authentication failed", userTokenResource, response);
-        logger.warn(authenticationFailedMessage);
+        log.warn(authenticationFailedMessage);
         throw new RuntimeException(authenticationFailedMessage);
     }
 
@@ -171,86 +171,86 @@ public class TokenServiceClient {
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            log.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         //retry
         response = userTokenResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("Response OK with XML: {}", responseXML);
+            log.debug("Response OK with XML: {}", responseXML);
             return responseXML;
         }
         String authenticationFailedMessage = printableUrlErrorMessage("User authentication failed", userTokenResource, response);
-        logger.warn(authenticationFailedMessage);
+        log.warn(authenticationFailedMessage);
         throw new RuntimeException(authenticationFailedMessage);
     }
 
     public void releaseUserToken(String userTokenId) {
-        logger.trace("Releasing userTokenId={}", userTokenId);
+        log.trace("Releasing userTokenId={}", userTokenId);
         logonApplication();
         WebResource releaseResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/release_usertoken");
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add(USER_TOKEN_ID, userTokenId);
         ClientResponse response = releaseResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() != OK.getStatusCode()) {
-            logger.warn("releaseUserToken failed for userTokenId={}: {}", userTokenId, response);
+            log.warn("releaseUserToken failed for userTokenId={}: {}", userTokenId, response);
         }
-        logger.trace("Released userTokenId={}", userTokenId);
+        log.trace("Released userTokenId={}", userTokenId);
     }
 
     public boolean verifyUserTokenId(String usertokenid) {
         // If we get strange values...  return false
         if (usertokenid == null || usertokenid.length() < 4) {
-            logger.trace("verifyUserTokenId - Called with bogus usertokenid={}. return false",usertokenid);
+            log.trace("verifyUserTokenId - Called with bogus usertokenid={}. return false",usertokenid);
             return false;
         }
         logonApplication();
         WebResource verifyResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid);
         ClientResponse response = verifyResource.get(ClientResponse.class);
         if (response.getStatus() == OK.getStatusCode()) {
-            logger.debug("verifyUserTokenId - usertokenid validated OK");
+            log.debug("verifyUserTokenId - usertokenid validated OK");
             return true;
         }
         if(response.getStatus() == CONFLICT.getStatusCode()) {
-            logger.debug("verifyUserTokenId - usertokenid not ok: {}", response);
+            log.debug("verifyUserTokenId - usertokenid not ok: {}", response);
             return false;
         }
         //retry
-        logger.info("verifyUserTokenId - retrying usertokenid ");
+        log.info("verifyUserTokenId - retrying usertokenid ");
         logonApplication();
         response = verifyResource.get(ClientResponse.class);
         boolean bolRes = response.getStatus() == OK.getStatusCode();
-        logger.debug("verifyUserTokenId - validate_usertokenid {}  result {}","user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid, response);
+        log.debug("verifyUserTokenId - validate_usertokenid {}  result {}","user/" + myAppTokenId + "/validate_usertokenid/" + usertokenid, response);
         return bolRes;
     }
 
     public String createAndLogonUser(User fbUser, String fbAccessToken, UserCredential userCredential, String userticket) {
         logonApplication();
-        logger.debug("apptokenid: {}", myAppTokenId);
+        log.debug("apptokenid: {}", myAppTokenId);
 
 
         WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId +"/"+ userticket + "/create_user");
-        logger.trace("createUserResource:"+createUserResource.toString());
+        log.trace("createUserResource:"+createUserResource.toString());
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
         formData.add("apptoken", myAppTokenXml);
         formData.add("usercredential", userCredential.toXML());
         String facebookUserAsXml = FacebookHelper.getFacebookUserAsXml(fbUser, fbAccessToken);
         formData.add("fbuser", facebookUserAsXml);
-        logger.trace("createAndLogonUser with fbuser XML: " + facebookUserAsXml+"\nformData:\n"+formData);
-        logger.info("createAndLogonUser username=" + fbUser.getUsername());
+        log.trace("createAndLogonUser with fbuser XML: " + facebookUserAsXml+"\nformData:\n"+formData);
+        log.info("createAndLogonUser username=" + fbUser.getUsername());
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
         //No need to retry if we know it is forbidden.
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
-            logger.warn("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
+            log.warn("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
             return null;
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            log.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
         }
 
@@ -258,21 +258,21 @@ public class TokenServiceClient {
         response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            log.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
         }
 
-        logger.warn(printableUrlErrorMessage("createAndLogonUser failed after retrying once.", createUserResource, response));
+        log.warn(printableUrlErrorMessage("createAndLogonUser failed after retrying once.", createUserResource, response));
         return null;
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
 
     public String createAndLogonUser(String netiqUserName, String netiqAccessToken, UserCredential userCredential, String userticket,HttpServletRequest request) {
         logonApplication();
-        logger.debug("createAndLogonUser - apptokenid: {}", myAppTokenId);
+        log.debug("createAndLogonUser - apptokenid: {}", myAppTokenId);
 
         WebResource createUserResource = tokenServiceClient.resource(tokenServiceUri).path("user/" + myAppTokenId +"/"+ userticket + "/create_user");
-        logger.debug("createUserResource:"+createUserResource.toString());
+        log.debug("createUserResource:"+createUserResource.toString());
 
 
         MultivaluedMap<String,String> formData = new MultivaluedMapImpl();
@@ -281,19 +281,19 @@ public class TokenServiceClient {
         NetIQHelper helper = new NetIQHelper();
         String netIQUserAsXml = helper.getNetIQUserAsXml(request);
         formData.add("fbuser", netIQUserAsXml);
-        logger.trace("createAndLogonUser with netiquser XML: " + netIQUserAsXml+"\nformData:\n"+formData);
-        logger.info("createAndLogonUser username=" + helper.getUserName(request));
+        log.trace("createAndLogonUser with netiquser XML: " + netIQUserAsXml+"\nformData:\n"+formData);
+        log.info("createAndLogonUser username=" + helper.getUserName(request));
         ClientResponse response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
 
         //No need to retry if we know it is forbidden.
         if (response.getStatus() == FORBIDDEN.getStatusCode()) {
             //throw new IllegalArgumentException("createAndLogonUser failed. username=" + fbUser.getUsername() + ", id=" + fbUser.getId());
-            logger.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getEmail(request));
+            log.warn("createAndLogonUser failed. username=" + helper.getUserName(request) + ", id=" + helper.getEmail(request));
             return null;
         }
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            log.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
         }
 
@@ -301,11 +301,11 @@ public class TokenServiceClient {
         response = createUserResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         if (response.getStatus() == OK.getStatusCode()) {
             String responseXML = response.getEntity(String.class);
-            logger.debug("createAndLogonUser OK with response {}", responseXML);
+            log.debug("createAndLogonUser OK with response {}", responseXML);
             return responseXML;
         }
 
-        logger.warn("createAndLogonUser failed after retrying once.");
+        log.warn("createAndLogonUser failed after retrying once.");
         return null;
         //throw new RuntimeException("createAndLogonUser failed with status code " + response.getStatus());
     }
@@ -324,18 +324,18 @@ public class TokenServiceClient {
         try {
             response = logonResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
         } catch (RuntimeException e) {
-            logger.error("logonApplication - Problem connecting to {}", logonResource.toString());
+            log.error("logonApplication - Problem connecting to {}", logonResource.toString());
             throw(e);
         }
         //todo håndtere feil i statuskode + feil ved app-pålogging (retry etc)
         if (response.getStatus() != 200) {
-            logger.error("Application authentication failed with statuscode {}", response.getStatus());
+            log.error("Application authentication failed with statuscode {}", response.getStatus());
             throw new RuntimeException("Application authentication failed");
         }
         myAppTokenXml = response.getEntity(String.class);
         myAppTokenId = UserTokenXpathHelper.getAppTokenIdFromAppToken(myAppTokenXml);
-        logger.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
-        logger.debug("myAppTokenId: {}", myAppTokenId);
+        log.debug("Applogon ok: apptokenxml: {}", myAppTokenXml);
+        log.debug("myAppTokenId: {}", myAppTokenId);
     }
 
     public static  String getDummyToken(){

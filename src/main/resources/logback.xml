@@ -2,7 +2,7 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %log{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -15,17 +15,17 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %log{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
 
-    <logger name="org.eclipse.jetty" level="WARN" />
+    <log name="org.eclipse.jetty" level="WARN" />
 
 
     net.whydah.sso.usertoken
-    <logger name="net.whydah.sso.usertoken.UserTokenXpathHelper" level="INFO" />
-    <logger name="net.whydah.sso" level="TRACE" />
+    <log name="net.whydah.sso.usertoken.UserTokenXpathHelper" level="INFO" />
+    <log name="net.whydah.sso" level="TRACE" />
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

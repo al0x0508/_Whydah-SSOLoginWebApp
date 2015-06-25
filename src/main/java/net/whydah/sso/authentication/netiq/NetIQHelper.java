@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class NetIQHelper {
-    private static final Logger logger = LoggerFactory.getLogger(NetIQHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(NetIQHelper.class);
     private Map<String, String> expectedHeaders = new HashMap<>();
 
 
@@ -33,12 +33,12 @@ public class NetIQHelper {
             String expectedValue = properties.getProperty("logintype.netiq.header."+headername);
             if (expectedValue!=null && expectedValue.length()>1){
                 if (value.indexOf(expectedValue,0)<0){
-                    logger.warn("NetIQ redirect verification failed.  Header: "+headername+" , expected: "+expectedValue+" , found "+value+" ");
+                    log.warn("NetIQ redirect verification failed.  Header: "+headername+" , expected: "+expectedValue+" , found "+value+" ");
                     return false;
                 }
             }
         } catch (IOException ioe){
-            logger.warn("Not found NETIQ header for {}",headername);
+            log.warn("Not found NETIQ header for {}",headername);
         }
         return true;
     }
@@ -69,7 +69,7 @@ public class NetIQHelper {
 
 
     public String getUserName(HttpServletRequest request) {
-        logger.debug(request.getHeader("USERNAME"));
+        log.debug(request.getHeader("USERNAME"));
         return request.getHeader("USERNAME"); // "totto@totto.org";
 
     }
@@ -84,7 +84,7 @@ public class NetIQHelper {
         String accessToken = request.getHeader("VIA");
         String netIQUser = getUserName(request);
         Map.Entry<String, String> pair = new AbstractMap.SimpleImmutableEntry<>(accessToken, netIQUser);
-        logger.debug("Logged in NetIQ user: code=" + "" + ", AccessToken=" + accessToken + "\n netIQUserName: " + netIQUser);
+        log.debug("Logged in NetIQ user: code=" + "" + ", AccessToken=" + accessToken + "\n netIQUserName: " + netIQUser);
         return pair;
     }
 
@@ -104,7 +104,7 @@ public class NetIQHelper {
 
         strb.append("    </params> \n");
         strb.append("</user>\n");
-        logger.info(strb.toString());
+        log.info(strb.toString());
         return strb.toString();
     }
 

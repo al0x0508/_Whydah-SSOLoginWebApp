@@ -33,7 +33,7 @@ public class FacebookHelper {
 
     static final String FACEBOOK_PERMISSIONS = FACEBOOK_PERMISSIONS_USER + "," + FACEBOOK_PERMISSIONS_FRIENDS;
 
-    private static final Logger logger = LoggerFactory.getLogger(FacebookHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(FacebookHelper.class);
     static {
             try {
                 Properties properties = AppConfig.readProperties();
@@ -41,9 +41,9 @@ public class FacebookHelper {
                 FACEBOOK_APP_SECRET = properties.getProperty("FACEBOOK_APP_SECRET");
                 FACEBOOK_FALLBACKEMAIL= properties.getProperty("FACEBOOK_FALLBACKEMAIL");
 
-                logger.info("read new Facebook appdata form properties ");
+                log.info("read new Facebook appdata form properties ");
             } catch (IOException notFound) {
-                logger.error("Error - not able to load facebook appdata from configuration.  Using embedded as fallback");
+                log.error("Error - not able to load facebook appdata from configuration.  Using embedded as fallback");
             }
         }
 
@@ -64,7 +64,7 @@ public class FacebookHelper {
     public static String getFacebookLoginUrl(String clientRedirectURI, String fbauthURI) {
         String facebookLoginUrl = "https://graph.facebook.com/oauth/authorize?client_id=" + FACEBOOK_APP_ID +
                 "&display=page&redirect_uri=" + fbauthURI + "&state=" + clientRedirectURI + "&scope=" + FACEBOOK_PERMISSIONS;
-        logger.debug("facebookLoginUrl: {}", facebookLoginUrl);
+        log.debug("facebookLoginUrl: {}", facebookLoginUrl);
         return facebookLoginUrl;
     }
 
@@ -73,9 +73,9 @@ public class FacebookHelper {
         //FacebookUser fbUser = createUserFromFacebookAttributes(faceBookAccessToken);
         FacebookClient facebookClient = new DefaultFacebookClient(fbAccessToken);
         User fbUser = facebookClient.fetchObject("me", User.class);
-        logger.trace("fbUser {}",fbUser);
+        log.trace("fbUser {}",fbUser);
         Map.Entry<String, User> pair = new AbstractMap.SimpleImmutableEntry<>(fbAccessToken, fbUser);
-        logger.debug("Logged in Facebook user: code=" + code + ", fbAccessToken=" + fbAccessToken + "\n fbUser: " + fbUser.toString());
+        log.debug("Logged in Facebook user: code=" + code + ", fbAccessToken=" + fbAccessToken + "\n fbUser: " + fbUser.toString());
         return pair;
     }
 
@@ -117,17 +117,17 @@ public class FacebookHelper {
         if (fbUser.getUsername()!=null && fbUser.getUsername().length()>2){
             strb.append("        <username>").append(fbUser.getUsername()).append( "</username>\n");
         } else if (fbUser.getEmail()!=null && fbUser.getEmail().length()>2) {
-            logger.warn("Facebook returned username = null, using email as username ");
+            log.warn("Facebook returned username = null, using email as username ");
             strb.append("        <username>").append(fbUser.getEmail()).append( "</username>\n");
         } else if (fbUser.getId()!=null && fbUser.getId().length()>2) {
-            logger.warn("Facebook returned username and email = null, using id as username ");
+            log.warn("Facebook returned username and email = null, using id as username ");
             strb.append("        <username>").append(fbUser.getId()).append( "</username>\n");
         }
         strb.append("        <gender>").append(fbUser.getGender()).append( "</gender>\n");
         if (fbUser.getEmail()!=null && fbUser.getEmail().length()>2) {
             strb.append("        <email>").append(fbUser.getEmail()).append( "</email>\n");
         } else {
-            logger.warn("Facebook returned email = null, using dummy@email.com as email ");
+            log.warn("Facebook returned email = null, using dummy@email.com as email ");
             strb.append("        <email>").append(FACEBOOK_FALLBACKEMAIL).append( "</email>\n");
         }
         strb.append("        <birthday>").append(fbUser.getBirthday()).append( "</birthday>\n");
@@ -144,9 +144,9 @@ public class FacebookHelper {
 
 
     private static String getAccessToken(String code, String fbauthURI) {
-        logger.info("Fetching access token from facebook with code " + code);
+        log.info("Fetching access token from facebook with code " + code);
         if (code == null || code.equals("")) {
-            logger.debug("No facebook code, returning to login.");
+            log.debug("No facebook code, returning to login.");
             return null;
         }
 
@@ -156,7 +156,7 @@ public class FacebookHelper {
             URL url = new URL(authURL);
             result = readURL(url);
         } catch (Exception e) {
-            logger.error("Error autenticating with facebook.", e);
+            log.error("Error autenticating with facebook.", e);
             return null;
         }
 
@@ -177,7 +177,7 @@ public class FacebookHelper {
             }
         }
 
-        logger.debug("faceBookAccessToken=" + faceBookAccessToken + ", expires=" + expires);
+        log.debug("faceBookAccessToken=" + faceBookAccessToken + ", expires=" + expires);
         return faceBookAccessToken;
     }
 
